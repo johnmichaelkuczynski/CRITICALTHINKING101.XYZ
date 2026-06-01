@@ -1,6 +1,6 @@
 kind = "video"
-previewPath = "/qr-course-demo/"
-title = "QuantReason Demo Video"
+previewPath = "/demo/"
+title = "ClearThink Demo Video"
 version = "1.0.0"
 id = "artifacts/qr-course-demo"
 router = "path"
@@ -11,7 +11,7 @@ version = "1.0.0"
 
 [[services]]
 name = "web"
-paths = [ "/qr-course-demo/" ]
+paths = [ "/demo/" ]
 localPort = 26272
 
 [services.development]
@@ -28,4 +28,4 @@ to = "/index.html"
 
 [services.env]
 PORT = "26272"
-BASE_PATH = "/qr-course-demo/"
+BASE_PATH = "/demo/"
