@@ -25,6 +25,7 @@ Designed for **students, instructors evaluating AI-taught coursework, and resear
 - **Live Analytics** — Dashboard KPIs (attempts, accuracy, streak), per-topic mastery percentages, and a recent-activity feed — so progress, weak spots, and momentum are all visible at a glance.
 - **Operator Diagnostics** — Two one-click self-tests (system health and synthetic-student end-to-end run) verify the entire stack — database, OpenAI integration, GPTZero, detection pipeline, and the practice/grade loop — before you trust a session.
 - **Built-In Product Demo Video** — A 62-second screencast of the live UI — animated cursor, real typing, real streaming responses — ships as its own deployable artifact, so the product can show itself without anyone narrating it.
+- **Google Sign-In (Clerk)** — Students can sign in with Google (or email) via a Replit-managed Clerk tenant, with a branded sign-in page and an account panel in the sidebar. Sign-in is **optional identity UX**: the dashboard and all course/API routes remain publicly accessible by design (the course is single-user/self-paced), so login adds identity without gating content. If the audience broadens, gate the destructive diagnostics endpoints (reset/expand) first.
 
 ---
 
