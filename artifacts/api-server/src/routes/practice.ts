@@ -18,6 +18,7 @@ import {
 import { chatJson } from "../lib/ai";
 import { gradeAnswer } from "../lib/grading";
 import { logEvent } from "../lib/events";
+import { violatesStandard, APPLIED_RULES } from "../lib/questions";
 
 const router: IRouter = Router();
 
@@ -156,9 +157,9 @@ router.post("/practice/sessions/:sessionId/next", async (req, res): Promise<void
       correctAnswer: string;
       explanation: string;
     }>(
-      `You generate a single critical-thinking practice problem for a college freshman. The problem MUST be on the topic "${topic.title}" and at difficulty "${difficultyLabel}" (${difficulty.toFixed(
+      `You generate a single critical-thinking practice problem for a college freshman on the topic "${topic.title}" at difficulty "${difficultyLabel}" (${difficulty.toFixed(
         1,
-      )}/5). The answer must be a short string (a single word, short phrase, or letter choice) — never multi-paragraph. Respond as strict JSON: {"prompt": string, "correctAnswer": string, "explanation": string}. Avoid these recent prompts: ${JSON.stringify(
+      )}/5). The \`prompt\` presents a concrete situation and asks the student to apply the concept to it; the answer is a short string (a single word, short phrase, or letter choice) — never multi-paragraph.\n\n${APPLIED_RULES}\n\nRespond as strict JSON: {"prompt": string, "correctAnswer": string, "explanation": string}. Make it different from these recent prompts: ${JSON.stringify(
         lastProblems.map((p) => p.prompt),
       )}.`,
       userRequest || `Generate a new ${difficultyLabel} problem on ${topic.title}.`,
@@ -169,6 +170,15 @@ router.post("/practice/sessions/:sessionId/next", async (req, res): Promise<void
       correctAnswer: "Circular reasoning",
       explanation:
         "The conclusion is used to support the premise that is supposed to support the conclusion, so the argument begs the question.",
+    };
+  }
+  // Never serve a definitional / text-referencing problem.
+  if (violatesStandard(generated.prompt)) {
+    generated = {
+      prompt: `Practice (${topic.title}): A student argues "My horoscope said today would go badly, and it did, so astrology clearly works." What reasoning error is at work here?`,
+      correctAnswer: "Confirmation bias",
+      explanation:
+        "Counting only the hits and ignoring the misses is confirmation bias — the prediction is too vague to be evidence either way.",
     };
   }
 

@@ -23,6 +23,7 @@ import { chatJson, chatText } from "../lib/ai";
 import { gradeAnswer } from "../lib/grading";
 import { logEvent } from "../lib/events";
 import { topicMastery, buildFocusPointers, type FocusPointer } from "../lib/profile";
+import { APPLIED_RULES, violatesStandard } from "../lib/questions";
 
 const router: IRouter = Router();
 
@@ -90,8 +91,9 @@ router.post("/assignments/:assignmentId/practice", async (req, res): Promise<voi
     }>(
       "You are a college critical-thinking exam author. Generate a set of BRAND-NEW practice problems that mirror an assignment blueprint. " +
         "You are given an ordered list of topics; produce exactly one fresh problem per slot, in the same order, on that slot's topic. " +
-        "Each problem must be self-contained, test real reasoning (not recall), and have a SHORT answer (a word, short phrase, or letter choice) — never multi-paragraph. " +
-        'Respond as strict JSON: {"problems": [{"prompt": string, "correctAnswer": string, "explanation": string}]} with exactly the same number of items as slots, in order.',
+        "Each problem's `prompt` presents a concrete situation and asks the student to apply the concept to it; the answer is SHORT (a word, short phrase, or letter choice) — never multi-paragraph. " +
+        APPLIED_RULES +
+        '\n\nRespond as strict JSON: {"problems": [{"prompt": string, "correctAnswer": string, "explanation": string}]} with exactly the same number of items as slots, in order.',
       JSON.stringify({
         assignmentKind: assignment.kind,
         difficulty: `${base.toFixed(1)}/5`,
@@ -116,7 +118,7 @@ router.post("/assignments/:assignmentId/practice", async (req, res): Promise<voi
     const g = generated[i];
     const jitter = (Math.random() - 0.5) * 0.4;
     const difficulty = Math.max(1, Math.min(5, base + jitter));
-    if (g && g.prompt && g.correctAnswer) {
+    if (g && g.prompt && g.correctAnswer && !violatesStandard(g.prompt)) {
       return {
         sessionId: session.id,
         topicId: b.topicId,

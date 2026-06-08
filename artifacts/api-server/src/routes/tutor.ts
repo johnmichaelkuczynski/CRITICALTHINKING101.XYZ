@@ -5,54 +5,30 @@ import { AskTutorBody, AskTutorResponse } from "@workspace/api-zod";
 import { chatText, chatJson, TEXT_MODEL } from "../lib/ai";
 import { logger } from "../lib/logger";
 import { logEvent } from "../lib/events";
+import {
+  APPLIED_RULES,
+  violatesStandard,
+  hasConcreteExample,
+  isCleanText,
+} from "../lib/questions";
 
 const router: IRouter = Router();
 
 const STARTER_SYSTEM =
-  'You are a sharp college critical-thinking tutor who writes applied practice questions. You NEVER ask students to recite, define, or explain concepts in the abstract — every question forces them to APPLY a concept to a specific concrete case. Reply as strict JSON of the form {"questions": string[]} with NO other keys.';
+  'You are a sharp college critical-thinking tutor who writes applied practice questions phrased in the student\'s own voice. You NEVER ask students to recite, define, or explain concepts in the abstract — every question hands them a concrete situation and asks them to APPLY a principle to it. Reply as strict JSON of the form {"questions": string[]} with NO other keys.';
 
 function starterPrompt(title: string, body: string): string {
   // Cap body length sent to the model — the opening sections carry the core
-  // concepts and a shorter prompt generates noticeably faster.
+  // concepts and a shorter prompt generates noticeably faster. The lecture is
+  // used ONLY to know which concepts to test; its examples must never be reused.
   const trimmed = body.length > 4000 ? body.slice(0, 4000) : body;
-  return `Using the concepts taught in the lecture below, write 6 APPLIED practice questions. The point is to test whether the student can USE the ideas, never whether they memorized the textbook.
+  return `Write 10 practice questions that test whether a student can USE the concepts named in the source below. Phrase each as one or two natural sentences in the student's own voice (~15–35 words), and wrap the concrete situation in DOUBLE QUOTES so it is unmistakable.
 
-ABSOLUTE RULES — every question MUST follow all of these:
-1. Each question contains its own SPECIFIC, CONCRETE example invented by you — a real sentence, a short passage, a mini-scenario, a claim, an argument, or a brief exchange between people. The example must be written out IN the question so the student can answer it without re-reading the lecture.
-2. The task is always to APPLY a concept to that example: classify it, diagnose what's wrong with it, reconstruct it, decide whether it qualifies, identify the fallacy/bias/premise/conclusion at work, fix it, or judge it.
-3. Use fresh, vivid, real-world examples (campus life, news, ads, arguments between friends, social media, science claims, politics) — NOT the same examples used in the lecture.
+${APPLIED_RULES}
 
-STRICTLY FORBIDDEN — never produce a question that:
-- asks "what is X", "define X", "explain X", "why is X", "what is the difference between X and Y", "how do you distinguish X from Y", or "what are the cues/steps for X" in the abstract.
-- can be answered by reciting or paraphrasing a definition or rule from the lecture.
-- references "the lecture", "the text", "the reading", or "the lecture's test/rule" — the student should not need the lecture in front of them.
-- is vague or open-ended ("how do I get better at...", "what should I keep in mind...").
+The source material below tells you ONLY which concepts are in play — do NOT reuse its examples and do NOT reference it. The student should never need it in front of them.
 
-FORMAT — every question MUST embed its concrete example inside DOUBLE QUOTES ("like this") so the situation is unmistakable. Generate 8 questions. Each is one or two natural sentences in the student's own voice, ~15–35 words.
-
-Good: My roommate says "You can't trust Dr. Lee's diet study — she's overweight herself." Which fallacy is that, and why does it fail?
-Good: A flyer claims "Four out of five dentists recommend Brite gum." What's missing before I should believe that supports the conclusion that Brite is best?
-Bad: "What is the ad hominem fallacy and why is it a problem?"
-Bad: "How can I reliably tell a stated premise apart from rhetorical noise?"
-
-LECTURE TITLE: ${title}\n\nLECTURE CONTENT (for the concepts only — do NOT reuse its examples):\n"""\n${trimmed}\n"""`;
-}
-
-// An applied question presents a concrete example. We enforce that the model
-// wrapped that example in quotes, which lets us discard any abstract
-// definition/recall questions that slip through.
-function isApplied(q: string): boolean {
-  if (/["“”]/.test(q)) return true; // a double-quoted example
-  if (/['‘][^'’]{15,}['’]/.test(q)) return true; // a long single-quoted span
-  return false;
-}
-
-// Guard against occasional model glitches that splice in non-Latin scripts
-// (Cyrillic, Arabic, Devanagari, CJK, Hangul) mid-sentence.
-function isCleanText(q: string): boolean {
-  return !/[\u0400-\u04FF\u0600-\u06FF\u0900-\u097F\u3000-\u9FFF\uAC00-\uD7AF]/.test(
-    q,
-  );
+CONCEPT AREA: ${title}\n\nSOURCE (concepts only):\n"""\n${trimmed}\n"""`;
 }
 
 async function generateStarterQuestions(
@@ -64,15 +40,20 @@ async function generateStarterQuestions(
     starterPrompt(title, body),
     TEXT_MODEL,
   );
-  const all = Array.isArray(out?.questions)
-    ? out.questions.filter(
-        (q) => typeof q === "string" && q.trim().length > 0 && isCleanText(q),
-      )
-    : [];
-  const applied = all.filter(isApplied);
-  // Prefer applied questions; only fall back to the rest if too few survive,
-  // so the section is never empty.
-  const chosen = applied.length >= 4 ? applied : [...applied, ...all];
+  // Reject definitional / text-referencing questions outright — they are never
+  // restored by the fallback below, no matter how few survive.
+  const allowed = (Array.isArray(out?.questions) ? out.questions : []).filter(
+    (q) =>
+      typeof q === "string" &&
+      q.trim().length > 0 &&
+      isCleanText(q) &&
+      !violatesStandard(q),
+  );
+  const applied = allowed.filter(hasConcreteExample);
+  const chosen =
+    applied.length >= 4
+      ? applied
+      : [...applied, ...allowed.filter((q) => !hasConcreteExample(q))];
   return [...new Set(chosen)].slice(0, 6);
 }
 
