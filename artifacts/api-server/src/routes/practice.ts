@@ -17,6 +17,7 @@ import {
 } from "@workspace/api-zod";
 import { chatJson } from "../lib/ai";
 import { gradeAnswer } from "../lib/grading";
+import { logEvent } from "../lib/events";
 
 const router: IRouter = Router();
 
@@ -250,6 +251,17 @@ router.post("/practice/sessions/:sessionId/grade", async (req, res): Promise<voi
     .update(practiceSessionsTable)
     .set({ difficulty: newDifficulty })
     .where(eq(practiceSessionsTable.id, sessionId));
+
+  // Activity log only — mastery for adaptive practice is computed from
+  // practice_attempts (above), so we use kind 'practice' to avoid double-count.
+  await logEvent({
+    kind: "practice",
+    topicId: problem.topicId,
+    weekNumber: session.weekNumber,
+    correct: graded.correct,
+    difficulty: problem.difficulty,
+    detail: { action: "grade", sessionId },
+  });
 
   let tutorTip: string | null = null;
   if (session.tutorEnabled && !graded.correct) {

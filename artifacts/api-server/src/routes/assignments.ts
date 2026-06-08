@@ -18,6 +18,7 @@ import {
 } from "@workspace/api-zod";
 import { gradeAnswer } from "../lib/grading";
 import { detect } from "../lib/detection";
+import { logEvent } from "../lib/events";
 
 const router: IRouter = Router();
 
@@ -327,6 +328,27 @@ router.post("/assignments/attempts/:attemptId/submit", async (req, res): Promise
       scorePercent: percent,
     })
     .where(eq(attemptsTable.id, id));
+
+  // Log graded activity into the evolving learner profile (activity feed only —
+  // mastery is driven by practice, not graded attempts).
+  await Promise.all(
+    perProblem.map((pp) => {
+      const prob = problems.find((p) => p.id === pp.problemId);
+      return logEvent({
+        kind: "assignment",
+        assignmentId: attempt.assignmentId,
+        topicId: prob?.topicId ?? null,
+        correct: pp.correct,
+        detail: { action: "answer" },
+      });
+    }),
+  );
+  await logEvent({
+    kind: "assignment",
+    assignmentId: attempt.assignmentId,
+    score: percent,
+    detail: { action: "submit", score, total },
+  });
 
   res.json(
     SubmitAttemptResponse.parse({

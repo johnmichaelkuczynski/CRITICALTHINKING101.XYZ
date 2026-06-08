@@ -165,6 +165,12 @@ router.get("/course/lectures/:lectureId", async (req, res): Promise<void> => {
     res.status(404).json({ error: "lecture not found" });
     return;
   }
+  await logEvent({
+    kind: "lecture_view",
+    topicId: lecture.topicId,
+    weekNumber: lecture.weekNumber,
+    detail: { lectureId },
+  });
   res.json(GetLectureResponse.parse(lecture));
 });
 

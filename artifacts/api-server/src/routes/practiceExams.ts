@@ -248,6 +248,55 @@ router.post("/practice-exams/:sessionId/submit", async (req, res): Promise<void>
     res.status(404).json({ error: "practice exam not found" });
     return;
   }
+
+  // Idempotent: a session can only be graded once. Re-submitting returns the
+  // stored result instead of re-grading (which would duplicate answers + events).
+  if (session.status === "submitted") {
+    const stored = await db
+      .select({
+        problemId: practiceExamAnswersTable.problemId,
+        answer: practiceExamAnswersTable.answer,
+        correct: practiceExamAnswersTable.correct,
+        feedback: practiceExamAnswersTable.feedback,
+        prompt: practiceExamProblemsTable.prompt,
+        correctAnswer: practiceExamProblemsTable.correctAnswer,
+        explanation: practiceExamProblemsTable.explanation,
+        topicTitle: topicsTable.title,
+      })
+      .from(practiceExamAnswersTable)
+      .leftJoin(
+        practiceExamProblemsTable,
+        eq(practiceExamAnswersTable.problemId, practiceExamProblemsTable.id),
+      )
+      .leftJoin(topicsTable, eq(practiceExamProblemsTable.topicId, topicsTable.id))
+      .where(eq(practiceExamAnswersTable.sessionId, sessionId))
+      .orderBy(asc(practiceExamProblemsTable.position));
+    const perProblem = stored.map((s) => ({
+      problemId: s.problemId,
+      prompt: s.prompt ?? "",
+      topicTitle: s.topicTitle ?? null,
+      userAnswer: s.answer,
+      correctAnswer: s.correctAnswer ?? "",
+      correct: s.correct ?? false,
+      feedback: s.feedback ?? "",
+      explanation: s.explanation ?? "",
+    }));
+    const storedScore = perProblem.filter((p) => p.correct).length;
+    res.json(
+      SubmitPracticeExamResponse.parse({
+        sessionId,
+        score: storedScore,
+        total: perProblem.length,
+        percent: session.scorePercent ?? 0,
+        perProblem,
+        overallFeedback: session.overallFeedback ?? "",
+        focusPointers: (session.focusPointers as FocusPointer[] | null) ?? [],
+        encouragement: session.encouragement ?? "",
+      }),
+    );
+    return;
+  }
+
   const [assignment] = await db
     .select()
     .from(assignmentsTable)

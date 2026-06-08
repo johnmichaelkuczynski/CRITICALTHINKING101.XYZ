@@ -2,3 +2,5 @@
 - [video-js scene import quirk](video-js-scene-imports.md) — DESIGN subagent's generated scene files import animations with an off-by-one relative path; fix with the `@/lib/video` alias.
 - [ClearThink Clerk auth](clerk-auth-clearthink.md) — Google login is identity UX only; dashboard + all /api routes stay public by design; gate destructive diagnostics first if multi-user.
 - [Practice-exam API](practice-exam-api.md) — create exam is POST /assignments/:id/practice (not /practice-exams); full KeystrokeTrace required; feedback is server-persisted; tutor never in graded runner.
+- [Starter questions](starter-questions.md) — cached in lectures.starter_questions, warmed on boot; must be APPLIED (quoted example) not recall; use TEXT_MODEL; regenerate by NULLing column + curl warm.
+- [Learner events vs mastery](learner-events.md) — mastery = practice_attempts + learner_events(kind='practice_exam') ONLY; log other activity with distinct kinds or you double-count; practice-exam submit is idempotent.
