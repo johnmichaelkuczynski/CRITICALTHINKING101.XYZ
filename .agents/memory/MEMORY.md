@@ -1,3 +1,4 @@
 - [Course subject migration](course-subject-migration.md) — rebranding/subject-swapping this AI-course app touches far more than seed.ts; checklist of the non-obvious surfaces.
 - [video-js scene import quirk](video-js-scene-imports.md) — DESIGN subagent's generated scene files import animations with an off-by-one relative path; fix with the `@/lib/video` alias.
 - [ClearThink Clerk auth](clerk-auth-clearthink.md) — Google login is identity UX only; dashboard + all /api routes stay public by design; gate destructive diagnostics first if multi-user.
+- [Practice-exam API](practice-exam-api.md) — create exam is POST /assignments/:id/practice (not /practice-exams); full KeystrokeTrace required; feedback is server-persisted; tutor never in graded runner.

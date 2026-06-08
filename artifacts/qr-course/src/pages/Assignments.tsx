@@ -1,10 +1,51 @@
 import React from "react";
-import { useListAssignments } from "@workspace/api-client-react";
+import {
+  useListAssignments,
+  useGetAssignmentReadiness,
+  type AssignmentReadinessLabel,
+} from "@workspace/api-client-react";
 import { Layout } from "@/components/layout/Layout";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Link } from "wouter";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
+import { Sparkles } from "lucide-react";
+
+const READINESS_LABEL: Record<AssignmentReadinessLabel, string> = {
+  not_ready: "Not ready",
+  getting_there: "Getting there",
+  ready: "Ready",
+  mastered: "Mastered",
+};
+
+function readinessClasses(label: AssignmentReadinessLabel) {
+  switch (label) {
+    case "mastered":
+      return "bg-emerald-100 text-emerald-800";
+    case "ready":
+      return "bg-emerald-50 text-emerald-700";
+    case "getting_there":
+      return "bg-amber-100 text-amber-800";
+    default:
+      return "bg-red-100 text-red-800";
+  }
+}
+
+function ReadinessChip({ assignmentId }: { assignmentId: number }) {
+  const { data } = useGetAssignmentReadiness(assignmentId, {
+    query: { queryKey: ["readiness", assignmentId] },
+  });
+  if (!data) return null;
+  return (
+    <span
+      className={`text-xs px-2 py-0.5 rounded-full font-medium ${readinessClasses(data.label)}`}
+      title={data.summary}
+      data-testid={`chip-readiness-${assignmentId}`}
+    >
+      {READINESS_LABEL[data.label]} · {data.readiness}%
+    </span>
+  );
+}
 
 export default function Assignments() {
   const { data: assignments, isLoading } = useListAssignments();
@@ -54,19 +95,28 @@ export default function Assignments() {
                         <CardTitle className="text-lg">{item.title}</CardTitle>
                       </CardHeader>
                       <CardContent className="flex flex-col gap-4">
-                        <div className="text-sm text-muted-foreground flex gap-4">
+                        <div className="text-sm text-muted-foreground flex gap-4 items-center flex-wrap">
                           <span>{item.problemCount} problems</span>
                           {item.isTimed && <span>⏱️ {item.timeLimitMinutes} min</span>}
                           {item.bestScore !== undefined && item.bestScore !== null && (
                             <span className="font-semibold text-foreground">Score: {item.bestScore}%</span>
                           )}
+                          <ReadinessChip assignmentId={item.id} />
                         </div>
-                        <Link href={`/assignments/${item.id}`}>
-                          <Button className="w-full" variant={item.status === 'submitted' ? "outline" : "default"}>
-                            {item.status === 'submitted' ? 'Review Results' : 
-                             item.status === 'in_progress' ? 'Resume' : 'Start'}
-                          </Button>
-                        </Link>
+                        <div className="flex flex-col gap-2">
+                          <Link href={`/practice/exam/${item.id}`}>
+                            <Button className="w-full" variant="secondary" data-testid={`button-practice-${item.id}`}>
+                              <Sparkles className="w-4 h-4 mr-2" />
+                              Practice this first
+                            </Button>
+                          </Link>
+                          <Link href={`/assignments/${item.id}`}>
+                            <Button className="w-full" variant={item.status === 'submitted' ? "outline" : "default"}>
+                              {item.status === 'submitted' ? 'Review Results' : 
+                               item.status === 'in_progress' ? 'Resume' : 'Start graded attempt'}
+                            </Button>
+                          </Link>
+                        </div>
                       </CardContent>
                     </Card>
                   ))}

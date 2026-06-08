@@ -5,6 +5,8 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Link } from "wouter";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Progress } from "@/components/ui/progress";
+import { Button } from "@/components/ui/button";
+import { Sparkles } from "lucide-react";
 
 export default function Dashboard() {
   const { data: overview, isLoading: isLoadingOverview } = useGetCourseOverview();
@@ -18,6 +20,23 @@ export default function Dashboard() {
             {overview ? overview.title : <Skeleton className="h-9 w-64" />}
           </h1>
           <p className="text-muted-foreground">Welcome to your Critical Thinking workspace.</p>
+        </div>
+
+        <div className="rounded-lg border border-primary/30 bg-primary/5 p-5 flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+          <div className="flex items-start gap-3">
+            <Sparkles className="w-5 h-5 text-primary mt-0.5 shrink-0" />
+            <div>
+              <div className="font-semibold">Practice before you're graded</div>
+              <p className="text-sm text-muted-foreground">
+                Generate unlimited practice exams for any assignment — graded just like the real
+                thing, with detailed feedback, a coach to talk it through, and exactly what to fix
+                next. The tutor stays on-screen the whole time.
+              </p>
+            </div>
+          </div>
+          <Link href="/assignments">
+            <Button data-testid="button-dashboard-practice">Start practicing</Button>
+          </Link>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">

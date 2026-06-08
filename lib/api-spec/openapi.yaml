@@ -372,6 +372,165 @@ paths:
               schema:
                 $ref: "#/components/schemas/AnalyticsReport"
 
+  /course/lectures/{lectureId}/expand:
+    post:
+      operationId: expandLecture
+      tags: [course]
+      summary: Generate the medium or long version of a single lecture on the spot
+      parameters:
+        - name: lectureId
+          in: path
+          required: true
+          schema: { type: integer }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LectureExpandInput"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Lecture"
+
+  /assignments/{assignmentId}/practice:
+    post:
+      operationId: createPracticeExam
+      tags: [practice]
+      summary: Generate a fresh, infinite practice version of a graded assignment
+      parameters:
+        - name: assignmentId
+          in: path
+          required: true
+          schema: { type: integer }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PracticeExam"
+
+  /assignments/{assignmentId}/readiness:
+    get:
+      operationId: getAssignmentReadiness
+      tags: [analytics]
+      summary: Analytics-driven readiness + surgical focus pointers for a graded assignment
+      parameters:
+        - name: assignmentId
+          in: path
+          required: true
+          schema: { type: integer }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AssignmentReadiness"
+
+  /practice-exams/{sessionId}:
+    get:
+      operationId: getPracticeExam
+      tags: [practice]
+      summary: Get a practice exam session with its problems
+      parameters:
+        - name: sessionId
+          in: path
+          required: true
+          schema: { type: integer }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PracticeExam"
+
+  /practice-exams/{sessionId}/submit:
+    post:
+      operationId: submitPracticeExam
+      tags: [practice]
+      summary: Submit a practice exam; returns heavy per-problem + overall feedback and focus pointers
+      parameters:
+        - name: sessionId
+          in: path
+          required: true
+          schema: { type: integer }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PracticeExamSubmitInput"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PracticeExamResult"
+
+  /practice-exams/{sessionId}/feedback:
+    get:
+      operationId: getFeedbackMessages
+      tags: [practice]
+      summary: Get the feedback dialogue history for a practice exam
+      parameters:
+        - name: sessionId
+          in: path
+          required: true
+          schema: { type: integer }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/FeedbackMessage"
+
+  /practice-exams/{sessionId}/feedback/ask:
+    post:
+      operationId: askFeedback
+      tags: [practice]
+      summary: Ask a follow-up question about the feedback; returns the coach's reply
+      parameters:
+        - name: sessionId
+          in: path
+          required: true
+          schema: { type: integer }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/FeedbackAskInput"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FeedbackMessage"
+
+  /profile:
+    get:
+      operationId: getLearnerProfile
+      tags: [analytics]
+      summary: The evolving learner profile aggregated from all logged activity
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LearnerProfile"
+
 components:
   schemas:
     HealthStatus:
@@ -730,3 +889,179 @@ components:
             assignmentsCompleted: { type: integer }
             assignmentsTotal: { type: integer }
             practiceCount: { type: integer }
+
+    LectureExpandInput:
+      type: object
+      required: [level]
+      properties:
+        level:
+          type: string
+          enum: [medium, long]
+
+    PracticeExam:
+      type: object
+      required: [id, assignmentId, assignmentTitle, kind, weekNumber, status, createdAt, problems]
+      properties:
+        id: { type: integer }
+        assignmentId: { type: integer }
+        assignmentTitle: { type: string }
+        kind:
+          type: string
+          enum: [homework, test, midterm, final]
+        weekNumber: { type: integer }
+        status:
+          type: string
+          enum: [in_progress, submitted]
+        createdAt: { type: string, format: date-time }
+        problems:
+          type: array
+          items:
+            $ref: "#/components/schemas/PracticeExamProblem"
+
+    PracticeExamProblem:
+      type: object
+      required: [id, position, prompt, topicId, difficulty]
+      properties:
+        id: { type: integer }
+        position: { type: integer }
+        prompt: { type: string }
+        topicId: { type: integer }
+        topicTitle: { type: ["string", "null"] }
+        difficulty: { type: number }
+
+    PracticeExamSubmitInput:
+      type: object
+      required: [answers]
+      properties:
+        answers:
+          type: array
+          items:
+            $ref: "#/components/schemas/PracticeExamAnswerInput"
+
+    PracticeExamAnswerInput:
+      type: object
+      required: [problemId, answer, trace]
+      properties:
+        problemId: { type: integer }
+        answer: { type: string }
+        trace:
+          $ref: "#/components/schemas/KeystrokeTrace"
+
+    PracticeExamResult:
+      type: object
+      required: [sessionId, score, total, percent, perProblem, overallFeedback, focusPointers, encouragement]
+      properties:
+        sessionId: { type: integer }
+        score: { type: number }
+        total: { type: number }
+        percent: { type: number }
+        perProblem:
+          type: array
+          items:
+            $ref: "#/components/schemas/PracticeExamProblemFeedback"
+        overallFeedback: { type: string }
+        focusPointers:
+          type: array
+          items:
+            $ref: "#/components/schemas/FocusPointer"
+        encouragement: { type: string }
+
+    PracticeExamProblemFeedback:
+      type: object
+      required: [problemId, prompt, correct, feedback, correctAnswer, explanation]
+      properties:
+        problemId: { type: integer }
+        prompt: { type: string }
+        topicTitle: { type: ["string", "null"] }
+        userAnswer: { type: string }
+        correctAnswer: { type: string }
+        correct: { type: boolean }
+        feedback: { type: string }
+        explanation: { type: string }
+
+    FocusPointer:
+      type: object
+      required: [topicTitle, severity, why, action]
+      properties:
+        topicId: { type: ["integer", "null"] }
+        topicTitle: { type: string }
+        severity:
+          type: string
+          enum: [critical, important, minor]
+        why: { type: string }
+        action: { type: string }
+
+    FeedbackMessage:
+      type: object
+      required: [id, role, content, at]
+      properties:
+        id: { type: integer }
+        role:
+          type: string
+          enum: [student, coach]
+        content: { type: string }
+        at: { type: string, format: date-time }
+
+    FeedbackAskInput:
+      type: object
+      required: [message]
+      properties:
+        message: { type: string }
+
+    AssignmentReadiness:
+      type: object
+      required: [assignmentId, assignmentTitle, kind, readiness, label, summary, pointers, practiceCount, recommendPractice]
+      properties:
+        assignmentId: { type: integer }
+        assignmentTitle: { type: string }
+        kind:
+          type: string
+          enum: [homework, test, midterm, final]
+        readiness:
+          type: number
+          description: 0-100 readiness score for the graded assignment
+        label:
+          type: string
+          enum: [not_ready, getting_there, ready, mastered]
+        summary: { type: string }
+        pointers:
+          type: array
+          items:
+            $ref: "#/components/schemas/FocusPointer"
+        practiceCount: { type: integer }
+        recommendPractice: { type: boolean }
+
+    ProfileTopic:
+      type: object
+      required: [topicId, topicTitle, weekNumber, mastery, attempts, label]
+      properties:
+        topicId: { type: integer }
+        topicTitle: { type: string }
+        weekNumber: { type: integer }
+        mastery: { type: number }
+        attempts: { type: integer }
+        label:
+          type: string
+          enum: [strong, solid, developing, weak, untested]
+
+    LearnerProfile:
+      type: object
+      required: [generatedAt, totalEvents, practiceExamCount, practiceCount, gradedCount, narrative, strengths, focusAreas, topics]
+      properties:
+        generatedAt: { type: string, format: date-time }
+        totalEvents: { type: integer }
+        practiceExamCount: { type: integer }
+        practiceCount: { type: integer }
+        gradedCount: { type: integer }
+        narrative: { type: string }
+        strengths:
+          type: array
+          items: { type: string }
+        focusAreas:
+          type: array
+          items:
+            $ref: "#/components/schemas/FocusPointer"
+        topics:
+          type: array
+          items:
+            $ref: "#/components/schemas/ProfileTopic"

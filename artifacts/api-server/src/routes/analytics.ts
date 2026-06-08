@@ -6,14 +6,20 @@ import {
   attemptsTable,
   practiceAttemptsTable,
   assignmentsTable,
+  problemsTable,
+  practiceExamSessionsTable,
+  learnerEventsTable,
 } from "@workspace/db";
 import {
   GetAnalyticsSummaryResponse,
   GetTopicAnalyticsResponse,
   GetRecentActivityResponse,
   GenerateReportResponse,
+  GetAssignmentReadinessResponse,
+  GetLearnerProfileResponse,
 } from "@workspace/api-zod";
 import { chatJson } from "../lib/ai";
+import { topicMastery, buildFocusPointers } from "../lib/profile";
 
 const router: IRouter = Router();
 
@@ -212,6 +218,175 @@ router.post("/analytics/report", async (_req, res) => {
       strengths: strongest,
       weaknesses: weakest,
       recommendations,
+    }),
+  );
+});
+
+router.get("/assignments/:assignmentId/readiness", async (req, res): Promise<void> => {
+  const raw = Array.isArray(req.params.assignmentId)
+    ? req.params.assignmentId[0]
+    : req.params.assignmentId;
+  const assignmentId = parseInt(raw ?? "", 10);
+  if (!Number.isFinite(assignmentId)) {
+    res.status(400).json({ error: "invalid assignment id" });
+    return;
+  }
+  const [assignment] = await db
+    .select()
+    .from(assignmentsTable)
+    .where(eq(assignmentsTable.id, assignmentId));
+  if (!assignment) {
+    res.status(404).json({ error: "assignment not found" });
+    return;
+  }
+
+  const topicRows = await db
+    .selectDistinct({ topicId: problemsTable.topicId })
+    .from(problemsTable)
+    .where(eq(problemsTable.assignmentId, assignmentId));
+  const assignmentTopicIds = new Set(topicRows.map((r) => r.topicId));
+
+  const mastery = await topicMastery();
+  const scoped = mastery.filter((m) => assignmentTopicIds.has(m.topicId));
+
+  // Readiness: average accuracy across the assignment's topics, where untested
+  // topics count as a low 0.3 so the score pushes the student to practice.
+  const perTopicReadiness = scoped.map((m) => (m.attempts === 0 ? 0.3 : m.accuracy));
+  const avg =
+    perTopicReadiness.length === 0
+      ? 0
+      : perTopicReadiness.reduce((s, v) => s + v, 0) / perTopicReadiness.length;
+  const readiness = Math.round(avg * 100);
+
+  const label: "not_ready" | "getting_there" | "ready" | "mastered" =
+    readiness < 40
+      ? "not_ready"
+      : readiness < 65
+      ? "getting_there"
+      : readiness < 85
+      ? "ready"
+      : "mastered";
+
+  const pointers = buildFocusPointers(mastery, {
+    restrictTopicIds: assignmentTopicIds,
+    limit: 5,
+  });
+
+  // How many practice exams the student has taken for this assignment.
+  const examRows = await db
+    .select({ id: practiceExamSessionsTable.id })
+    .from(practiceExamSessionsTable)
+    .where(eq(practiceExamSessionsTable.assignmentId, assignmentId));
+  const practiceCount = examRows.length;
+
+  const summary =
+    label === "mastered"
+      ? `You're ready. You're consistently strong across the ${scoped.length} topics on this ${assignment.kind}. Take one more practice exam to lock it in, then sit the graded version.`
+      : label === "ready"
+      ? `You're close. Most topics on this ${assignment.kind} are solid — clear the focus areas below with one more practice exam and you're set.`
+      : label === "getting_there"
+      ? `You're getting there, but a few topics on this ${assignment.kind} aren't reliable yet. Practice the focus areas below before the graded version.`
+      : `Not ready yet. Build up the topics on this ${assignment.kind} with practice exams first — the focus areas below are where to start.`;
+
+  res.json(
+    GetAssignmentReadinessResponse.parse({
+      assignmentId,
+      assignmentTitle: assignment.title,
+      kind: assignment.kind as "homework" | "test" | "midterm" | "final",
+      readiness,
+      label,
+      summary,
+      pointers,
+      practiceCount,
+      recommendPractice: readiness < 85 || practiceCount === 0,
+    }),
+  );
+});
+
+router.get("/profile", async (_req, res): Promise<void> => {
+  const mastery = await topicMastery();
+
+  const totalEventsRow = await db.execute(
+    sql`select count(*)::int as n from learner_events`,
+  );
+  const totalEvents = (totalEventsRow.rows[0] as { n?: number } | undefined)?.n ?? 0;
+
+  const examSubmittedRow = await db.execute(
+    sql`select count(*)::int as n from practice_exam_sessions where status = 'submitted'`,
+  );
+  const practiceExamCount =
+    (examSubmittedRow.rows[0] as { n?: number } | undefined)?.n ?? 0;
+
+  const practiceRow = await db.execute(
+    sql`select count(*)::int as n from practice_attempts`,
+  );
+  const practiceCount = (practiceRow.rows[0] as { n?: number } | undefined)?.n ?? 0;
+
+  const gradedRow = await db.execute(
+    sql`select count(*)::int as n from attempts where status = 'submitted'`,
+  );
+  const gradedCount = (gradedRow.rows[0] as { n?: number } | undefined)?.n ?? 0;
+
+  const tested = mastery.filter((m) => m.attempts > 0);
+  const strengthsSorted = [...tested].sort((a, b) => b.accuracy - a.accuracy);
+  const strengths = strengthsSorted
+    .filter((m) => m.accuracy >= 0.75)
+    .slice(0, 4)
+    .map((m) => m.topicTitle);
+
+  const focusAreas = buildFocusPointers(mastery, { limit: 6 });
+
+  let narrative = "";
+  try {
+    const out = await chatJson<{ narrative: string }>(
+      "You are the student's critical-thinking learning coach. Using their evolving profile, write a 2-3 sentence narrative: where they stand, what's trending, and the single most useful thing to do next. Honest, specific, encouraging. Strict JSON: {\"narrative\": string}.",
+      JSON.stringify({
+        totalEvents,
+        practiceExamCount,
+        practiceCount,
+        gradedCount,
+        strengths,
+        focusAreas: focusAreas.map((f) => f.topicTitle),
+        topics: mastery,
+      }),
+    );
+    narrative = out.narrative ?? "";
+  } catch {
+    narrative = "";
+  }
+  if (!narrative) {
+    narrative =
+      totalEvents === 0
+        ? "Your learning profile is empty so far. Start a practice session or a practice exam and this profile will begin tracking your strengths and focus areas."
+        : `You've logged ${totalEvents} learning actions so far. ${
+            strengths.length > 0
+              ? `You're strongest in ${strengths[0]}. `
+              : ""
+          }${
+            focusAreas.length > 0
+              ? `Your best next move is to practice ${focusAreas[0]!.topicTitle}.`
+              : "Keep practicing to sharpen every topic."
+          }`;
+  }
+
+  res.json(
+    GetLearnerProfileResponse.parse({
+      generatedAt: new Date().toISOString(),
+      totalEvents,
+      practiceExamCount,
+      practiceCount,
+      gradedCount,
+      narrative,
+      strengths,
+      focusAreas,
+      topics: mastery.map((m) => ({
+        topicId: m.topicId,
+        topicTitle: m.topicTitle,
+        weekNumber: m.weekNumber,
+        mastery: Math.round(m.accuracy * 100),
+        attempts: m.attempts,
+        label: m.label,
+      })),
     }),
   );
 });

@@ -130,3 +130,78 @@ export const practiceAttemptsTable = pgTable("practice_attempts", {
   trace: jsonb("trace"),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
 });
+
+// ---------------------------------------------------------------------------
+// Practice exams: infinite, generated practice versions of a graded assignment.
+// Each session mirrors an assignment's blueprint (topics, kind, count) but with
+// fresh problems, and produces rich feedback + a feedback dialogue.
+// ---------------------------------------------------------------------------
+export const practiceExamSessionsTable = pgTable("practice_exam_sessions", {
+  id: serial("id").primaryKey(),
+  assignmentId: integer("assignment_id")
+    .notNull()
+    .references(() => assignmentsTable.id, { onDelete: "cascade" }),
+  status: text("status").notNull().default("in_progress"), // in_progress | submitted
+  scorePercent: doublePrecision("score_percent"),
+  overallFeedback: text("overall_feedback"),
+  focusPointers: jsonb("focus_pointers"),
+  encouragement: text("encouragement"),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  submittedAt: timestamp("submitted_at", { withTimezone: true }),
+});
+
+export const practiceExamProblemsTable = pgTable("practice_exam_problems", {
+  id: serial("id").primaryKey(),
+  sessionId: integer("session_id")
+    .notNull()
+    .references(() => practiceExamSessionsTable.id, { onDelete: "cascade" }),
+  topicId: integer("topic_id").notNull(),
+  position: integer("position").notNull(),
+  prompt: text("prompt").notNull(),
+  correctAnswer: text("correct_answer").notNull(),
+  explanation: text("explanation").notNull(),
+  difficulty: doublePrecision("difficulty").notNull().default(2.0),
+});
+
+export const practiceExamAnswersTable = pgTable("practice_exam_answers", {
+  id: serial("id").primaryKey(),
+  sessionId: integer("session_id")
+    .notNull()
+    .references(() => practiceExamSessionsTable.id, { onDelete: "cascade" }),
+  problemId: integer("problem_id")
+    .notNull()
+    .references(() => practiceExamProblemsTable.id, { onDelete: "cascade" }),
+  answer: text("answer").notNull().default(""),
+  correct: boolean("correct"),
+  feedback: text("feedback"),
+  trace: jsonb("trace"),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+});
+
+export const feedbackMessagesTable = pgTable("feedback_messages", {
+  id: serial("id").primaryKey(),
+  sessionId: integer("session_id")
+    .notNull()
+    .references(() => practiceExamSessionsTable.id, { onDelete: "cascade" }),
+  role: text("role").notNull(), // student | coach
+  content: text("content").notNull(),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+});
+
+// ---------------------------------------------------------------------------
+// Learner events: an append-only log of every activity the student performs,
+// forming an evolving learner profile used to drive readiness + focus pointers.
+// ---------------------------------------------------------------------------
+export const learnerEventsTable = pgTable("learner_events", {
+  id: serial("id").primaryKey(),
+  // practice | practice_exam | assignment | lecture_view | lecture_expand | tutor | feedback_dialogue
+  kind: text("kind").notNull(),
+  topicId: integer("topic_id"),
+  weekNumber: integer("week_number"),
+  assignmentId: integer("assignment_id"),
+  correct: boolean("correct"),
+  score: doublePrecision("score"),
+  difficulty: doublePrecision("difficulty"),
+  detail: jsonb("detail"),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+});

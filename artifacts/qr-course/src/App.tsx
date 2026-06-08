@@ -30,6 +30,7 @@ import LectureView from "@/pages/LectureView";
 import AssignmentRunner from "@/pages/AssignmentRunner";
 import Diagnostics from "@/pages/Diagnostics";
 import TopicPractice from "@/pages/TopicPractice";
+import PracticeExam from "@/pages/PracticeExam";
 
 const queryClient = new QueryClient();
 
@@ -169,6 +170,7 @@ function Router() {
       <Route path="/weeks/:weekNumber" component={WeekView} />
       <Route path="/lectures/:lectureId" component={LectureView} />
       <Route path="/practice/topic/:topicId" component={TopicPractice} />
+      <Route path="/practice/exam/:assignmentId" component={PracticeExam} />
       {/* REQUIRED — copy "/sign-in/*?" and "/sign-up/*?" verbatim. */}
       <Route path="/sign-in/*?" component={SignInPage} />
       <Route path="/sign-up/*?" component={SignUpPage} />

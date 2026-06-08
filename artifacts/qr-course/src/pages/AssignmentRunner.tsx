@@ -7,6 +7,7 @@ import {
   useGetAttempt, 
   useSaveAnswer, 
   useSubmitAttempt,
+  useGetAssignmentReadiness,
   AttemptResult,
   KeystrokeTrace
 } from "@workspace/api-client-react";
@@ -14,6 +15,45 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { AnswerInput } from "@/components/AnswerInput";
 import { MarkdownRenderer } from "@/components/MarkdownRenderer";
+import { Sparkles, Target } from "lucide-react";
+
+function ReadinessBanner({ assignmentId }: { assignmentId: number }) {
+  const { data } = useGetAssignmentReadiness(assignmentId, {
+    query: { queryKey: ["readiness", assignmentId] },
+  });
+  if (!data || !data.recommendPractice) return null;
+  return (
+    <div className="rounded-lg border border-amber-300 bg-amber-50 p-4 flex flex-col gap-3">
+      <div className="flex items-start gap-3">
+        <Target className="w-5 h-5 text-amber-700 mt-0.5 shrink-0" />
+        <div className="flex-1">
+          <div className="font-semibold text-amber-900">
+            {data.label === "not_ready"
+              ? "You may not be ready for the graded version yet"
+              : "A little more practice could help"}{" "}
+            · {data.readiness}% ready
+          </div>
+          <p className="text-sm text-amber-900/90 mt-0.5">{data.summary}</p>
+          {data.pointers.length > 0 && (
+            <ul className="mt-2 flex flex-col gap-1 text-sm text-amber-900/90">
+              {data.pointers.slice(0, 3).map((p, i) => (
+                <li key={i}>
+                  <span className="font-medium">{p.topicTitle}:</span> {p.action}
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+        <Link href={`/practice/exam/${assignmentId}`}>
+          <Button variant="secondary" data-testid="button-practice-from-runner">
+            <Sparkles className="w-4 h-4 mr-2" />
+            Practice this first
+          </Button>
+        </Link>
+      </div>
+    </div>
+  );
+}
 
 export default function AssignmentRunner() {
   const params = useParams();
@@ -157,6 +197,8 @@ export default function AssignmentRunner() {
             </div>
           )}
         </div>
+
+        <ReadinessBanner assignmentId={assignmentId} />
 
         {currentProblem ? (
           <div className="flex flex-col gap-8">

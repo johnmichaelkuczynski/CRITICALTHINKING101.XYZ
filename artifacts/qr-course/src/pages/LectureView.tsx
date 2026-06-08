@@ -2,13 +2,16 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import {
   useGetLecture,
   useAskTutor,
+  useExpandLecture,
   useStartPracticeSession,
   useNextPracticeProblem,
   useGradePracticeAnswer,
+  getGetLectureQueryKey,
   type PracticeProblem,
   type PracticeGrade,
   type KeystrokeTrace,
 } from "@workspace/api-client-react";
+import { useQueryClient } from "@tanstack/react-query";
 import { Layout } from "@/components/layout/Layout";
 import { useParams, Link } from "wouter";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -16,7 +19,7 @@ import { MarkdownRenderer } from "@/components/MarkdownRenderer";
 import { AnswerInput } from "@/components/AnswerInput";
 import { StarterQuestionCard } from "@/components/StarterQuestionCard";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, MessageSquare, Sparkles, Send, X, RefreshCw, CheckCircle2, XCircle } from "lucide-react";
+import { ArrowLeft, MessageSquare, Sparkles, Send, X, RefreshCw, CheckCircle2, XCircle, Loader2 } from "lucide-react";
 
 type ChatMsg = { role: "user" | "tutor"; text: string };
 
@@ -53,12 +56,41 @@ export default function LectureView() {
   const [tab, setTab] = useState<"tutor" | "practice">("tutor");
   const [level, setLevel] = useState<"short" | "medium" | "long">("short");
 
+  const qc = useQueryClient();
+  const expand = useExpandLecture();
+  const [expandError, setExpandError] = useState<string | null>(null);
+
   const availableLevels = useMemo(() => {
     const out: Array<"short" | "medium" | "long"> = ["short"];
     if (lecture?.bodyMedium) out.push("medium");
     if (lecture?.bodyLong) out.push("long");
     return out;
   }, [lecture?.bodyMedium, lecture?.bodyLong]);
+
+  function selectLevel(lvl: "short" | "medium" | "long") {
+    setExpandError(null);
+    if (lvl === "short" || availableLevels.includes(lvl)) {
+      setLevel(lvl);
+      return;
+    }
+    if (lecture == null || expand.isPending) return;
+    // Generate this depth on the spot, then switch to it.
+    expand.mutate(
+      { lectureId: lecture.id, data: { level: lvl } },
+      {
+        onSuccess: async () => {
+          await qc.invalidateQueries({ queryKey: getGetLectureQueryKey(lecture.id) });
+          setLevel(lvl);
+        },
+        onError: (e) =>
+          setExpandError(
+            `Couldn't generate the ${lvl} version: ${(e as Error).message}. Try again.`,
+          ),
+      },
+    );
+  }
+
+  const expandingLevel = expand.isPending ? expand.variables?.data.level : null;
 
   const activeBody =
     level === "long" && lecture?.bodyLong
@@ -101,35 +133,52 @@ export default function LectureView() {
                   </div>
                   <div className="inline-flex rounded-md border border-border overflow-hidden text-xs">
                     {(["short", "medium", "long"] as const).map((lvl) => {
-                      const enabled = availableLevels.includes(lvl);
+                      const generated = availableLevels.includes(lvl);
                       const active = level === lvl;
+                      const isExpanding = expandingLevel === lvl;
+                      const disabled = expand.isPending;
                       return (
                         <button
                           key={lvl}
-                          onClick={() => enabled && setLevel(lvl)}
-                          disabled={!enabled}
+                          onClick={() => selectLevel(lvl)}
+                          disabled={disabled}
                           title={
-                            enabled
+                            generated || lvl === "short"
                               ? `${lvl[0].toUpperCase() + lvl.slice(1)} version`
-                              : `${lvl[0].toUpperCase() + lvl.slice(1)} version not generated yet — click "Generate medium + long lectures" in the top bar`
+                              : `Generate the ${lvl} version of this lecture now`
                           }
-                          className={`px-3 py-1.5 font-medium uppercase tracking-wider transition-colors ${
+                          className={`px-3 py-1.5 font-medium uppercase tracking-wider transition-colors inline-flex items-center gap-1 ${
                             active
                               ? "bg-primary text-primary-foreground"
-                              : enabled
-                                ? "bg-background hover:bg-secondary text-foreground"
-                                : "bg-background/50 text-muted-foreground/50 cursor-not-allowed"
-                          }`}
+                              : "bg-background hover:bg-secondary text-foreground"
+                          } ${disabled ? "opacity-60 cursor-wait" : ""}`}
                           data-testid={`button-level-${lvl}`}
                         >
+                          {isExpanding && <Loader2 className="w-3 h-3 animate-spin" />}
                           {lvl}
+                          {!generated && lvl !== "short" && !isExpanding && (
+                            <Sparkles className="w-3 h-3 opacity-60" />
+                          )}
                         </button>
                       );
                     })}
                   </div>
                 </div>
               </header>
-              <div className="bg-card border shadow-sm rounded-lg p-6 md:p-8" ref={articleRef}>
+              {expandError && (
+                <div className="mb-3 text-xs text-red-800 bg-red-50 border border-red-200 rounded-md px-3 py-2">
+                  {expandError}
+                </div>
+              )}
+              <div className="bg-card border shadow-sm rounded-lg p-6 md:p-8 relative" ref={articleRef}>
+                {expand.isPending && (
+                  <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-3 bg-card/85 backdrop-blur-sm rounded-lg">
+                    <Loader2 className="w-6 h-6 animate-spin text-primary" />
+                    <div className="text-sm text-muted-foreground">
+                      Writing the {expandingLevel} version of this lecture…
+                    </div>
+                  </div>
+                )}
                 <MarkdownRenderer content={activeBody} />
                 <div className="mt-6 pt-4 border-t border-dashed border-border text-xs text-muted-foreground italic">
                   Tip: highlight any passage above to ask the tutor about it, or to generate practice problems specifically on what you selected.

@@ -351,3 +351,189 @@ export interface CourseOverview {
   totals: CourseOverviewTotals;
 }
 
+export type LectureExpandInputLevel = typeof LectureExpandInputLevel[keyof typeof LectureExpandInputLevel];
+
+
+export const LectureExpandInputLevel = {
+  medium: 'medium',
+  long: 'long',
+} as const;
+
+export interface LectureExpandInput {
+  level: LectureExpandInputLevel;
+}
+
+export type PracticeExamKind = typeof PracticeExamKind[keyof typeof PracticeExamKind];
+
+
+export const PracticeExamKind = {
+  homework: 'homework',
+  test: 'test',
+  midterm: 'midterm',
+  final: 'final',
+} as const;
+
+export type PracticeExamStatus = typeof PracticeExamStatus[keyof typeof PracticeExamStatus];
+
+
+export const PracticeExamStatus = {
+  in_progress: 'in_progress',
+  submitted: 'submitted',
+} as const;
+
+export interface PracticeExamProblem {
+  id: number;
+  position: number;
+  prompt: string;
+  topicId: number;
+  /** @nullable */
+  topicTitle?: string | null;
+  difficulty: number;
+}
+
+export interface PracticeExam {
+  id: number;
+  assignmentId: number;
+  assignmentTitle: string;
+  kind: PracticeExamKind;
+  weekNumber: number;
+  status: PracticeExamStatus;
+  createdAt: string;
+  problems: PracticeExamProblem[];
+}
+
+export interface PracticeExamAnswerInput {
+  problemId: number;
+  answer: string;
+  trace: KeystrokeTrace;
+}
+
+export interface PracticeExamSubmitInput {
+  answers: PracticeExamAnswerInput[];
+}
+
+export interface PracticeExamProblemFeedback {
+  problemId: number;
+  prompt: string;
+  /** @nullable */
+  topicTitle?: string | null;
+  userAnswer?: string;
+  correctAnswer: string;
+  correct: boolean;
+  feedback: string;
+  explanation: string;
+}
+
+export type FocusPointerSeverity = typeof FocusPointerSeverity[keyof typeof FocusPointerSeverity];
+
+
+export const FocusPointerSeverity = {
+  critical: 'critical',
+  important: 'important',
+  minor: 'minor',
+} as const;
+
+export interface FocusPointer {
+  /** @nullable */
+  topicId?: number | null;
+  topicTitle: string;
+  severity: FocusPointerSeverity;
+  why: string;
+  action: string;
+}
+
+export interface PracticeExamResult {
+  sessionId: number;
+  score: number;
+  total: number;
+  percent: number;
+  perProblem: PracticeExamProblemFeedback[];
+  overallFeedback: string;
+  focusPointers: FocusPointer[];
+  encouragement: string;
+}
+
+export type FeedbackMessageRole = typeof FeedbackMessageRole[keyof typeof FeedbackMessageRole];
+
+
+export const FeedbackMessageRole = {
+  student: 'student',
+  coach: 'coach',
+} as const;
+
+export interface FeedbackMessage {
+  id: number;
+  role: FeedbackMessageRole;
+  content: string;
+  at: string;
+}
+
+export interface FeedbackAskInput {
+  message: string;
+}
+
+export type AssignmentReadinessKind = typeof AssignmentReadinessKind[keyof typeof AssignmentReadinessKind];
+
+
+export const AssignmentReadinessKind = {
+  homework: 'homework',
+  test: 'test',
+  midterm: 'midterm',
+  final: 'final',
+} as const;
+
+export type AssignmentReadinessLabel = typeof AssignmentReadinessLabel[keyof typeof AssignmentReadinessLabel];
+
+
+export const AssignmentReadinessLabel = {
+  not_ready: 'not_ready',
+  getting_there: 'getting_there',
+  ready: 'ready',
+  mastered: 'mastered',
+} as const;
+
+export interface AssignmentReadiness {
+  assignmentId: number;
+  assignmentTitle: string;
+  kind: AssignmentReadinessKind;
+  /** 0-100 readiness score for the graded assignment */
+  readiness: number;
+  label: AssignmentReadinessLabel;
+  summary: string;
+  pointers: FocusPointer[];
+  practiceCount: number;
+  recommendPractice: boolean;
+}
+
+export type ProfileTopicLabel = typeof ProfileTopicLabel[keyof typeof ProfileTopicLabel];
+
+
+export const ProfileTopicLabel = {
+  strong: 'strong',
+  solid: 'solid',
+  developing: 'developing',
+  weak: 'weak',
+  untested: 'untested',
+} as const;
+
+export interface ProfileTopic {
+  topicId: number;
+  topicTitle: string;
+  weekNumber: number;
+  mastery: number;
+  attempts: number;
+  label: ProfileTopicLabel;
+}
+
+export interface LearnerProfile {
+  generatedAt: string;
+  totalEvents: number;
+  practiceExamCount: number;
+  practiceCount: number;
+  gradedCount: number;
+  narrative: string;
+  strengths: string[];
+  focusAreas: FocusPointer[];
+  topics: ProfileTopic[];
+}
+

@@ -12,7 +12,11 @@ import {
   GetWeekResponse,
   GetLectureResponse,
   ListTopicsResponse,
+  ExpandLectureBody,
+  ExpandLectureResponse,
 } from "@workspace/api-zod";
+import { chatText } from "../lib/ai";
+import { logEvent } from "../lib/events";
 
 const router: IRouter = Router();
 
@@ -162,6 +166,74 @@ router.get("/course/lectures/:lectureId", async (req, res): Promise<void> => {
     return;
   }
   res.json(GetLectureResponse.parse(lecture));
+});
+
+router.post("/course/lectures/:lectureId/expand", async (req, res): Promise<void> => {
+  const raw = Array.isArray(req.params.lectureId)
+    ? req.params.lectureId[0]
+    : req.params.lectureId;
+  const lectureId = parseInt(raw ?? "", 10);
+  if (!Number.isFinite(lectureId)) {
+    res.status(400).json({ error: "invalid lectureId" });
+    return;
+  }
+  const parsed = ExpandLectureBody.safeParse(req.body);
+  if (!parsed.success) {
+    res.status(400).json({ error: parsed.error.message });
+    return;
+  }
+  const level = parsed.data.level;
+
+  const [lecture] = await db
+    .select()
+    .from(lecturesTable)
+    .where(eq(lecturesTable.id, lectureId));
+  if (!lecture) {
+    res.status(404).json({ error: "lecture not found" });
+    return;
+  }
+
+  // Already generated — return as-is (idempotent, instant).
+  const existing = level === "medium" ? lecture.bodyMedium : lecture.bodyLong;
+  if (existing && existing.trim().length > 0) {
+    res.json(ExpandLectureResponse.parse(lecture));
+    return;
+  }
+
+  const target =
+    level === "medium"
+      ? "a MEDIUM-length version: noticeably more explanation than the short version, with one or two extra worked examples, while keeping the same concepts, structure, and learning objectives"
+      : "a LONG, textbook-depth version: the fullest explanation, multiple worked examples, edge cases, and common pitfalls, while keeping the same concepts and learning objectives";
+
+  res.setTimeout(2 * 60 * 1000);
+  let generated = "";
+  try {
+    generated = await chatText(
+      "You rewrite a college critical-thinking lecture at a requested depth. Preserve the original concepts, examples, and learning objectives — only expand explanation and add examples. Output clean Markdown with headings and short paragraphs. Do not add a title line; start with the body.",
+      `Rewrite the lecture below as ${target}.\n\nLECTURE TITLE: ${lecture.title}\n\nSHORT VERSION:\n"""\n${lecture.body}\n"""`,
+    );
+  } catch {
+    generated = "";
+  }
+  if (!generated || generated.trim().length === 0) {
+    res.status(502).json({ error: "could not generate expanded lecture, please retry" });
+    return;
+  }
+
+  const [updated] = await db
+    .update(lecturesTable)
+    .set(level === "medium" ? { bodyMedium: generated } : { bodyLong: generated })
+    .where(eq(lecturesTable.id, lectureId))
+    .returning();
+
+  await logEvent({
+    kind: "lecture_expand",
+    topicId: lecture.topicId,
+    weekNumber: lecture.weekNumber,
+    detail: { lectureId, level },
+  });
+
+  res.json(ExpandLectureResponse.parse(updated ?? lecture));
 });
 
 router.get("/course/topics", async (_req, res) => {

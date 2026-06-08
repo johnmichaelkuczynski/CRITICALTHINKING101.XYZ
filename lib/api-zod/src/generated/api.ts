@@ -444,3 +444,220 @@ export const GenerateReportResponse = zod.object({
 })
 
 
+/**
+ * @summary Generate the medium or long version of a single lecture on the spot
+ */
+export const ExpandLectureParams = zod.object({
+  "lectureId": zod.coerce.number()
+})
+
+export const ExpandLectureBody = zod.object({
+  "level": zod.enum(['medium', 'long'])
+})
+
+export const ExpandLectureResponse = zod.object({
+  "id": zod.number(),
+  "topicId": zod.number(),
+  "title": zod.string(),
+  "weekNumber": zod.number(),
+  "body": zod.string().describe('Short Markdown lecture text (the baseline \/ minimum-detail version). The frontend lets users select passages and send them to the tutor.'),
+  "bodyMedium": zod.string().nullish().describe('Medium-length version with more explanation and more examples. Null if not yet generated.'),
+  "bodyLong": zod.string().nullish().describe('Long version with the most explanation and the most examples. Null if not yet generated.')
+})
+
+
+/**
+ * @summary Generate a fresh, infinite practice version of a graded assignment
+ */
+export const CreatePracticeExamParams = zod.object({
+  "assignmentId": zod.coerce.number()
+})
+
+export const CreatePracticeExamResponse = zod.object({
+  "id": zod.number(),
+  "assignmentId": zod.number(),
+  "assignmentTitle": zod.string(),
+  "kind": zod.enum(['homework', 'test', 'midterm', 'final']),
+  "weekNumber": zod.number(),
+  "status": zod.enum(['in_progress', 'submitted']),
+  "createdAt": zod.coerce.date(),
+  "problems": zod.array(zod.object({
+  "id": zod.number(),
+  "position": zod.number(),
+  "prompt": zod.string(),
+  "topicId": zod.number(),
+  "topicTitle": zod.string().nullish(),
+  "difficulty": zod.number()
+}))
+})
+
+
+/**
+ * @summary Analytics-driven readiness + surgical focus pointers for a graded assignment
+ */
+export const GetAssignmentReadinessParams = zod.object({
+  "assignmentId": zod.coerce.number()
+})
+
+export const GetAssignmentReadinessResponse = zod.object({
+  "assignmentId": zod.number(),
+  "assignmentTitle": zod.string(),
+  "kind": zod.enum(['homework', 'test', 'midterm', 'final']),
+  "readiness": zod.number().describe('0-100 readiness score for the graded assignment'),
+  "label": zod.enum(['not_ready', 'getting_there', 'ready', 'mastered']),
+  "summary": zod.string(),
+  "pointers": zod.array(zod.object({
+  "topicId": zod.number().nullish(),
+  "topicTitle": zod.string(),
+  "severity": zod.enum(['critical', 'important', 'minor']),
+  "why": zod.string(),
+  "action": zod.string()
+})),
+  "practiceCount": zod.number(),
+  "recommendPractice": zod.boolean()
+})
+
+
+/**
+ * @summary Get a practice exam session with its problems
+ */
+export const GetPracticeExamParams = zod.object({
+  "sessionId": zod.coerce.number()
+})
+
+export const GetPracticeExamResponse = zod.object({
+  "id": zod.number(),
+  "assignmentId": zod.number(),
+  "assignmentTitle": zod.string(),
+  "kind": zod.enum(['homework', 'test', 'midterm', 'final']),
+  "weekNumber": zod.number(),
+  "status": zod.enum(['in_progress', 'submitted']),
+  "createdAt": zod.coerce.date(),
+  "problems": zod.array(zod.object({
+  "id": zod.number(),
+  "position": zod.number(),
+  "prompt": zod.string(),
+  "topicId": zod.number(),
+  "topicTitle": zod.string().nullish(),
+  "difficulty": zod.number()
+}))
+})
+
+
+/**
+ * @summary Submit a practice exam; returns heavy per-problem + overall feedback and focus pointers
+ */
+export const SubmitPracticeExamParams = zod.object({
+  "sessionId": zod.coerce.number()
+})
+
+export const submitPracticeExamBodyAnswersItemTraceBulkInsertCountDefault = 0;
+export const submitPracticeExamBodyAnswersItemTraceLongestBulkInsertCharsDefault = 0;
+export const submitPracticeExamBodyAnswersItemTraceRewriteSegmentsDefault = 0;
+
+export const SubmitPracticeExamBody = zod.object({
+  "answers": zod.array(zod.object({
+  "problemId": zod.number(),
+  "answer": zod.string(),
+  "trace": zod.object({
+  "keystrokeCount": zod.number(),
+  "eraseCount": zod.number(),
+  "bulkInsertCount": zod.number().default(submitPracticeExamBodyAnswersItemTraceBulkInsertCountDefault),
+  "longestBulkInsertChars": zod.number().default(submitPracticeExamBodyAnswersItemTraceLongestBulkInsertCharsDefault),
+  "rewriteSegments": zod.number().default(submitPracticeExamBodyAnswersItemTraceRewriteSegmentsDefault),
+  "durationMs": zod.number()
+})
+}))
+})
+
+export const SubmitPracticeExamResponse = zod.object({
+  "sessionId": zod.number(),
+  "score": zod.number(),
+  "total": zod.number(),
+  "percent": zod.number(),
+  "perProblem": zod.array(zod.object({
+  "problemId": zod.number(),
+  "prompt": zod.string(),
+  "topicTitle": zod.string().nullish(),
+  "userAnswer": zod.string().optional(),
+  "correctAnswer": zod.string(),
+  "correct": zod.boolean(),
+  "feedback": zod.string(),
+  "explanation": zod.string()
+})),
+  "overallFeedback": zod.string(),
+  "focusPointers": zod.array(zod.object({
+  "topicId": zod.number().nullish(),
+  "topicTitle": zod.string(),
+  "severity": zod.enum(['critical', 'important', 'minor']),
+  "why": zod.string(),
+  "action": zod.string()
+})),
+  "encouragement": zod.string()
+})
+
+
+/**
+ * @summary Get the feedback dialogue history for a practice exam
+ */
+export const GetFeedbackMessagesParams = zod.object({
+  "sessionId": zod.coerce.number()
+})
+
+export const GetFeedbackMessagesResponseItem = zod.object({
+  "id": zod.number(),
+  "role": zod.enum(['student', 'coach']),
+  "content": zod.string(),
+  "at": zod.coerce.date()
+})
+export const GetFeedbackMessagesResponse = zod.array(GetFeedbackMessagesResponseItem)
+
+
+/**
+ * @summary Ask a follow-up question about the feedback; returns the coach's reply
+ */
+export const AskFeedbackParams = zod.object({
+  "sessionId": zod.coerce.number()
+})
+
+export const AskFeedbackBody = zod.object({
+  "message": zod.string()
+})
+
+export const AskFeedbackResponse = zod.object({
+  "id": zod.number(),
+  "role": zod.enum(['student', 'coach']),
+  "content": zod.string(),
+  "at": zod.coerce.date()
+})
+
+
+/**
+ * @summary The evolving learner profile aggregated from all logged activity
+ */
+export const GetLearnerProfileResponse = zod.object({
+  "generatedAt": zod.coerce.date(),
+  "totalEvents": zod.number(),
+  "practiceExamCount": zod.number(),
+  "practiceCount": zod.number(),
+  "gradedCount": zod.number(),
+  "narrative": zod.string(),
+  "strengths": zod.array(zod.string()),
+  "focusAreas": zod.array(zod.object({
+  "topicId": zod.number().nullish(),
+  "topicTitle": zod.string(),
+  "severity": zod.enum(['critical', 'important', 'minor']),
+  "why": zod.string(),
+  "action": zod.string()
+})),
+  "topics": zod.array(zod.object({
+  "topicId": zod.number(),
+  "topicTitle": zod.string(),
+  "weekNumber": zod.number(),
+  "mastery": zod.number(),
+  "attempts": zod.number(),
+  "label": zod.enum(['strong', 'solid', 'developing', 'weak', 'untested'])
+}))
+})
+
+
