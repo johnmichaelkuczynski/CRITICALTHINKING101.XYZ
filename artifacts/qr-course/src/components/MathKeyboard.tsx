@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Delete } from "lucide-react";
+import { Delete, Calculator, ChevronDown, ChevronUp } from "lucide-react";
 
 type SymbolKey = string | { label: string; insert: string; action?: "back" | "clear"; wide?: boolean; muted?: boolean };
 
@@ -95,9 +95,20 @@ interface MathKeyboardProps {
   onInsert: (symbol: string) => void;
   onBackspace?: () => void;
   onClear?: () => void;
+  /** When true, the whole keyboard is hidden behind a toggle and starts closed. */
+  collapsible?: boolean;
+  className?: string;
 }
 
-export function MathKeyboard({ onInsert, onBackspace, onClear }: MathKeyboardProps) {
+export function MathKeyboard({
+  onInsert,
+  onBackspace,
+  onClear,
+  collapsible = false,
+  className,
+}: MathKeyboardProps) {
+  const [open, setOpen] = useState(false);
+  const showBody = !collapsible || open;
   const [activeTabs, setActiveTabs] = useState<KeyboardKey[]>(() => {
     const saved = localStorage.getItem("math-keyboard-tabs-v2");
     if (saved) {
@@ -135,8 +146,37 @@ export function MathKeyboard({ onInsert, onBackspace, onClear }: MathKeyboardPro
     onInsert(key.insert);
   };
 
+  if (collapsible && !showBody) {
+    return (
+      <div className={className}>
+        <button
+          type="button"
+          onClick={() => setOpen(true)}
+          className="inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground px-2 py-1 rounded-md hover:bg-secondary transition-colors"
+          data-testid="button-toggle-math-keyboard"
+        >
+          <Calculator className="w-3.5 h-3.5" />
+          Math keyboard
+          <ChevronDown className="w-3 h-3" />
+        </button>
+      </div>
+    );
+  }
+
   return (
-    <div className="bg-secondary/50 border rounded-md p-3 flex flex-col gap-3">
+    <div className={`bg-secondary/50 border rounded-md p-3 flex flex-col gap-3 ${className ?? ""}`}>
+      {collapsible && (
+        <button
+          type="button"
+          onClick={() => setOpen(false)}
+          className="self-start inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground px-1 py-0.5 rounded-md transition-colors"
+          data-testid="button-toggle-math-keyboard"
+        >
+          <Calculator className="w-3.5 h-3.5" />
+          Math keyboard
+          <ChevronUp className="w-3 h-3" />
+        </button>
+      )}
       <div className="flex flex-wrap gap-1">
         {(Object.keys(KEYBOARDS) as KeyboardKey[]).map(tab => (
           <button

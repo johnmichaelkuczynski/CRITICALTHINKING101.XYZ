@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useAskTutor } from "@workspace/api-client-react";
 import { MarkdownRenderer } from "@/components/MarkdownRenderer";
+import { MathKeyboard } from "@/components/MathKeyboard";
 import { Button } from "@/components/ui/button";
 import { MessageSquare, Send } from "lucide-react";
 
@@ -27,6 +28,23 @@ export function LiveTutorPane({
   const [input, setInput] = useState("");
   const ask = useAskTutor();
   const scrollRef = useRef<HTMLDivElement | null>(null);
+  const taRef = useRef<HTMLTextAreaElement | null>(null);
+
+  function insertAtCursor(sym: string) {
+    const ta = taRef.current;
+    setInput((prev) => {
+      if (!ta) return prev + sym;
+      const start = ta.selectionStart ?? prev.length;
+      const end = ta.selectionEnd ?? prev.length;
+      const next = prev.slice(0, start) + sym + prev.slice(end);
+      requestAnimationFrame(() => {
+        ta.focus();
+        const pos = start + sym.length;
+        ta.setSelectionRange(pos, pos);
+      });
+      return next;
+    });
+  }
 
   useEffect(() => {
     scrollRef.current?.scrollTo({ top: 1e9, behavior: "smooth" });
@@ -128,24 +146,28 @@ export function LiveTutorPane({
         )}
       </div>
 
-      <div className="border-t border-border bg-background p-2 flex gap-2 items-end">
-        <textarea
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          onKeyDown={(e) => {
-            if (e.key === "Enter" && !e.shiftKey) {
-              e.preventDefault();
-              send();
-            }
-          }}
-          placeholder="Ask the tutor for a hint… (Shift+Enter for newline)"
-          rows={2}
-          className="flex-1 bg-secondary border-none rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-primary resize-y min-h-[52px] max-h-[160px]"
-          data-testid="input-live-tutor"
-        />
-        <Button onClick={send} disabled={!input.trim() || ask.isPending}>
-          <Send className="w-4 h-4" />
-        </Button>
+      <div className="border-t border-border bg-background p-2">
+        <MathKeyboard onInsert={insertAtCursor} collapsible className="mb-2" />
+        <div className="flex gap-2 items-end">
+          <textarea
+            ref={taRef}
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" && !e.shiftKey) {
+                e.preventDefault();
+                send();
+              }
+            }}
+            placeholder="Ask the tutor for a hint… (Shift+Enter for newline)"
+            rows={2}
+            className="flex-1 bg-secondary border-none rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-primary resize-y min-h-[52px] max-h-[160px]"
+            data-testid="input-live-tutor"
+          />
+          <Button onClick={send} disabled={!input.trim() || ask.isPending}>
+            <Send className="w-4 h-4" />
+          </Button>
+        </div>
       </div>
     </div>
   );
