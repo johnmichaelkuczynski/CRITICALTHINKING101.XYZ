@@ -76,7 +76,7 @@ export function Sidebar() {
             <div className="w-8 h-8 bg-primary rounded-md flex items-center justify-center text-primary-foreground font-serif font-bold text-lg">
               CT
             </div>
-            <span className="font-serif font-semibold text-lg tracking-tight">ClearThink</span>
+            <span className="font-serif font-semibold text-lg tracking-tight">Critical Thinking 101</span>
           </div>
         </Link>
       </div>

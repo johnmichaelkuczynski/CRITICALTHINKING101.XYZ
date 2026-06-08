@@ -1,4 +1,4 @@
-# 🎓 ClearThink
+# 🎓 Critical Thinking 101
 
 **The Critical Thinking Studio — Executable College Coursework**
 
@@ -6,7 +6,7 @@
 
 ## 🧩 Overview
 
-ClearThink is a full-service self-paced learning platform that delivers a complete four-week college-freshman Critical Thinking course — taught, tutored, drilled, graded, and integrity-checked entirely by AI.
+Critical Thinking 101 is a full-service self-paced learning platform that delivers a complete four-week college-freshman Critical Thinking course — taught, tutored, drilled, graded, and integrity-checked entirely by AI.
 
 It performs end-to-end coursework: depth-adjustable lectures, section-scoped Socratic tutoring, adaptive problem generation, and rubric-faithful AI grading — from a 90-second concept skim all the way to a full midterm and final with per-problem rationales.
 
@@ -51,8 +51,8 @@ Designed for **students, instructors evaluating AI-taught coursework, and academ
 
 ## 💡 Core Idea
 
-ClearThink redefines an AI-taught course as a *closed accountability loop*.
+Critical Thinking 101 redefines an AI-taught course as a *closed accountability loop*.
 
 It doesn't just teach the material and grade the homework — it **teaches**, **tutors**, **drills**, **grades**, **detects misuse**, and **proves the whole pipeline still works** with a single click. The result is a self-paced course students can actually trust to be fair, and that instructors can actually trust to be honest.
 
-**ClearThink — where the curriculum, the tutor, the grader, and the integrity check all live in one room.**
+**Critical Thinking 101 — where the curriculum, the tutor, the grader, and the integrity check all live in one room.**

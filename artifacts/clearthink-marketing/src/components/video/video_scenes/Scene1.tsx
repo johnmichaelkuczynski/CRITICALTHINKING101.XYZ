@@ -38,7 +38,7 @@ export function Scene1() {
         />
         
         <h1 className="text-[7vw] font-serif font-bold text-text-inverse leading-none tracking-tight">
-          {'ClearThink'.split('').map((char, i) => (
+          {'Critical Thinking 101'.split('').map((char, i) => (
             <motion.span
               key={i}
               className="inline-block"
@@ -46,7 +46,7 @@ export function Scene1() {
               animate={phase >= 2 ? { opacity: 1, y: 0, rotateX: 0 } : { opacity: 0, y: 40, rotateX: -40 }}
               transition={{ type: 'spring', stiffness: 400, damping: 25, delay: phase >= 2 ? i * 0.05 : 0 }}
             >
-              {char}
+              {char === ' ' ? '\u00A0' : char}
             </motion.span>
           ))}
         </h1>

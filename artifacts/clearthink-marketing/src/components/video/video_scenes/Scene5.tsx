@@ -32,7 +32,7 @@ export function Scene5() {
           animate={phase >= 1 ? { opacity: 1, y: 0 } : { opacity: 0, y: 40 }}
           transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
         >
-          ClearThink.
+          Critical Thinking 101.
         </motion.h1>
         
         <motion.p

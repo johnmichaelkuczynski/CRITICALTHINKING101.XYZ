@@ -192,7 +192,7 @@ function ClerkProviderWithRoutes() {
       localization={{
         signIn: {
           start: {
-            title: "Welcome to ClearThink",
+            title: "Welcome to Critical Thinking 101",
             subtitle: "Sign in to continue your critical thinking course",
           },
         },

@@ -128,7 +128,7 @@ router.get("/course/overview", async (_req, res) => {
 
   res.json(
     GetCourseOverviewResponse.parse({
-      title: "Critical Thinking",
+      title: "Critical Thinking 101",
       weeks,
       totals: { assignmentsCompleted, assignmentsTotal, practiceCount },
     }),

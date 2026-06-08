@@ -1,4 +1,4 @@
-# 🎓 ClearThink
+# 🎓 Critical Thinking 101
 
 **The Critical Thinking Studio — A Four-Week College Course That Teaches, Tutors, and Proofs Itself**
 
@@ -6,11 +6,11 @@
 
 ## 🧩 Overview
 
-ClearThink is a self-paced, single-user web course that delivers a full month of college-freshman Critical Thinking — taught, tutored, drilled, and graded entirely by AI, with built-in academic-integrity enforcement.
+Critical Thinking 101 is a self-paced, single-user web course that delivers a full month of college-freshman Critical Thinking — taught, tutored, drilled, and graded entirely by AI, with built-in academic-integrity enforcement.
 
 It compresses the experience of a semester-style critical-thinking class into one focused product: read the lecture at the depth you want, ask a tutor scoped to the exact section you're on, drill problems whose difficulty adapts to you in real time, and submit homework, tests, a midterm, and a final that are AI-graded with feedback and screened for AI-generated answers.
 
-Designed for **students, instructors evaluating AI-taught coursework, and researchers studying AI academic integrity**, ClearThink pairs a real curriculum with two layers of AI-authorship detection — surfacing not just *whether* the writing looks AI-generated, but whether the *act of producing it* did.
+Designed for **students, instructors evaluating AI-taught coursework, and researchers studying AI academic integrity**, Critical Thinking 101 pairs a real curriculum with two layers of AI-authorship detection — surfacing not just *whether* the writing looks AI-generated, but whether the *act of producing it* did.
 
 ---
 
@@ -57,8 +57,8 @@ Designed for **students, instructors evaluating AI-taught coursework, and resear
 
 ## 💡 Core Idea
 
-ClearThink reframes an AI-taught course as a *closed accountability loop*.
+Critical Thinking 101 reframes an AI-taught course as a *closed accountability loop*.
 
 It doesn't just teach the material and grade the homework — it **teaches**, **tutors**, **drills**, **grades**, **detects misuse**, and **proves the whole pipeline still works** with a single click. The result is a self-paced course that students can actually trust to be fair, and that instructors can actually trust to be honest.
 
-**ClearThink — where the curriculum, the tutor, the grader, and the integrity check all live in one room.**
+**Critical Thinking 101 — where the curriculum, the tutor, the grader, and the integrity check all live in one room.**

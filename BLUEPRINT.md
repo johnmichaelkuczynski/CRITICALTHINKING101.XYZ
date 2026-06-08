@@ -1,12 +1,12 @@
-# ClearThink — App Blueprint
+# Critical Thinking 101 — App Blueprint
 
-A complete architectural blueprint for the ClearThink 4-week Critical Thinking course. This document is the single reference for what the app does, how it's wired, and the contracts between pieces. For day-to-day commands and gotchas see `replit.md`.
+A complete architectural blueprint for the Critical Thinking 101 4-week Critical Thinking course. This document is the single reference for what the app does, how it's wired, and the contracts between pieces. For day-to-day commands and gotchas see `replit.md`.
 
 ---
 
 ## 1. Product summary
 
-ClearThink is a self-paced, single-user, no-login web course covering one month of college-freshman critical thinking. Students read AI-rewritten lecture notes at three lengths, ask an AI tutor scoped to the section they're reading, drill on adaptive practice problems, and submit homework / tests / midterm / final that are AI-graded and AI-detection-screened.
+Critical Thinking 101 is a self-paced, single-user, no-login web course covering one month of college-freshman critical thinking. Students read AI-rewritten lecture notes at three lengths, ask an AI tutor scoped to the section they're reading, drill on adaptive practice problems, and submit homework / tests / midterm / final that are AI-graded and AI-detection-screened.
 
 The product surface is three deployable artifacts in one pnpm monorepo:
 
