@@ -28,6 +28,7 @@ export const lecturesTable = pgTable("lectures", {
   body: text("body").notNull(),
   bodyMedium: text("body_medium"),
   bodyLong: text("body_long"),
+  starterQuestions: jsonb("starter_questions").$type<string[]>(),
 });
 
 export const assignmentsTable = pgTable("assignments", {

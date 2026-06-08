@@ -1,6 +1,7 @@
 import app from "./app";
 import { logger } from "./lib/logger";
 import { seedIfEmpty } from "./lib/seed";
+import { warmStarterQuestions } from "./routes/tutor";
 
 const rawPort = process.env["PORT"];
 
@@ -16,9 +17,11 @@ if (Number.isNaN(port) || port <= 0) {
   throw new Error(`Invalid PORT value: "${rawPort}"`);
 }
 
-seedIfEmpty().catch((err) => {
-  logger.error({ err }, "Seed failed");
-});
+seedIfEmpty()
+  .then(() => warmStarterQuestions())
+  .catch((err) => {
+    logger.error({ err }, "Seed/warm failed");
+  });
 
 app.listen(port, (err) => {
   if (err) {
