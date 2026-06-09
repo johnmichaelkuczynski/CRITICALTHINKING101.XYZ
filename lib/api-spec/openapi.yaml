@@ -531,6 +531,75 @@ paths:
               schema:
                 $ref: "#/components/schemas/LearnerProfile"
 
+  /assessments/overview:
+    get:
+      operationId: getAssessmentsOverview
+      tags: [assessments]
+      summary: Status of the 5 graded diagnostic slots, the 20% grade component, and recent self-assessments
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AssessmentsOverview"
+
+  /assessments/start:
+    post:
+      operationId: startAssessment
+      tags: [assessments]
+      summary: Start (or resume) a diagnostic assessment for a slot; generates fresh, unique questions
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/StartAssessmentInput"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DiagnosticSession"
+
+  /assessments/submit:
+    post:
+      operationId: submitAssessment
+      tags: [assessments]
+      summary: Submit answers; scores the assessment, records pass/fail, returns per-skill breakdown and written feedback
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SubmitAssessmentInput"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DiagnosticResult"
+
+  /assessments/sessions/{sessionId}:
+    get:
+      operationId: getAssessmentSession
+      tags: [assessments]
+      summary: Get a diagnostic session — questions if in progress, full graded result if submitted
+      parameters:
+        - name: sessionId
+          in: path
+          required: true
+          schema: { type: integer }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DiagnosticSessionOrResult"
+
 components:
   schemas:
     HealthStatus:
@@ -1065,3 +1134,174 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/ProfileTopic"
+
+    AssessmentSlotStatus:
+      type: object
+      required: [slot, label, description, graded, status, sessionId, scorePercent, passed, submittedAt]
+      properties:
+        slot:
+          type: string
+          enum: [baseline, module_1, module_2, module_3, module_4]
+        label: { type: string }
+        description: { type: string }
+        graded: { type: boolean }
+        status:
+          type: string
+          enum: [not_started, in_progress, submitted]
+        sessionId: { type: ["integer", "null"] }
+        scorePercent: { type: ["number", "null"] }
+        passed: { type: ["boolean", "null"] }
+        submittedAt: { type: ["string", "null"], format: date-time }
+
+    AssessmentSelfSession:
+      type: object
+      required: [sessionId, scorePercent, submittedAt]
+      properties:
+        sessionId: { type: integer }
+        scorePercent: { type: number }
+        submittedAt: { type: string, format: date-time }
+
+    AssessmentsOverview:
+      type: object
+      required: [slots, gradedTaken, gradedTotal, gradedComponent, weightPercent, selfHistory]
+      properties:
+        slots:
+          type: array
+          items:
+            $ref: "#/components/schemas/AssessmentSlotStatus"
+        gradedTaken:
+          type: integer
+          description: Number of the 5 graded slots that have been submitted
+        gradedTotal: { type: integer }
+        gradedComponent:
+          type: number
+          description: gradedTaken / gradedTotal * 100 (pass/fail, taking = pass)
+        weightPercent:
+          type: number
+          description: How much the diagnostics jointly count toward the final grade
+        selfHistory:
+          type: array
+          items:
+            $ref: "#/components/schemas/AssessmentSelfSession"
+
+    StartAssessmentInput:
+      type: object
+      required: [slot]
+      properties:
+        slot:
+          type: string
+          enum: [baseline, module_1, module_2, module_3, module_4, self]
+
+    DiagnosticQuestionPublic:
+      type: object
+      required: [id, skill, prompt, options]
+      properties:
+        id: { type: integer, description: Zero-based index of the question within the session }
+        skill: { type: string }
+        prompt: { type: string }
+        options:
+          type: array
+          items: { type: string }
+
+    DiagnosticSession:
+      type: object
+      required: [id, slot, label, graded, status, total, questions]
+      properties:
+        id: { type: integer }
+        slot:
+          type: string
+          enum: [baseline, module_1, module_2, module_3, module_4, self]
+        label: { type: string }
+        graded: { type: boolean }
+        status:
+          type: string
+          enum: [in_progress, submitted]
+        total: { type: integer }
+        questions:
+          type: array
+          items:
+            $ref: "#/components/schemas/DiagnosticQuestionPublic"
+
+    SubmitAssessmentAnswer:
+      type: object
+      required: [questionId, choice]
+      properties:
+        questionId: { type: integer }
+        choice:
+          type: integer
+          description: Selected option index, or -1 if skipped
+
+    SubmitAssessmentInput:
+      type: object
+      required: [sessionId, answers]
+      properties:
+        sessionId: { type: integer }
+        answers:
+          type: array
+          items:
+            $ref: "#/components/schemas/SubmitAssessmentAnswer"
+
+    DiagnosticSkillScore:
+      type: object
+      required: [skill, correct, total, percent]
+      properties:
+        skill: { type: string }
+        correct: { type: integer }
+        total: { type: integer }
+        percent: { type: number }
+
+    DiagnosticQuestionReview:
+      type: object
+      required: [id, skill, prompt, options, choice, correctIndex, correct, explanation]
+      properties:
+        id: { type: integer }
+        skill: { type: string }
+        prompt: { type: string }
+        options:
+          type: array
+          items: { type: string }
+        choice:
+          type: integer
+          description: The option index the student selected, or -1 if skipped
+        correctIndex: { type: integer }
+        correct: { type: boolean }
+        explanation: { type: string }
+
+    DiagnosticResult:
+      type: object
+      required: [sessionId, slot, label, graded, scorePercent, passed, skillBreakdown, feedback, questions, submittedAt]
+      properties:
+        sessionId: { type: integer }
+        slot:
+          type: string
+          enum: [baseline, module_1, module_2, module_3, module_4, self]
+        label: { type: string }
+        graded: { type: boolean }
+        scorePercent: { type: number }
+        passed: { type: ["boolean", "null"] }
+        skillBreakdown:
+          type: array
+          items:
+            $ref: "#/components/schemas/DiagnosticSkillScore"
+        feedback: { type: string }
+        questions:
+          type: array
+          items:
+            $ref: "#/components/schemas/DiagnosticQuestionReview"
+        submittedAt: { type: ["string", "null"], format: date-time }
+
+    DiagnosticSessionOrResult:
+      type: object
+      required: [status, session, result]
+      properties:
+        status:
+          type: string
+          enum: [in_progress, submitted]
+        session:
+          oneOf:
+            - $ref: "#/components/schemas/DiagnosticSession"
+            - type: "null"
+        result:
+          oneOf:
+            - $ref: "#/components/schemas/DiagnosticResult"
+            - type: "null"

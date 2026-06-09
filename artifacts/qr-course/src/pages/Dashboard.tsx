@@ -1,16 +1,22 @@
 import React from "react";
-import { useGetCourseOverview, useGetRecentActivity } from "@workspace/api-client-react";
+import {
+  useGetCourseOverview,
+  useGetRecentActivity,
+  useGetAssessmentsOverview,
+} from "@workspace/api-client-react";
 import { Layout } from "@/components/layout/Layout";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Link } from "wouter";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
-import { Sparkles } from "lucide-react";
+import { Sparkles, ClipboardCheck } from "lucide-react";
 
 export default function Dashboard() {
   const { data: overview, isLoading: isLoadingOverview } = useGetCourseOverview();
   const { data: activity, isLoading: isLoadingActivity } = useGetRecentActivity();
+  const { data: assessments } = useGetAssessmentsOverview();
+  const baseline = assessments?.slots.find((s) => s.slot === "baseline");
 
   return (
     <Layout>
@@ -21,6 +27,27 @@ export default function Dashboard() {
           </h1>
           <p className="text-muted-foreground">Welcome to your Critical Thinking workspace.</p>
         </div>
+
+        {baseline && baseline.status !== "submitted" && (
+          <div className="rounded-lg border border-amber-300 bg-amber-50 p-5 flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+            <div className="flex items-start gap-3">
+              <ClipboardCheck className="w-5 h-5 text-amber-700 mt-0.5 shrink-0" />
+              <div>
+                <div className="font-semibold text-amber-900">
+                  Start with your baseline reasoning diagnostic
+                </div>
+                <p className="text-sm text-amber-900/80">
+                  Before Module 1, take a short diagnostic of your core reasoning skills. It sets
+                  your starting point so you can measure how much you improve — and it counts
+                  toward the {assessments?.weightPercent ?? 20}% assessment portion of your grade.
+                </p>
+              </div>
+            </div>
+            <Link href="/assessments/take/baseline">
+              <Button data-testid="button-dashboard-baseline">Take baseline</Button>
+            </Link>
+          </div>
+        )}
 
         <div className="rounded-lg border border-primary/30 bg-primary/5 p-5 flex flex-col md:flex-row md:items-center md:justify-between gap-3">
           <div className="flex items-start gap-3">

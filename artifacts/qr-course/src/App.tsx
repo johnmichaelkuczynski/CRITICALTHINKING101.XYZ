@@ -31,6 +31,9 @@ import AssignmentRunner from "@/pages/AssignmentRunner";
 import Diagnostics from "@/pages/Diagnostics";
 import TopicPractice from "@/pages/TopicPractice";
 import PracticeExam from "@/pages/PracticeExam";
+import Assessments from "@/pages/Assessments";
+import AssessmentRunner from "@/pages/AssessmentRunner";
+import AssessmentResult from "@/pages/AssessmentResult";
 
 const queryClient = new QueryClient();
 
@@ -171,6 +174,9 @@ function Router() {
       <Route path="/lectures/:lectureId" component={LectureView} />
       <Route path="/practice/topic/:topicId" component={TopicPractice} />
       <Route path="/practice/exam/:assignmentId" component={PracticeExam} />
+      <Route path="/assessments" component={Assessments} />
+      <Route path="/assessments/take/:slot" component={AssessmentRunner} />
+      <Route path="/assessments/result/:id" component={AssessmentResult} />
       {/* REQUIRED — copy "/sign-in/*?" and "/sign-up/*?" verbatim. */}
       <Route path="/sign-in/*?" component={SignInPage} />
       <Route path="/sign-up/*?" component={SignUpPage} />

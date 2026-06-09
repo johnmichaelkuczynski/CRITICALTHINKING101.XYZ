@@ -190,6 +190,44 @@ export const feedbackMessagesTable = pgTable("feedback_messages", {
 });
 
 // ---------------------------------------------------------------------------
+// Diagnostic assessments: CCTST-inspired critical-reasoning skill checks.
+// Five GRADED administrations (slots: baseline, module_1..module_4) — taken =
+// pass, jointly worth 20% of the grade — plus an unlimited ungraded "self"
+// slot the student can retake at will. Every administration generates a fresh,
+// unique multiple-choice set; questions (with the correct index) live in the
+// `questions` jsonb, answers + scoring are filled in on submit.
+// ---------------------------------------------------------------------------
+export type DiagnosticQuestion = {
+  skill: string; // Analysis | Inference | Evaluation | Deduction | Induction
+  prompt: string;
+  options: string[];
+  correctIndex: number;
+  explanation: string;
+};
+
+export type DiagnosticSkillBreakdown = {
+  skill: string;
+  correct: number;
+  total: number;
+  percent: number;
+};
+
+export const diagnosticSessionsTable = pgTable("diagnostic_sessions", {
+  id: serial("id").primaryKey(),
+  // baseline | module_1 | module_2 | module_3 | module_4 | self
+  slot: text("slot").notNull(),
+  status: text("status").notNull().default("in_progress"), // in_progress | submitted
+  questions: jsonb("questions").$type<DiagnosticQuestion[]>().notNull(),
+  answers: jsonb("answers").$type<number[]>(), // selected option index per question (-1 = skipped)
+  scorePercent: doublePrecision("score_percent"),
+  skillBreakdown: jsonb("skill_breakdown").$type<DiagnosticSkillBreakdown[]>(),
+  feedback: text("feedback"),
+  passed: boolean("passed"), // graded slots only; null for self
+  startedAt: timestamp("started_at", { withTimezone: true }).notNull().defaultNow(),
+  submittedAt: timestamp("submitted_at", { withTimezone: true }),
+});
+
+// ---------------------------------------------------------------------------
 // Learner events: an append-only log of every activity the student performs,
 // forming an evolving learner profile used to drive readiness + focus pointers.
 // ---------------------------------------------------------------------------

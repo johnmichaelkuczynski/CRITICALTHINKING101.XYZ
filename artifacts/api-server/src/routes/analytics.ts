@@ -9,6 +9,7 @@ import {
   problemsTable,
   practiceExamSessionsTable,
   learnerEventsTable,
+  diagnosticSessionsTable,
 } from "@workspace/db";
 import {
   GetAnalyticsSummaryResponse,
@@ -60,15 +61,48 @@ async function topicStats() {
   });
 }
 
+// Final grade = 80% assignments (equally-weighted submitted attempts) + 20%
+// diagnostics (the 5 graded diagnostics are pass/fail; taking one = pass).
+const DIAGNOSTIC_WEIGHT = 0.2;
+const GRADED_DIAGNOSTIC_TOTAL = 5;
+async function computeGrade() {
+  const submitted = await db
+    .select()
+    .from(attemptsTable)
+    .where(eq(attemptsTable.status, "submitted"));
+  const assignmentAverage =
+    submitted.length === 0
+      ? 0
+      : submitted.reduce((s, a) => s + (a.scorePercent ?? 0), 0) / submitted.length;
+
+  const diagnosticsSubmitted = await db
+    .select()
+    .from(diagnosticSessionsTable)
+    .where(eq(diagnosticSessionsTable.status, "submitted"));
+  const gradedTaken = new Set(
+    diagnosticsSubmitted.filter((d) => d.slot !== "self").map((d) => d.slot),
+  ).size;
+  const diagnosticComponent = (gradedTaken / GRADED_DIAGNOSTIC_TOTAL) * 100;
+
+  const officialAverage =
+    (1 - DIAGNOSTIC_WEIGHT) * assignmentAverage +
+    DIAGNOSTIC_WEIGHT * diagnosticComponent;
+
+  return {
+    submittedCount: submitted.length,
+    assignmentAverage,
+    gradedTaken,
+    diagnosticComponent,
+    officialAverage,
+  };
+}
+
 router.get("/analytics/summary", async (_req, res) => {
   const submitted = await db
     .select()
     .from(attemptsTable)
     .where(eq(attemptsTable.status, "submitted"));
-  const officialAverage =
-    submitted.length === 0
-      ? 0
-      : submitted.reduce((s, a) => s + (a.scorePercent ?? 0), 0) / submitted.length;
+  const { officialAverage } = await computeGrade();
 
   const practice = await db.select().from(practiceAttemptsTable);
   const practiceCorrect = practice.filter((p) => p.correct).length;
@@ -171,10 +205,7 @@ router.post("/analytics/report", async (_req, res) => {
     .select()
     .from(attemptsTable)
     .where(eq(attemptsTable.status, "submitted"));
-  const officialAverage =
-    submitted.length === 0
-      ? 0
-      : submitted.reduce((s, a) => s + (a.scorePercent ?? 0), 0) / submitted.length;
+  const { officialAverage } = await computeGrade();
 
   const tested = topics.filter((t) => t.attempts > 0);
   tested.sort((a, b) => a.accuracy - b.accuracy);

@@ -4,3 +4,4 @@
 - [Practice-exam API](practice-exam-api.md) — create exam is POST /assignments/:id/practice (not /practice-exams); full KeystrokeTrace required; feedback is server-persisted; tutor never in graded runner.
 - [Starter questions](starter-questions.md) — cached in lectures.starter_questions, warmed on boot; must be APPLIED (quoted example) not recall; use TEXT_MODEL; regenerate by NULLing column + curl warm.
 - [Learner events vs mastery](learner-events.md) — mastery = practice_attempts + learner_events(kind='practice_exam') ONLY; log other activity with distinct kinds or you double-count; practice-exam submit is idempotent.
+- [Diagnostic assessments](diagnostic-assessments.md) — /assessments (≠ operator /diagnostics); 5 graded one-time + 1 ungraded self; 20% via computeGrade Set; no answer leakage on start; fallback bank needs ≥3 unique stems/skill.

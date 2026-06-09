@@ -537,3 +537,182 @@ export interface LearnerProfile {
   topics: ProfileTopic[];
 }
 
+export type AssessmentSlotStatusSlot = typeof AssessmentSlotStatusSlot[keyof typeof AssessmentSlotStatusSlot];
+
+
+export const AssessmentSlotStatusSlot = {
+  baseline: 'baseline',
+  module_1: 'module_1',
+  module_2: 'module_2',
+  module_3: 'module_3',
+  module_4: 'module_4',
+} as const;
+
+export type AssessmentSlotStatusStatus = typeof AssessmentSlotStatusStatus[keyof typeof AssessmentSlotStatusStatus];
+
+
+export const AssessmentSlotStatusStatus = {
+  not_started: 'not_started',
+  in_progress: 'in_progress',
+  submitted: 'submitted',
+} as const;
+
+export interface AssessmentSlotStatus {
+  slot: AssessmentSlotStatusSlot;
+  label: string;
+  description: string;
+  graded: boolean;
+  status: AssessmentSlotStatusStatus;
+  /** @nullable */
+  sessionId: number | null;
+  /** @nullable */
+  scorePercent: number | null;
+  /** @nullable */
+  passed: boolean | null;
+  /** @nullable */
+  submittedAt: string | null;
+}
+
+export interface AssessmentSelfSession {
+  sessionId: number;
+  scorePercent: number;
+  submittedAt: string;
+}
+
+export interface AssessmentsOverview {
+  slots: AssessmentSlotStatus[];
+  /** Number of the 5 graded slots that have been submitted */
+  gradedTaken: number;
+  gradedTotal: number;
+  /** gradedTaken / gradedTotal * 100 (pass/fail, taking = pass) */
+  gradedComponent: number;
+  /** How much the diagnostics jointly count toward the final grade */
+  weightPercent: number;
+  selfHistory: AssessmentSelfSession[];
+}
+
+export type StartAssessmentInputSlot = typeof StartAssessmentInputSlot[keyof typeof StartAssessmentInputSlot];
+
+
+export const StartAssessmentInputSlot = {
+  baseline: 'baseline',
+  module_1: 'module_1',
+  module_2: 'module_2',
+  module_3: 'module_3',
+  module_4: 'module_4',
+  self: 'self',
+} as const;
+
+export interface StartAssessmentInput {
+  slot: StartAssessmentInputSlot;
+}
+
+export interface DiagnosticQuestionPublic {
+  /** Zero-based index of the question within the session */
+  id: number;
+  skill: string;
+  prompt: string;
+  options: string[];
+}
+
+export type DiagnosticSessionSlot = typeof DiagnosticSessionSlot[keyof typeof DiagnosticSessionSlot];
+
+
+export const DiagnosticSessionSlot = {
+  baseline: 'baseline',
+  module_1: 'module_1',
+  module_2: 'module_2',
+  module_3: 'module_3',
+  module_4: 'module_4',
+  self: 'self',
+} as const;
+
+export type DiagnosticSessionStatus = typeof DiagnosticSessionStatus[keyof typeof DiagnosticSessionStatus];
+
+
+export const DiagnosticSessionStatus = {
+  in_progress: 'in_progress',
+  submitted: 'submitted',
+} as const;
+
+export interface DiagnosticSession {
+  id: number;
+  slot: DiagnosticSessionSlot;
+  label: string;
+  graded: boolean;
+  status: DiagnosticSessionStatus;
+  total: number;
+  questions: DiagnosticQuestionPublic[];
+}
+
+export interface SubmitAssessmentAnswer {
+  questionId: number;
+  /** Selected option index, or -1 if skipped */
+  choice: number;
+}
+
+export interface SubmitAssessmentInput {
+  sessionId: number;
+  answers: SubmitAssessmentAnswer[];
+}
+
+export interface DiagnosticSkillScore {
+  skill: string;
+  correct: number;
+  total: number;
+  percent: number;
+}
+
+export interface DiagnosticQuestionReview {
+  id: number;
+  skill: string;
+  prompt: string;
+  options: string[];
+  /** The option index the student selected, or -1 if skipped */
+  choice: number;
+  correctIndex: number;
+  correct: boolean;
+  explanation: string;
+}
+
+export type DiagnosticResultSlot = typeof DiagnosticResultSlot[keyof typeof DiagnosticResultSlot];
+
+
+export const DiagnosticResultSlot = {
+  baseline: 'baseline',
+  module_1: 'module_1',
+  module_2: 'module_2',
+  module_3: 'module_3',
+  module_4: 'module_4',
+  self: 'self',
+} as const;
+
+export interface DiagnosticResult {
+  sessionId: number;
+  slot: DiagnosticResultSlot;
+  label: string;
+  graded: boolean;
+  scorePercent: number;
+  /** @nullable */
+  passed: boolean | null;
+  skillBreakdown: DiagnosticSkillScore[];
+  feedback: string;
+  questions: DiagnosticQuestionReview[];
+  /** @nullable */
+  submittedAt: string | null;
+}
+
+export type DiagnosticSessionOrResultStatus = typeof DiagnosticSessionOrResultStatus[keyof typeof DiagnosticSessionOrResultStatus];
+
+
+export const DiagnosticSessionOrResultStatus = {
+  in_progress: 'in_progress',
+  submitted: 'submitted',
+} as const;
+
+export interface DiagnosticSessionOrResult {
+  status: DiagnosticSessionOrResultStatus;
+  session: DiagnosticSession | null;
+  result: DiagnosticResult | null;
+}
+

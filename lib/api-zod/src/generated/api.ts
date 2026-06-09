@@ -661,3 +661,144 @@ export const GetLearnerProfileResponse = zod.object({
 })
 
 
+/**
+ * @summary Status of the 5 graded diagnostic slots, the 20% grade component, and recent self-assessments
+ */
+export const GetAssessmentsOverviewResponse = zod.object({
+  "slots": zod.array(zod.object({
+  "slot": zod.enum(['baseline', 'module_1', 'module_2', 'module_3', 'module_4']),
+  "label": zod.string(),
+  "description": zod.string(),
+  "graded": zod.boolean(),
+  "status": zod.enum(['not_started', 'in_progress', 'submitted']),
+  "sessionId": zod.number().nullable(),
+  "scorePercent": zod.number().nullable(),
+  "passed": zod.boolean().nullable(),
+  "submittedAt": zod.coerce.date().nullable()
+})),
+  "gradedTaken": zod.number().describe('Number of the 5 graded slots that have been submitted'),
+  "gradedTotal": zod.number(),
+  "gradedComponent": zod.number().describe('gradedTaken \/ gradedTotal \* 100 (pass\/fail, taking = pass)'),
+  "weightPercent": zod.number().describe('How much the diagnostics jointly count toward the final grade'),
+  "selfHistory": zod.array(zod.object({
+  "sessionId": zod.number(),
+  "scorePercent": zod.number(),
+  "submittedAt": zod.coerce.date()
+}))
+})
+
+
+/**
+ * @summary Start (or resume) a diagnostic assessment for a slot; generates fresh, unique questions
+ */
+export const StartAssessmentBody = zod.object({
+  "slot": zod.enum(['baseline', 'module_1', 'module_2', 'module_3', 'module_4', 'self'])
+})
+
+export const StartAssessmentResponse = zod.object({
+  "id": zod.number(),
+  "slot": zod.enum(['baseline', 'module_1', 'module_2', 'module_3', 'module_4', 'self']),
+  "label": zod.string(),
+  "graded": zod.boolean(),
+  "status": zod.enum(['in_progress', 'submitted']),
+  "total": zod.number(),
+  "questions": zod.array(zod.object({
+  "id": zod.number().describe('Zero-based index of the question within the session'),
+  "skill": zod.string(),
+  "prompt": zod.string(),
+  "options": zod.array(zod.string())
+}))
+})
+
+
+/**
+ * @summary Submit answers; scores the assessment, records pass/fail, returns per-skill breakdown and written feedback
+ */
+export const SubmitAssessmentBody = zod.object({
+  "sessionId": zod.number(),
+  "answers": zod.array(zod.object({
+  "questionId": zod.number(),
+  "choice": zod.number().describe('Selected option index, or -1 if skipped')
+}))
+})
+
+export const SubmitAssessmentResponse = zod.object({
+  "sessionId": zod.number(),
+  "slot": zod.enum(['baseline', 'module_1', 'module_2', 'module_3', 'module_4', 'self']),
+  "label": zod.string(),
+  "graded": zod.boolean(),
+  "scorePercent": zod.number(),
+  "passed": zod.boolean().nullable(),
+  "skillBreakdown": zod.array(zod.object({
+  "skill": zod.string(),
+  "correct": zod.number(),
+  "total": zod.number(),
+  "percent": zod.number()
+})),
+  "feedback": zod.string(),
+  "questions": zod.array(zod.object({
+  "id": zod.number(),
+  "skill": zod.string(),
+  "prompt": zod.string(),
+  "options": zod.array(zod.string()),
+  "choice": zod.number().describe('The option index the student selected, or -1 if skipped'),
+  "correctIndex": zod.number(),
+  "correct": zod.boolean(),
+  "explanation": zod.string()
+})),
+  "submittedAt": zod.coerce.date().nullable()
+})
+
+
+/**
+ * @summary Get a diagnostic session — questions if in progress, full graded result if submitted
+ */
+export const GetAssessmentSessionParams = zod.object({
+  "sessionId": zod.coerce.number()
+})
+
+export const GetAssessmentSessionResponse = zod.object({
+  "status": zod.enum(['in_progress', 'submitted']),
+  "session": zod.union([zod.object({
+  "id": zod.number(),
+  "slot": zod.enum(['baseline', 'module_1', 'module_2', 'module_3', 'module_4', 'self']),
+  "label": zod.string(),
+  "graded": zod.boolean(),
+  "status": zod.enum(['in_progress', 'submitted']),
+  "total": zod.number(),
+  "questions": zod.array(zod.object({
+  "id": zod.number().describe('Zero-based index of the question within the session'),
+  "skill": zod.string(),
+  "prompt": zod.string(),
+  "options": zod.array(zod.string())
+}))
+}),zod.null()]),
+  "result": zod.union([zod.object({
+  "sessionId": zod.number(),
+  "slot": zod.enum(['baseline', 'module_1', 'module_2', 'module_3', 'module_4', 'self']),
+  "label": zod.string(),
+  "graded": zod.boolean(),
+  "scorePercent": zod.number(),
+  "passed": zod.boolean().nullable(),
+  "skillBreakdown": zod.array(zod.object({
+  "skill": zod.string(),
+  "correct": zod.number(),
+  "total": zod.number(),
+  "percent": zod.number()
+})),
+  "feedback": zod.string(),
+  "questions": zod.array(zod.object({
+  "id": zod.number(),
+  "skill": zod.string(),
+  "prompt": zod.string(),
+  "options": zod.array(zod.string()),
+  "choice": zod.number().describe('The option index the student selected, or -1 if skipped'),
+  "correctIndex": zod.number(),
+  "correct": zod.boolean(),
+  "explanation": zod.string()
+})),
+  "submittedAt": zod.coerce.date().nullable()
+}),zod.null()])
+})
+
+
