@@ -6,11 +6,10 @@ import {
   useSubmitAssessment,
   type DiagnosticSession,
   type StartAssessmentInputSlot,
-  ApiError,
 } from "@workspace/api-client-react";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { ArrowLeft, Loader2, ClipboardCheck, AlertCircle } from "lucide-react";
+import { ArrowLeft, Loader2, ClipboardCheck } from "lucide-react";
 
 const VALID_SLOTS: StartAssessmentInputSlot[] = [
   "baseline",
@@ -31,7 +30,6 @@ export default function AssessmentRunner() {
 
   const [session, setSession] = useState<DiagnosticSession | null>(null);
   const [answers, setAnswers] = useState<Record<number, number>>({});
-  const [alreadyDone, setAlreadyDone] = useState(false);
 
   const isValid = VALID_SLOTS.includes(slot);
 
@@ -41,11 +39,6 @@ export default function AssessmentRunner() {
       { data: { slot } },
       {
         onSuccess: (s) => setSession(s),
-        onError: (err) => {
-          if (err instanceof ApiError && err.status === 409) {
-            setAlreadyDone(true);
-          }
-        },
       },
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -104,25 +97,7 @@ export default function AssessmentRunner() {
           </p>
         </div>
 
-        {alreadyDone && (
-          <div className="bg-amber-50 border border-amber-200 rounded-lg p-6 flex flex-col items-start gap-3">
-            <div className="flex items-center gap-2 font-semibold text-amber-900">
-              <AlertCircle className="w-5 h-5" /> Already completed
-            </div>
-            <p className="text-sm text-amber-900">
-              This graded diagnostic is one-time only and you've already taken it. You can review
-              your results, or take the unlimited practice self-assessment instead.
-            </p>
-            <div className="flex gap-2">
-              <Button onClick={() => setLocation("/assessments")}>Back to assessments</Button>
-              <Button variant="outline" onClick={() => setLocation("/assessments/take/self")}>
-                Take practice instead
-              </Button>
-            </div>
-          </div>
-        )}
-
-        {start.isError && !alreadyDone && (
+        {start.isError && (
           <div className="text-sm text-red-800 bg-red-50 border border-red-200 rounded-md px-3 py-2">
             Couldn't start the diagnostic: {(start.error as Error).message}
           </div>

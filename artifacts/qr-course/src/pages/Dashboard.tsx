@@ -28,7 +28,7 @@ export default function Dashboard() {
           <p className="text-muted-foreground">Welcome to your Critical Thinking workspace.</p>
         </div>
 
-        {baseline && baseline.status !== "submitted" && (
+        {baseline && baseline.submittedAt == null && (
           <div className="rounded-lg border border-amber-300 bg-amber-50 p-5 flex flex-col md:flex-row md:items-center md:justify-between gap-3">
             <div className="flex items-start gap-3">
               <ClipboardCheck className="w-5 h-5 text-amber-700 mt-0.5 shrink-0" />

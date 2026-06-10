@@ -64,12 +64,13 @@ export default function Assessments() {
                 Graded checkpoints
               </h2>
               <p className="text-sm text-muted-foreground">
-                Five one-time diagnostics. Completing each one counts as a pass — together they
+                Five graded checkpoints. Completing each one counts as a pass — together they
                 are worth{" "}
                 <span className="font-semibold text-foreground">
                   {overview ? overview.weightPercent : 20}%
                 </span>{" "}
-                of your final grade. Each set of questions is unique.
+                of your final grade. Retake any of them as often as you like — each attempt
+                generates a fresh, unique set of questions.
               </p>
             </div>
             {overview && (
@@ -110,7 +111,7 @@ export default function Assessments() {
                   <p className="text-sm text-muted-foreground">{slot.description}</p>
                 </div>
                 <div className="flex items-center gap-3">
-                  {slot.status === "submitted" && slot.sessionId != null ? (
+                  {slot.submittedAt != null && slot.sessionId != null && (
                     <Button
                       variant="outline"
                       onClick={() => setLocation(`/assessments/result/${slot.sessionId}`)}
@@ -118,13 +119,27 @@ export default function Assessments() {
                     >
                       View results <ArrowRight className="w-4 h-4 ml-1" />
                     </Button>
+                  )}
+                  {slot.status === "in_progress" ? (
+                    <Button
+                      onClick={() => setLocation(`/assessments/take/${slot.slot}`)}
+                      data-testid={`button-resume-${slot.slot}`}
+                    >
+                      <PlayCircle className="w-4 h-4 mr-1" /> Resume
+                    </Button>
+                  ) : slot.submittedAt != null ? (
+                    <Button
+                      onClick={() => setLocation(`/assessments/take/${slot.slot}`)}
+                      data-testid={`button-retake-${slot.slot}`}
+                    >
+                      <Repeat className="w-4 h-4 mr-1" /> Retake
+                    </Button>
                   ) : (
                     <Button
                       onClick={() => setLocation(`/assessments/take/${slot.slot}`)}
                       data-testid={`button-take-${slot.slot}`}
                     >
-                      {slot.status === "in_progress" ? "Resume" : "Take diagnostic"}
-                      <ArrowRight className="w-4 h-4 ml-1" />
+                      Take diagnostic <ArrowRight className="w-4 h-4 ml-1" />
                     </Button>
                   )}
                 </div>

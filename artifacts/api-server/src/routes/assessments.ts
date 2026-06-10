@@ -53,22 +53,29 @@ router.get("/assessments/overview", async (_req, res): Promise<void> => {
     const sessions = all.filter((s) => s.slot === slot);
     const submitted = sessions.find((s) => s.status === "submitted");
     const inProgress = sessions.find((s) => s.status === "in_progress");
-    const chosen = submitted ?? inProgress ?? null;
-    const status = submitted ? "submitted" : inProgress ? "in_progress" : "not_started";
+    // Graded slots are re-takeable, so a slot can have BOTH a completed attempt
+    // and an active retake at the same time. Surface the active retake in `status`
+    // (so the UI offers Resume) while still exposing the latest submitted result
+    // via the score fields and `sessionId` (so "View results" keeps working).
+    // Grade credit is computed from submitted-session existence below, independent
+    // of `status`, so starting a retake never drops points already earned.
+    const status = inProgress ? "in_progress" : submitted ? "submitted" : "not_started";
     return {
       slot,
       label: meta.label,
       description: meta.description,
       graded: true,
       status: status as "not_started" | "in_progress" | "submitted",
-      sessionId: chosen?.id ?? null,
+      sessionId: submitted?.id ?? inProgress?.id ?? null,
       scorePercent: submitted?.scorePercent ?? null,
       passed: submitted?.passed ?? null,
       submittedAt: submitted?.submittedAt ?? null,
     };
   });
 
-  const gradedTaken = slots.filter((s) => s.status === "submitted").length;
+  const gradedTaken = GRADED_SLOTS.filter((slot) =>
+    all.some((s) => s.slot === slot && s.status === "submitted"),
+  ).length;
   const gradedTotal = GRADED_SLOTS.length;
   const gradedComponent = Number(((gradedTaken / gradedTotal) * 100).toFixed(1));
 
@@ -107,18 +114,16 @@ router.post("/assessments/start", async (req, res): Promise<void> => {
   }
   const graded = isGradedSlot(slot);
 
-  // Graded slots are one-time. Block a retake once submitted; resume if in progress.
+  // Graded slots are re-takeable as often as the student wants. We don't block a
+  // retake after a prior submission; we only resume an existing in-progress
+  // session so a half-finished attempt isn't orphaned. Each fresh start below
+  // creates a brand-new session with newly generated, unique questions.
   if (graded) {
     const existing = await db
       .select()
       .from(diagnosticSessionsTable)
       .where(eq(diagnosticSessionsTable.slot, slot))
       .orderBy(desc(diagnosticSessionsTable.startedAt));
-    const submitted = existing.find((s) => s.status === "submitted");
-    if (submitted) {
-      res.status(409).json({ error: "This graded diagnostic has already been completed." });
-      return;
-    }
     const inProgress = existing.find((s) => s.status === "in_progress");
     if (inProgress) {
       res.json(
@@ -193,26 +198,10 @@ router.post("/assessments/submit", async (req, res): Promise<void> => {
     return;
   }
 
-  // Guard against double-counting a graded slot if a stray second in-progress
-  // session was created (e.g. two tabs): only the first submission per graded
-  // slot is allowed.
-  if (isGradedSlot(session.slot)) {
-    const priorSubmitted = await db
-      .select({ id: diagnosticSessionsTable.id })
-      .from(diagnosticSessionsTable)
-      .where(
-        and(
-          eq(diagnosticSessionsTable.slot, session.slot),
-          eq(diagnosticSessionsTable.status, "submitted"),
-        ),
-      );
-    if (priorSubmitted.length > 0) {
-      res
-        .status(409)
-        .json({ error: "This graded diagnostic has already been completed." });
-      return;
-    }
-  }
+  // Graded slots are re-takeable: multiple submitted rows per slot are allowed.
+  // The atomic in_progress→submitted claim below still prevents a single session
+  // from being submitted twice, and the grade math dedupes graded slots by a Set,
+  // so extra submissions never inflate the 20% diagnostic component.
 
   const questions = session.questions;
   // Build a dense answer array indexed by question position; -1 = skipped.
