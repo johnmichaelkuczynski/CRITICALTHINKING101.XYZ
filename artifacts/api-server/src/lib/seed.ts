@@ -1200,6 +1200,8 @@ export async function syncCourseContent(): Promise<void> {
         bodyMedium: null,
         bodyLong: null,
         starterQuestions: null,
+        bodyPersonalized: null,
+        personalizationInstruction: null,
       })
       .where(eq(lecturesTable.id, lecture.id));
     lecturesUpdated += 1;

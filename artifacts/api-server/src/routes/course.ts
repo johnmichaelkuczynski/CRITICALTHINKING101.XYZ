@@ -14,6 +14,9 @@ import {
   ListTopicsResponse,
   ExpandLectureBody,
   ExpandLectureResponse,
+  PersonalizeLectureBody,
+  PersonalizeLectureResponse,
+  RevertLecturePersonalizationResponse,
 } from "@workspace/api-zod";
 import { chatText } from "../lib/ai";
 import { logEvent } from "../lib/events";
@@ -247,6 +250,124 @@ router.post("/course/lectures/:lectureId/expand", async (req, res): Promise<void
 
   res.json(ExpandLectureResponse.parse(updated ?? lecture));
 });
+
+router.post(
+  "/course/lectures/:lectureId/personalize",
+  async (req, res): Promise<void> => {
+    const raw = Array.isArray(req.params.lectureId)
+      ? req.params.lectureId[0]
+      : req.params.lectureId;
+    const lectureId = parseInt(raw ?? "", 10);
+    if (!Number.isFinite(lectureId)) {
+      res.status(400).json({ error: "invalid lectureId" });
+      return;
+    }
+    const parsed = PersonalizeLectureBody.safeParse(req.body);
+    if (!parsed.success) {
+      res.status(400).json({ error: parsed.error.message });
+      return;
+    }
+    const instruction = parsed.data.instruction.trim();
+    if (!instruction) {
+      res.status(400).json({ error: "instruction is required" });
+      return;
+    }
+    const selectedText = parsed.data.selectedText?.trim() || "";
+
+    const [lecture] = await db
+      .select()
+      .from(lecturesTable)
+      .where(eq(lecturesTable.id, lectureId));
+    if (!lecture) {
+      res.status(404).json({ error: "lecture not found" });
+      return;
+    }
+
+    const baseLevel = parsed.data.baseLevel ?? "short";
+    const baseBody =
+      baseLevel === "long" && lecture.bodyLong
+        ? lecture.bodyLong
+        : baseLevel === "medium" && lecture.bodyMedium
+          ? lecture.bodyMedium
+          : lecture.body;
+
+    const focus = selectedText
+      ? `\n\nThe student highlighted this passage and wants the rewrite to focus on it especially:\n"""\n${selectedText}\n"""\nApply the instruction primarily to that passage, but return the FULL lecture (the rest may stay close to the original).`
+      : "";
+
+    res.setTimeout(2 * 60 * 1000);
+    let generated = "";
+    try {
+      generated = await chatText(
+        [
+          "You personalize a college critical-thinking lecture for one student, following their instruction (e.g. 'add more examples', 'use shorter sentences', 'explain this part more clearly') while PRESERVING the lecture's concepts, learning objectives, and every real, verifiable case already present.",
+          "Apply the student's instruction faithfully, but never drop or contradict the original concepts or learning objectives, and never remove a real named example to satisfy a 'make it shorter' style request — condense around them instead.",
+          "WHENEVER POSSIBLE, keep explanation and any NEW examples grounded in real, verifiable situations from the news or well-documented history (named events, court cases, studies, companies, public figures). This course is aimed at students who will run their own ventures, so PREFER business and entrepreneurship scenarios — pricing, customers, advertising, hiring, fundraising, product and venture decisions — alongside everyday cases. Plainly hypothetical business illustrations ('Suppose a founder…') are fine, as long as you do not dress them up as real named events.",
+          "NEVER fabricate facts, statistics, quotes, dates, sources, or events. If you are not confident a real case is accurate, use a plainly hypothetical illustration instead of inventing a fake 'real' one. Accuracy matters more than having an example.",
+          "Write money amounts as words or in 'X-dollar' form (e.g. 'twelve dollars', 'a 25-dollar plan') — never as a bare dollar sign, which breaks math rendering.",
+          "Output clean Markdown with headings and short paragraphs. Do not add a title line; start with the body.",
+        ].join(" "),
+        `Rewrite the lecture below following this instruction from the student:\n"""\n${instruction}\n"""${focus}\n\nLECTURE TITLE: ${lecture.title}\n\nLECTURE TEXT:\n"""\n${baseBody}\n"""`,
+      );
+    } catch {
+      generated = "";
+    }
+    if (!generated || generated.trim().length === 0) {
+      res
+        .status(502)
+        .json({ error: "could not generate personalized lecture, please retry" });
+      return;
+    }
+
+    const [updated] = await db
+      .update(lecturesTable)
+      .set({
+        bodyPersonalized: generated,
+        personalizationInstruction: instruction,
+      })
+      .where(eq(lecturesTable.id, lectureId))
+      .returning();
+
+    await logEvent({
+      kind: "lecture_personalize",
+      topicId: lecture.topicId,
+      weekNumber: lecture.weekNumber,
+      detail: { lectureId, baseLevel, hasSelection: selectedText.length > 0 },
+    });
+
+    res.json(PersonalizeLectureResponse.parse(updated ?? lecture));
+  },
+);
+
+router.post(
+  "/course/lectures/:lectureId/personalize/revert",
+  async (req, res): Promise<void> => {
+    const raw = Array.isArray(req.params.lectureId)
+      ? req.params.lectureId[0]
+      : req.params.lectureId;
+    const lectureId = parseInt(raw ?? "", 10);
+    if (!Number.isFinite(lectureId)) {
+      res.status(400).json({ error: "invalid lectureId" });
+      return;
+    }
+    const [updated] = await db
+      .update(lecturesTable)
+      .set({ bodyPersonalized: null, personalizationInstruction: null })
+      .where(eq(lecturesTable.id, lectureId))
+      .returning();
+    if (!updated) {
+      res.status(404).json({ error: "lecture not found" });
+      return;
+    }
+    await logEvent({
+      kind: "lecture_personalize_revert",
+      topicId: updated.topicId,
+      weekNumber: updated.weekNumber,
+      detail: { lectureId },
+    });
+    res.json(RevertLecturePersonalizationResponse.parse(updated));
+  },
+);
 
 router.get("/course/topics", async (_req, res) => {
   const rows = await db

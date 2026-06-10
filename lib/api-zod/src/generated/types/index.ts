@@ -53,6 +53,8 @@ export * from './learnerProfile';
 export * from './lecture';
 export * from './lectureExpandInput';
 export * from './lectureExpandInputLevel';
+export * from './lecturePersonalizeInput';
+export * from './lecturePersonalizeInputBaseLevel';
 export * from './lectureRef';
 export * from './nextProblemInput';
 export * from './practiceAnswerInput';

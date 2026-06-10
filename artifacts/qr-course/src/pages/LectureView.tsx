@@ -3,6 +3,8 @@ import {
   useGetLecture,
   useAskTutor,
   useExpandLecture,
+  usePersonalizeLecture,
+  useRevertLecturePersonalization,
   useStartPracticeSession,
   useNextPracticeProblem,
   useGradePracticeAnswer,
@@ -20,9 +22,18 @@ import { AnswerInput } from "@/components/AnswerInput";
 import { StarterQuestionCard } from "@/components/StarterQuestionCard";
 import { MathKeyboard } from "@/components/MathKeyboard";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, MessageSquare, Sparkles, Send, X, RefreshCw, CheckCircle2, XCircle, Loader2 } from "lucide-react";
+import { ArrowLeft, MessageSquare, Sparkles, Send, X, RefreshCw, CheckCircle2, XCircle, Loader2, Wand2, Undo2, Pencil } from "lucide-react";
 
 type ChatMsg = { role: "user" | "tutor"; text: string };
+
+type DepthLevel = "short" | "medium" | "long";
+type ViewLevel = DepthLevel | "personalized";
+
+const REWRITE_PRESETS = [
+  "Add more examples on this point",
+  "Use shorter, simpler sentences",
+  "Explain the highlighted part more clearly",
+] as const;
 
 export default function LectureView() {
   const params = useParams();
@@ -55,20 +66,38 @@ export default function LectureView() {
   }, []);
 
   const [tab, setTab] = useState<"tutor" | "practice">("tutor");
-  const [level, setLevel] = useState<"short" | "medium" | "long">("short");
+  const [level, setLevel] = useState<ViewLevel>("short");
 
   const qc = useQueryClient();
   const expand = useExpandLecture();
   const [expandError, setExpandError] = useState<string | null>(null);
 
+  // ---- personalization ("My version") ----
+  const personalize = usePersonalizeLecture();
+  const revert = useRevertLecturePersonalization();
+  const [rewriteOpen, setRewriteOpen] = useState(false);
+  const [instruction, setInstruction] = useState("");
+  const [rewriteError, setRewriteError] = useState<string | null>(null);
+
+  const hasPersonalized = !!lecture?.bodyPersonalized;
+
+  // When a lecture loads with a personalized version, show it by default.
+  useEffect(() => {
+    if (lecture?.bodyPersonalized) setLevel("personalized");
+    else setLevel("short");
+    setRewriteOpen(false);
+    setInstruction("");
+    setRewriteError(null);
+  }, [lecture?.id, lecture?.bodyPersonalized]);
+
   const availableLevels = useMemo(() => {
-    const out: Array<"short" | "medium" | "long"> = ["short"];
+    const out: DepthLevel[] = ["short"];
     if (lecture?.bodyMedium) out.push("medium");
     if (lecture?.bodyLong) out.push("long");
     return out;
   }, [lecture?.bodyMedium, lecture?.bodyLong]);
 
-  function selectLevel(lvl: "short" | "medium" | "long") {
+  function selectLevel(lvl: DepthLevel) {
     setExpandError(null);
     if (lvl === "short" || availableLevels.includes(lvl)) {
       setLevel(lvl);
@@ -91,14 +120,61 @@ export default function LectureView() {
     );
   }
 
+  function submitRewrite() {
+    if (lecture == null || personalize.isPending) return;
+    const text = instruction.trim();
+    if (!text) return;
+    setRewriteError(null);
+    // Rewrite from whatever real depth the student is currently reading.
+    const baseLevel: DepthLevel =
+      level === "medium" || level === "long" ? level : "short";
+    personalize.mutate(
+      {
+        lectureId: lecture.id,
+        data: {
+          instruction: text,
+          baseLevel,
+          selectedText: selectedText || undefined,
+        },
+      },
+      {
+        onSuccess: async () => {
+          await qc.invalidateQueries({ queryKey: getGetLectureQueryKey(lecture.id) });
+          setLevel("personalized");
+          setRewriteOpen(false);
+        },
+        onError: (e) =>
+          setRewriteError(
+            `Couldn't rewrite the lecture: ${(e as Error).message}. Try again.`,
+          ),
+      },
+    );
+  }
+
+  function revertPersonalization() {
+    if (lecture == null || revert.isPending) return;
+    setRewriteError(null);
+    revert.mutate(
+      { lectureId: lecture.id },
+      {
+        onSuccess: async () => {
+          await qc.invalidateQueries({ queryKey: getGetLectureQueryKey(lecture.id) });
+          setLevel("short");
+        },
+      },
+    );
+  }
+
   const expandingLevel = expand.isPending ? expand.variables?.data.level : null;
 
   const activeBody =
-    level === "long" && lecture?.bodyLong
-      ? lecture.bodyLong
-      : level === "medium" && lecture?.bodyMedium
-        ? lecture.bodyMedium
-        : (lecture?.body ?? "");
+    level === "personalized" && lecture?.bodyPersonalized
+      ? lecture.bodyPersonalized
+      : level === "long" && lecture?.bodyLong
+        ? lecture.bodyLong
+        : level === "medium" && lecture?.bodyMedium
+          ? lecture.bodyMedium
+          : (lecture?.body ?? "");
 
   return (
     <Layout>
@@ -132,40 +208,177 @@ export default function LectureView() {
                   <div className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
                     Week {lecture.weekNumber}
                   </div>
-                  <div className="inline-flex rounded-md border border-border overflow-hidden text-xs">
-                    {(["short", "medium", "long"] as const).map((lvl) => {
-                      const generated = availableLevels.includes(lvl);
-                      const active = level === lvl;
-                      const isExpanding = expandingLevel === lvl;
-                      const disabled = expand.isPending;
-                      return (
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <div className="inline-flex rounded-md border border-border overflow-hidden text-xs">
+                      {(["short", "medium", "long"] as const).map((lvl) => {
+                        const generated = availableLevels.includes(lvl);
+                        const active = level === lvl;
+                        const isExpanding = expandingLevel === lvl;
+                        const disabled = expand.isPending;
+                        return (
+                          <button
+                            key={lvl}
+                            onClick={() => selectLevel(lvl)}
+                            disabled={disabled}
+                            title={
+                              generated || lvl === "short"
+                                ? `${lvl[0].toUpperCase() + lvl.slice(1)} version`
+                                : `Generate the ${lvl} version of this lecture now`
+                            }
+                            className={`px-3 py-1.5 font-medium uppercase tracking-wider transition-colors inline-flex items-center gap-1 ${
+                              active
+                                ? "bg-primary text-primary-foreground"
+                                : "bg-background hover:bg-secondary text-foreground"
+                            } ${disabled ? "opacity-60 cursor-wait" : ""}`}
+                            data-testid={`button-level-${lvl}`}
+                          >
+                            {isExpanding && <Loader2 className="w-3 h-3 animate-spin" />}
+                            {lvl}
+                            {!generated && lvl !== "short" && !isExpanding && (
+                              <Sparkles className="w-3 h-3 opacity-60" />
+                            )}
+                          </button>
+                        );
+                      })}
+                      {hasPersonalized && (
                         <button
-                          key={lvl}
-                          onClick={() => selectLevel(lvl)}
-                          disabled={disabled}
-                          title={
-                            generated || lvl === "short"
-                              ? `${lvl[0].toUpperCase() + lvl.slice(1)} version`
-                              : `Generate the ${lvl} version of this lecture now`
-                          }
-                          className={`px-3 py-1.5 font-medium uppercase tracking-wider transition-colors inline-flex items-center gap-1 ${
-                            active
+                          onClick={() => setLevel("personalized")}
+                          title="Your personalized version of this lecture"
+                          className={`px-3 py-1.5 font-medium uppercase tracking-wider transition-colors inline-flex items-center gap-1 border-l border-border ${
+                            level === "personalized"
                               ? "bg-primary text-primary-foreground"
                               : "bg-background hover:bg-secondary text-foreground"
-                          } ${disabled ? "opacity-60 cursor-wait" : ""}`}
-                          data-testid={`button-level-${lvl}`}
+                          }`}
+                          data-testid="button-level-personalized"
                         >
-                          {isExpanding && <Loader2 className="w-3 h-3 animate-spin" />}
-                          {lvl}
-                          {!generated && lvl !== "short" && !isExpanding && (
-                            <Sparkles className="w-3 h-3 opacity-60" />
-                          )}
+                          <Pencil className="w-3 h-3" />
+                          My version
                         </button>
-                      );
-                    })}
+                      )}
+                    </div>
+                    <button
+                      onClick={() => {
+                        setRewriteError(null);
+                        setRewriteOpen((v) => !v);
+                      }}
+                      className={`px-3 py-1.5 rounded-md border text-xs font-medium inline-flex items-center gap-1 transition-colors ${
+                        rewriteOpen
+                          ? "border-primary text-primary bg-primary/5"
+                          : "border-border text-foreground hover:bg-secondary"
+                      }`}
+                      data-testid="button-rewrite-toggle"
+                    >
+                      <Wand2 className="w-3 h-3" />
+                      Rewrite this lecture
+                    </button>
                   </div>
                 </div>
               </header>
+
+              {rewriteOpen && (
+                <div className="mb-4 rounded-lg border border-primary/30 bg-primary/5 p-4">
+                  <div className="text-sm font-semibold text-primary mb-1 flex items-center gap-1.5">
+                    <Wand2 className="w-4 h-4" /> Rewrite this lecture your way
+                  </div>
+                  <p className="text-xs text-muted-foreground mb-3">
+                    Tell the app how you'd like this lecture rewritten. It keeps the same
+                    concepts and real examples — it just adapts the explanation to you.
+                    {selectedText
+                      ? " Your highlighted passage will be the focus."
+                      : ""}
+                  </p>
+                  {selectedText && (
+                    <div className="mb-3 text-xs text-amber-900 bg-amber-50 border border-amber-200 rounded-md px-2 py-1.5">
+                      <span className="font-semibold">Focusing on:</span>{" "}
+                      <span className="italic line-clamp-2">"{selectedText}"</span>
+                    </div>
+                  )}
+                  <div className="flex flex-wrap gap-1.5 mb-3">
+                    {REWRITE_PRESETS.map((p) => (
+                      <button
+                        key={p}
+                        onClick={() => setInstruction(p)}
+                        disabled={personalize.isPending}
+                        className="px-2.5 py-1 rounded-full border border-border bg-background text-xs hover:bg-secondary disabled:opacity-60"
+                        data-testid={`button-rewrite-preset-${p.slice(0, 12).replace(/\s+/g, "-").toLowerCase()}`}
+                      >
+                        {p}
+                      </button>
+                    ))}
+                  </div>
+                  <textarea
+                    value={instruction}
+                    onChange={(e) => setInstruction(e.target.value)}
+                    placeholder="e.g. Add a worked example for each fallacy, and use simpler words."
+                    rows={3}
+                    disabled={personalize.isPending}
+                    className="w-full bg-background border border-border rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-primary resize-y"
+                    data-testid="input-rewrite-instruction"
+                  />
+                  {rewriteError && (
+                    <div className="mt-2 text-xs text-red-800 bg-red-50 border border-red-200 rounded-md px-3 py-2">
+                      {rewriteError}
+                    </div>
+                  )}
+                  <div className="mt-3 flex items-center justify-end gap-2">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setRewriteOpen(false)}
+                      disabled={personalize.isPending}
+                    >
+                      Cancel
+                    </Button>
+                    <Button
+                      size="sm"
+                      onClick={submitRewrite}
+                      disabled={!instruction.trim() || personalize.isPending}
+                      data-testid="button-rewrite-submit"
+                    >
+                      {personalize.isPending ? (
+                        <>
+                          <Loader2 className="w-4 h-4 mr-1 animate-spin" /> Rewriting…
+                        </>
+                      ) : (
+                        <>
+                          <Wand2 className="w-4 h-4 mr-1" /> Rewrite
+                        </>
+                      )}
+                    </Button>
+                  </div>
+                </div>
+              )}
+
+              {level === "personalized" && hasPersonalized && (
+                <div className="mb-4 flex items-start justify-between gap-3 rounded-md border border-primary/30 bg-primary/5 px-3 py-2">
+                  <div className="text-xs text-foreground min-w-0">
+                    <span className="font-semibold text-primary">Your version</span>
+                    {lecture.personalizationInstruction && (
+                      <span className="text-muted-foreground">
+                        {" "}
+                        — rewritten with:{" "}
+                        <span className="italic">
+                          "{lecture.personalizationInstruction}"
+                        </span>
+                      </span>
+                    )}
+                  </div>
+                  <button
+                    onClick={revertPersonalization}
+                    disabled={revert.isPending}
+                    className="shrink-0 text-xs text-muted-foreground hover:text-foreground inline-flex items-center gap-1 disabled:opacity-60"
+                    data-testid="button-revert-personalization"
+                  >
+                    {revert.isPending ? (
+                      <Loader2 className="w-3 h-3 animate-spin" />
+                    ) : (
+                      <Undo2 className="w-3 h-3" />
+                    )}
+                    Revert to original
+                  </button>
+                </div>
+              )}
+
               {expandError && (
                 <div className="mb-3 text-xs text-red-800 bg-red-50 border border-red-200 rounded-md px-3 py-2">
                   {expandError}

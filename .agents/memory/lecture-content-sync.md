@@ -18,8 +18,12 @@ an already-seeded database. `syncCourseContent()` (runs every boot:
 changes to the live DB.
 
 **Rule:** when you change a lecture body/title, the sync must UPDATE the lecture
-**and NULL `bodyMedium`, `bodyLong`, `starterQuestions`** so the stale cached
-depth-rewrites + starters regenerate from the new source.
+**and NULL `bodyMedium`, `bodyLong`, `starterQuestions`, `bodyPersonalized`,
+`personalizationInstruction`** so the stale cached depth-rewrites, starters, and
+the student's "My version" rewrite all regenerate/clear from the new source.
+(`bodyPersonalized`/`personalizationInstruction` back the in-app "Rewrite this
+lecture" feature — a one-per-lecture student rewrite shown as a "My version"
+depth option; a lingering personalization on top of changed source is wrong.)
 
 **Why:** otherwise the Short version updates but expanded views and starter
 questions keep serving old content.

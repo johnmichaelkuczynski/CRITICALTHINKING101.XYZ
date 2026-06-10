@@ -414,6 +414,48 @@ paths:
               schema:
                 $ref: "#/components/schemas/Lecture"
 
+  /course/lectures/{lectureId}/personalize:
+    post:
+      operationId: personalizeLecture
+      tags: [course]
+      summary: Generate and persist a student's personalized rewrite of a lecture
+      parameters:
+        - name: lectureId
+          in: path
+          required: true
+          schema: { type: integer }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LecturePersonalizeInput"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Lecture"
+
+  /course/lectures/{lectureId}/personalize/revert:
+    post:
+      operationId: revertLecturePersonalization
+      tags: [course]
+      summary: Clear a lecture's personalized rewrite and return to the original versions
+      parameters:
+        - name: lectureId
+          in: path
+          required: true
+          schema: { type: integer }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Lecture"
+
   /assignments/{assignmentId}/practice:
     post:
       operationId: createPracticeExam
@@ -653,6 +695,12 @@ components:
         bodyLong:
           type: ["string", "null"]
           description: Long version with the most explanation and the most examples. Null if not yet generated.
+        bodyPersonalized:
+          type: ["string", "null"]
+          description: The student's own personalized rewrite of this lecture, generated from a chosen base depth plus a free-text instruction. Null when there is no active personalization (reverted or never created).
+        personalizationInstruction:
+          type: ["string", "null"]
+          description: The free-text instruction the student used to produce the current personalized version. Null when there is no active personalization.
 
     Week:
       type: object
@@ -984,6 +1032,22 @@ components:
         level:
           type: string
           enum: [medium, long]
+
+    LecturePersonalizeInput:
+      type: object
+      required: [instruction]
+      properties:
+        instruction:
+          type: string
+          minLength: 1
+          description: Free-text instruction for how to rewrite the lecture (e.g. "add more examples", "use shorter sentences").
+        baseLevel:
+          type: string
+          enum: [short, medium, long]
+          description: Which existing depth to rewrite from. Defaults to short. If the chosen depth has not been generated yet, the short version is used.
+        selectedText:
+          type: ["string", "null"]
+          description: An optional highlighted passage to focus the rewrite on.
 
     PracticeExam:
       type: object

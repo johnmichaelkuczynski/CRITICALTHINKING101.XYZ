@@ -23,4 +23,14 @@ export interface Lecture {
      * @nullable
      */
   bodyLong?: string | null;
+  /**
+     * The student's own personalized rewrite of this lecture, generated from a chosen base depth plus a free-text instruction. Null when there is no active personalization (reverted or never created).
+     * @nullable
+     */
+  bodyPersonalized?: string | null;
+  /**
+     * The free-text instruction the student used to produce the current personalized version. Null when there is no active personalization.
+     * @nullable
+     */
+  personalizationInstruction?: string | null;
 }

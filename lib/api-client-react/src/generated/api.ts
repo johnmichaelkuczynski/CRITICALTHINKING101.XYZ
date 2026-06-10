@@ -43,6 +43,7 @@ import type {
   LearnerProfile,
   Lecture,
   LectureExpandInput,
+  LecturePersonalizeInput,
   NextProblemInput,
   PracticeAnswerInput,
   PracticeExam,
@@ -1706,6 +1707,148 @@ export const useExpandLecture = <TError = ErrorType<unknown>,
         TContext
       > => {
       return useMutation(getExpandLectureMutationOptions(options));
+    }
+
+export const getPersonalizeLectureUrl = (lectureId: number,) => {
+
+
+
+
+  return `/api/course/lectures/${lectureId}/personalize`
+}
+
+/**
+ * @summary Generate and persist a student's personalized rewrite of a lecture
+ */
+export const personalizeLecture = async (lectureId: number,
+    lecturePersonalizeInput: LecturePersonalizeInput, options?: RequestInit): Promise<Lecture> => {
+
+  return customFetch<Lecture>(getPersonalizeLectureUrl(lectureId),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      lecturePersonalizeInput,)
+  }
+);}
+
+
+
+
+export const getPersonalizeLectureMutationOptions = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof personalizeLecture>>, TError,{lectureId: number;data: BodyType<LecturePersonalizeInput>}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof personalizeLecture>>, TError,{lectureId: number;data: BodyType<LecturePersonalizeInput>}, TContext> => {
+
+const mutationKey = ['personalizeLecture'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof personalizeLecture>>, {lectureId: number;data: BodyType<LecturePersonalizeInput>}> = (props) => {
+          const {lectureId,data} = props ?? {};
+
+          return  personalizeLecture(lectureId,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type PersonalizeLectureMutationResult = NonNullable<Awaited<ReturnType<typeof personalizeLecture>>>
+    export type PersonalizeLectureMutationBody = BodyType<LecturePersonalizeInput>
+    export type PersonalizeLectureMutationError = ErrorType<unknown>
+
+    /**
+ * @summary Generate and persist a student's personalized rewrite of a lecture
+ */
+export const usePersonalizeLecture = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof personalizeLecture>>, TError,{lectureId: number;data: BodyType<LecturePersonalizeInput>}, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof personalizeLecture>>,
+        TError,
+        {lectureId: number;data: BodyType<LecturePersonalizeInput>},
+        TContext
+      > => {
+      return useMutation(getPersonalizeLectureMutationOptions(options));
+    }
+
+export const getRevertLecturePersonalizationUrl = (lectureId: number,) => {
+
+
+
+
+  return `/api/course/lectures/${lectureId}/personalize/revert`
+}
+
+/**
+ * @summary Clear a lecture's personalized rewrite and return to the original versions
+ */
+export const revertLecturePersonalization = async (lectureId: number, options?: RequestInit): Promise<Lecture> => {
+
+  return customFetch<Lecture>(getRevertLecturePersonalizationUrl(lectureId),
+  {
+    ...options,
+    method: 'POST'
+
+
+  }
+);}
+
+
+
+
+export const getRevertLecturePersonalizationMutationOptions = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof revertLecturePersonalization>>, TError,{lectureId: number}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof revertLecturePersonalization>>, TError,{lectureId: number}, TContext> => {
+
+const mutationKey = ['revertLecturePersonalization'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof revertLecturePersonalization>>, {lectureId: number}> = (props) => {
+          const {lectureId} = props ?? {};
+
+          return  revertLecturePersonalization(lectureId,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type RevertLecturePersonalizationMutationResult = NonNullable<Awaited<ReturnType<typeof revertLecturePersonalization>>>
+
+    export type RevertLecturePersonalizationMutationError = ErrorType<unknown>
+
+    /**
+ * @summary Clear a lecture's personalized rewrite and return to the original versions
+ */
+export const useRevertLecturePersonalization = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof revertLecturePersonalization>>, TError,{lectureId: number}, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof revertLecturePersonalization>>,
+        TError,
+        {lectureId: number},
+        TContext
+      > => {
+      return useMutation(getRevertLecturePersonalizationMutationOptions(options));
     }
 
 export const getCreatePracticeExamUrl = (assignmentId: number,) => {

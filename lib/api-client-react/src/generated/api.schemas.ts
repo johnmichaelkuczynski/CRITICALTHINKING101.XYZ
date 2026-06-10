@@ -35,6 +35,16 @@ export interface Lecture {
      * @nullable
      */
   bodyLong?: string | null;
+  /**
+     * The student's own personalized rewrite of this lecture, generated from a chosen base depth plus a free-text instruction. Null when there is no active personalization (reverted or never created).
+     * @nullable
+     */
+  bodyPersonalized?: string | null;
+  /**
+     * The free-text instruction the student used to produce the current personalized version. Null when there is no active personalization.
+     * @nullable
+     */
+  personalizationInstruction?: string | null;
 }
 
 export interface LectureRef {
@@ -361,6 +371,33 @@ export const LectureExpandInputLevel = {
 
 export interface LectureExpandInput {
   level: LectureExpandInputLevel;
+}
+
+/**
+ * Which existing depth to rewrite from. Defaults to short. If the chosen depth has not been generated yet, the short version is used.
+ */
+export type LecturePersonalizeInputBaseLevel = typeof LecturePersonalizeInputBaseLevel[keyof typeof LecturePersonalizeInputBaseLevel];
+
+
+export const LecturePersonalizeInputBaseLevel = {
+  short: 'short',
+  medium: 'medium',
+  long: 'long',
+} as const;
+
+export interface LecturePersonalizeInput {
+  /**
+     * Free-text instruction for how to rewrite the lecture (e.g. "add more examples", "use shorter sentences").
+     * @minLength 1
+     */
+  instruction: string;
+  /** Which existing depth to rewrite from. Defaults to short. If the chosen depth has not been generated yet, the short version is used. */
+  baseLevel?: LecturePersonalizeInputBaseLevel;
+  /**
+     * An optional highlighted passage to focus the rewrite on.
+     * @nullable
+     */
+  selectedText?: string | null;
 }
 
 export type PracticeExamKind = typeof PracticeExamKind[keyof typeof PracticeExamKind];

@@ -100,7 +100,9 @@ export const GetLectureResponse = zod.object({
   "weekNumber": zod.number(),
   "body": zod.string().describe('Short Markdown lecture text (the baseline \/ minimum-detail version). The frontend lets users select passages and send them to the tutor.'),
   "bodyMedium": zod.string().nullish().describe('Medium-length version with more explanation and more examples. Null if not yet generated.'),
-  "bodyLong": zod.string().nullish().describe('Long version with the most explanation and the most examples. Null if not yet generated.')
+  "bodyLong": zod.string().nullish().describe('Long version with the most explanation and the most examples. Null if not yet generated.'),
+  "bodyPersonalized": zod.string().nullish().describe('The student\'s own personalized rewrite of this lecture, generated from a chosen base depth plus a free-text instruction. Null when there is no active personalization (reverted or never created).'),
+  "personalizationInstruction": zod.string().nullish().describe('The free-text instruction the student used to produce the current personalized version. Null when there is no active personalization.')
 })
 
 
@@ -492,7 +494,58 @@ export const ExpandLectureResponse = zod.object({
   "weekNumber": zod.number(),
   "body": zod.string().describe('Short Markdown lecture text (the baseline \/ minimum-detail version). The frontend lets users select passages and send them to the tutor.'),
   "bodyMedium": zod.string().nullish().describe('Medium-length version with more explanation and more examples. Null if not yet generated.'),
-  "bodyLong": zod.string().nullish().describe('Long version with the most explanation and the most examples. Null if not yet generated.')
+  "bodyLong": zod.string().nullish().describe('Long version with the most explanation and the most examples. Null if not yet generated.'),
+  "bodyPersonalized": zod.string().nullish().describe('The student\'s own personalized rewrite of this lecture, generated from a chosen base depth plus a free-text instruction. Null when there is no active personalization (reverted or never created).'),
+  "personalizationInstruction": zod.string().nullish().describe('The free-text instruction the student used to produce the current personalized version. Null when there is no active personalization.')
+})
+
+
+/**
+ * @summary Generate and persist a student's personalized rewrite of a lecture
+ */
+export const PersonalizeLectureParams = zod.object({
+  "lectureId": zod.coerce.number()
+})
+
+
+
+
+export const PersonalizeLectureBody = zod.object({
+  "instruction": zod.string().min(1).describe('Free-text instruction for how to rewrite the lecture (e.g. \"add more examples\", \"use shorter sentences\").'),
+  "baseLevel": zod.enum(['short', 'medium', 'long']).optional().describe('Which existing depth to rewrite from. Defaults to short. If the chosen depth has not been generated yet, the short version is used.'),
+  "selectedText": zod.string().nullish().describe('An optional highlighted passage to focus the rewrite on.')
+})
+
+export const PersonalizeLectureResponse = zod.object({
+  "id": zod.number(),
+  "topicId": zod.number(),
+  "title": zod.string(),
+  "weekNumber": zod.number(),
+  "body": zod.string().describe('Short Markdown lecture text (the baseline \/ minimum-detail version). The frontend lets users select passages and send them to the tutor.'),
+  "bodyMedium": zod.string().nullish().describe('Medium-length version with more explanation and more examples. Null if not yet generated.'),
+  "bodyLong": zod.string().nullish().describe('Long version with the most explanation and the most examples. Null if not yet generated.'),
+  "bodyPersonalized": zod.string().nullish().describe('The student\'s own personalized rewrite of this lecture, generated from a chosen base depth plus a free-text instruction. Null when there is no active personalization (reverted or never created).'),
+  "personalizationInstruction": zod.string().nullish().describe('The free-text instruction the student used to produce the current personalized version. Null when there is no active personalization.')
+})
+
+
+/**
+ * @summary Clear a lecture's personalized rewrite and return to the original versions
+ */
+export const RevertLecturePersonalizationParams = zod.object({
+  "lectureId": zod.coerce.number()
+})
+
+export const RevertLecturePersonalizationResponse = zod.object({
+  "id": zod.number(),
+  "topicId": zod.number(),
+  "title": zod.string(),
+  "weekNumber": zod.number(),
+  "body": zod.string().describe('Short Markdown lecture text (the baseline \/ minimum-detail version). The frontend lets users select passages and send them to the tutor.'),
+  "bodyMedium": zod.string().nullish().describe('Medium-length version with more explanation and more examples. Null if not yet generated.'),
+  "bodyLong": zod.string().nullish().describe('Long version with the most explanation and the most examples. Null if not yet generated.'),
+  "bodyPersonalized": zod.string().nullish().describe('The student\'s own personalized rewrite of this lecture, generated from a chosen base depth plus a free-text instruction. Null when there is no active personalization (reverted or never created).'),
+  "personalizationInstruction": zod.string().nullish().describe('The free-text instruction the student used to produce the current personalized version. Null when there is no active personalization.')
 })
 
 
