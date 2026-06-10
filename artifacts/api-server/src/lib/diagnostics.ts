@@ -4,7 +4,7 @@
 // five GRADED administrations (baseline + end of each module) and the unlimited
 // ungraded self-assessment.
 import type { DiagnosticQuestion } from "@workspace/db";
-import { chatJson, chatText } from "./ai";
+import { chatJson, chatText, FAST_MODEL } from "./ai";
 import { APPLIED_RULES, violatesStandard, isCleanText } from "./questions";
 
 // The CCTST-style skill scales we measure. Two questions per skill = a 10-item
@@ -347,63 +347,96 @@ function fallbackFor(skill: string, used: Set<string>): DiagnosticQuestion {
   return chosen;
 }
 
-/**
- * Generate a fresh, unique set of diagnostic questions (2 per skill). `priorStems`
- * are normalized stems from every previously generated administration so the model
- * avoids reusing scenarios; any leftover gaps are backfilled from the static bank.
- */
-export async function generateDiagnostic(
-  priorStems: string[],
-): Promise<DiagnosticQuestion[]> {
-  const blueprint = DIAGNOSTIC_SKILLS.flatMap((skill) =>
-    Array.from({ length: QUESTIONS_PER_SKILL }, () => skill),
-  );
-  const priorSet = new Set(priorStems.map(normStem));
+const GEN_SYSTEM_PROMPT =
+  "You are a psychometrician authoring a CCTST-style (California Critical Thinking Skills Test) diagnostic. " +
+  "Produce BRAND-NEW four-option multiple-choice questions that measure critical-reasoning skill, NOT course-specific recall. " +
+  "Exactly one option is correct; the other three are plausible distractors. Place the correct option at a varied, random index (not always the first). " +
+  "Every question targets the single skill scale provided. " +
+  APPLIED_RULES +
+  "\n\nAdditional rules for this diagnostic:\n" +
+  "- Every question must be answerable by anyone with strong critical-thinking skills, independent of any specific lecture.\n" +
+  "- `correctIndex` is the zero-based index of the correct option (0-3).\n" +
+  "- `explanation` (1-2 sentences) says why the correct option is right and why the reasoning works.\n" +
+  "- Do NOT reuse any of the provided prior question stems; invent entirely new scenarios.\n" +
+  '\nRespond as strict JSON: {"questions": [{"prompt": string, "options": [string, string, string, string], "correctIndex": number, "explanation": string}]}.';
 
-  let generated: DiagnosticQuestion[] = [];
+// Generate `count` questions for ONE skill. Self-contained so callers can run
+// every skill concurrently. Never throws and never returns fewer than `count`
+// (any gap is backfilled from the static bank), and dedupes within itself and
+// against the supplied prior stems.
+async function generateForSkill(
+  skill: DiagnosticSkill,
+  count: number,
+  prior: ReadonlySet<string>,
+): Promise<DiagnosticQuestion[]> {
+  const used = new Set(prior);
   try {
     const out = await chatJson<{
       questions: Array<{
-        skill?: string;
         prompt?: string;
         options?: string[];
         correctIndex?: number;
         explanation?: string;
       }>;
     }>(
-      "You are a psychometrician authoring a CCTST-style (California Critical Thinking Skills Test) diagnostic. " +
-        "Produce BRAND-NEW four-option multiple-choice questions that measure critical-reasoning skill, NOT course-specific recall. " +
-        "Exactly one option is correct; the other three are plausible distractors. Place the correct option at a varied, random index (not always the first). " +
-        "Each question targets a specific skill scale provided in the slot list. " +
-        APPLIED_RULES +
-        "\n\nAdditional rules for this diagnostic:\n" +
-        "- Every question must be answerable by anyone with strong critical-thinking skills, independent of any specific lecture.\n" +
-        "- `correctIndex` is the zero-based index of the correct option (0-3).\n" +
-        "- `explanation` (1-2 sentences) says why the correct option is right and why the reasoning works.\n" +
-        "- Do NOT reuse any of the provided prior question stems; invent entirely new scenarios.\n" +
-        '\nRespond as strict JSON: {"questions": [{"skill": string, "prompt": string, "options": [string, string, string, string], "correctIndex": number, "explanation": string}]} with exactly one item per slot, in order.',
+      GEN_SYSTEM_PROMPT,
       JSON.stringify({
-        slots: blueprint.map((skill, i) => ({
-          slot: i + 1,
-          skill,
-          guidance: SKILL_GUIDANCE[skill as DiagnosticSkill],
-        })),
-        priorQuestionStems: priorStems.slice(0, 80),
+        skill,
+        guidance: SKILL_GUIDANCE[skill],
+        count,
+        priorQuestionStems: [...prior].slice(0, 40),
       }),
+      FAST_MODEL,
+      { reasoningEffort: "low" },
     );
     const arr = Array.isArray(out?.questions) ? out.questions : [];
-    generated = blueprint.map((skill, i) => {
+    return Array.from({ length: count }, (_, i) => {
       const sane = sanitizeQuestion(arr[i], skill);
-      if (sane && !priorSet.has(normStem(sane.prompt))) {
-        priorSet.add(normStem(sane.prompt));
+      if (sane && !used.has(normStem(sane.prompt))) {
+        used.add(normStem(sane.prompt));
         return sane;
       }
-      return fallbackFor(skill, priorSet);
+      return fallbackFor(skill, used);
     });
   } catch {
-    generated = blueprint.map((skill) => fallbackFor(skill, priorSet));
+    return Array.from({ length: count }, () => fallbackFor(skill, used));
   }
+}
 
+/**
+ * Generate a fresh, unique set of diagnostic questions (2 per skill). `priorStems`
+ * are normalized stems from every previously generated administration so the model
+ * avoids reusing scenarios; any leftover gaps are backfilled from the static bank.
+ * Skills are generated concurrently to keep latency low.
+ */
+export async function generateDiagnostic(
+  priorStems: string[],
+): Promise<DiagnosticQuestion[]> {
+  const priorSet = new Set(priorStems.map(normStem));
+
+  // Fan out one request per skill so wall-clock time is the slowest single
+  // 2-question call rather than the sum of all ten.
+  const perSkill = await Promise.all(
+    DIAGNOSTIC_SKILLS.map((skill) =>
+      generateForSkill(skill, QUESTIONS_PER_SKILL, priorSet),
+    ),
+  );
+
+  // Final pass: flatten in skill order and dedupe across skills (and prior
+  // administrations), backfilling any cross-batch collision from the bank.
+  const used = new Set(priorSet);
+  const generated: DiagnosticQuestion[] = [];
+  for (const group of perSkill) {
+    for (const q of group) {
+      const stem = normStem(q.prompt);
+      if (used.has(stem)) {
+        generated.push(fallbackFor(q.skill, used));
+      } else {
+        used.add(stem);
+        generated.push(q);
+      }
+    }
+  }
   return generated;
 }
 

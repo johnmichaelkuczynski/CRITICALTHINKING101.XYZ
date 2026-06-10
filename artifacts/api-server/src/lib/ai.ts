@@ -19,15 +19,21 @@ export async function chatText(
   return resp.choices[0]?.message?.content?.trim() ?? "";
 }
 
+export type ReasoningEffort = "minimal" | "low" | "medium" | "high";
+
 export async function chatJson<T = unknown>(
   system: string,
   user: string,
   model: string = TEXT_MODEL,
+  opts?: { reasoningEffort?: ReasoningEffort },
 ): Promise<T> {
   const resp = await openai.chat.completions.create({
     model,
     max_completion_tokens: 4096,
     response_format: { type: "json_object" },
+    ...(opts?.reasoningEffort
+      ? { reasoning_effort: opts.reasoningEffort }
+      : {}),
     messages: [
       { role: "system", content: system },
       { role: "user", content: user },

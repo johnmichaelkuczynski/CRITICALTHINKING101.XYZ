@@ -14,3 +14,10 @@ CCTST-inspired student-facing reasoning diagnostics, separate from the operator-
 - **Question uniqueness:** prior stems are collected across ALL sessions and fed to the generator. The static `FALLBACK_BANK` must hold MULTIPLE distinct stems per skill (≥3) and `fallbackFor(skill, usedSet)` must skip already-used stems — otherwise the 2 slots for a skill (and successive administrations) can collapse to identical fallback questions when generation degrades.
 
 **Why:** the product's whole pitch is "each instance UNIQUE + longitudinal proof of improvement," so any path (including the never-blocks fallback) that repeats questions breaks the core promise.
+
+## Generation latency
+
+Generating all 10 questions in one `chatJson` call on the heavy default model took ~30-34s — felt like a frozen page behind bare skeletons. Fix that brought it to ~10s: (1) fan out one request PER SKILL concurrently (`Promise.all`) so wall-clock ≈ slowest single 2-question call, not the sum; (2) use `FAST_MODEL` with `reasoningEffort: "low"`; (3) show an explicit "Building your diagnostic…" message, not bare skeletons.
+
+**Why:** these gpt-5-family models have high per-call latency that scales with output size; splitting the output across parallel small calls is the biggest lever. `chatJson` takes an optional `{ reasoningEffort }` (passes `reasoning_effort` through to the OpenAI call).
+**How to apply:** any on-demand multi-item LLM generation in this app that blocks a user-facing spinner should fan out + drop reasoning effort before reaching for a bigger model.

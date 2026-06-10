@@ -129,7 +129,17 @@ export default function AssessmentRunner() {
         )}
 
         {start.isPending && (
-          <div className="flex flex-col gap-3">
+          <div className="flex flex-col gap-4">
+            <div className="bg-card border rounded-lg p-6 flex items-start gap-3">
+              <Loader2 className="w-5 h-5 mt-0.5 text-primary animate-spin flex-shrink-0" />
+              <div>
+                <p className="font-medium text-foreground">Building your diagnostic…</p>
+                <p className="text-sm text-muted-foreground mt-1">
+                  We're generating a fresh, unique set of reasoning questions just for this
+                  attempt. This usually takes a few seconds — hang tight.
+                </p>
+              </div>
+            </div>
             <Skeleton className="h-24 w-full" />
             <Skeleton className="h-24 w-full" />
             <Skeleton className="h-24 w-full" />
