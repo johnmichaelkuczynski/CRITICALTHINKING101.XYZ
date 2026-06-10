@@ -15,6 +15,7 @@ import {
   StartAssignmentAttemptResponse,
   GetAttemptResponse,
   SubmitAttemptResponse,
+  GetAttemptResultResponse,
 } from "@workspace/api-zod";
 import { gradeAnswer } from "../lib/grading";
 import { detect } from "../lib/detection";
@@ -352,6 +353,84 @@ router.post("/assignments/attempts/:attemptId/submit", async (req, res): Promise
 
   res.json(
     SubmitAttemptResponse.parse({
+      attemptId: id,
+      score,
+      total,
+      percent,
+      perProblem,
+      detection,
+    }),
+  );
+});
+
+// Review a previously submitted attempt: reconstruct the graded result from
+// stored data (no re-grading), so "Review Results" never starts a new attempt.
+router.get("/assignments/attempts/:attemptId/result", async (req, res): Promise<void> => {
+  const id = parseIdParam(req.params.attemptId);
+  if (!Number.isFinite(id)) {
+    res.status(400).json({ error: "invalid id" });
+    return;
+  }
+  const [attempt] = await db
+    .select()
+    .from(attemptsTable)
+    .where(eq(attemptsTable.id, id));
+  if (!attempt) {
+    res.status(404).json({ error: "attempt not found" });
+    return;
+  }
+  if (attempt.status !== "submitted") {
+    res
+      .status(409)
+      .json({ error: "attempt not submitted; results are only available after submission" });
+    return;
+  }
+  const problems = await db
+    .select()
+    .from(problemsTable)
+    .where(eq(problemsTable.assignmentId, attempt.assignmentId))
+    .orderBy(asc(problemsTable.position));
+  const answers = await db
+    .select()
+    .from(answersTable)
+    .where(eq(answersTable.attemptId, id));
+  const byProblem = new Map(answers.map((a) => [a.problemId, a]));
+
+  const perProblem = [];
+  const detection = [];
+  let score = 0;
+  for (const p of problems) {
+    const a = byProblem.get(p.id);
+    const correct = a?.correct ?? false;
+    if (correct) score += 1;
+    perProblem.push({
+      problemId: p.id,
+      correct,
+      userAnswer: a?.answer ?? "",
+      correctAnswer: p.correctAnswer,
+      explanation: p.explanation,
+    });
+    if (a && a.aiScore != null) {
+      detection.push({
+        problemId: p.id,
+        aiScore: a.aiScore,
+        aiFlagged: a.aiFlagged ?? false,
+        diachronicScore: a.diachronicScore ?? 0,
+        diachronicFlagged: a.diachronicFlagged ?? false,
+        rationale: a.detectionRationale ?? "",
+      });
+    }
+  }
+  const total = problems.length;
+  const percent =
+    attempt.scorePercent != null
+      ? attempt.scorePercent
+      : total === 0
+      ? 0
+      : (score / total) * 100;
+
+  res.json(
+    GetAttemptResultResponse.parse({
       attemptId: id,
       score,
       total,

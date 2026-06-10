@@ -901,6 +901,83 @@ export const useSubmitAttempt = <TError = ErrorType<unknown>,
       return useMutation(getSubmitAttemptMutationOptions(options));
     }
 
+export const getGetAttemptResultUrl = (attemptId: number,) => {
+
+
+
+
+  return `/api/assignments/attempts/${attemptId}/result`
+}
+
+/**
+ * @summary Get the graded result of a previously submitted attempt (for review)
+ */
+export const getAttemptResult = async (attemptId: number, options?: RequestInit): Promise<AttemptResult> => {
+
+  return customFetch<AttemptResult>(getGetAttemptResultUrl(attemptId),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetAttemptResultQueryKey = (attemptId: number,) => {
+    return [
+    `/api/assignments/attempts/${attemptId}/result`
+    ] as const;
+    }
+
+
+export const getGetAttemptResultQueryOptions = <TData = Awaited<ReturnType<typeof getAttemptResult>>, TError = ErrorType<unknown>>(attemptId: number, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getAttemptResult>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetAttemptResultQueryKey(attemptId);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getAttemptResult>>> = ({ signal }) => getAttemptResult(attemptId, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: !!(attemptId), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getAttemptResult>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetAttemptResultQueryResult = NonNullable<Awaited<ReturnType<typeof getAttemptResult>>>
+export type GetAttemptResultQueryError = ErrorType<unknown>
+
+
+/**
+ * @summary Get the graded result of a previously submitted attempt (for review)
+ */
+
+export function useGetAttemptResult<TData = Awaited<ReturnType<typeof getAttemptResult>>, TError = ErrorType<unknown>>(
+ attemptId: number, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getAttemptResult>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getGetAttemptResultQueryOptions(attemptId,options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+
+
+
+
+
+
 export const getStartPracticeSessionUrl = () => {
 
 

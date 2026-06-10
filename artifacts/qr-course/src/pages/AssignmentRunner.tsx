@@ -8,6 +8,7 @@ import {
   useSaveAnswer, 
   useSubmitAttempt,
   useGetAssignmentReadiness,
+  useGetAttemptResult,
   AttemptResult,
   KeystrokeTrace
 } from "@workspace/api-client-react";
@@ -58,24 +59,32 @@ function ReadinessBanner({ assignmentId }: { assignmentId: number }) {
 export default function AssignmentRunner() {
   const params = useParams();
   const assignmentId = Number(params.id);
-  
+  const reviewAttemptId = params.attemptId ? Number(params.attemptId) : null;
+  const isReview = reviewAttemptId !== null && Number.isFinite(reviewAttemptId);
+
   const { data: assignment, isLoading: isLoadingAssignment } = useGetAssignment(assignmentId);
   const startAttempt = useStartAssignmentAttempt();
   const submitAttempt = useSubmitAttempt();
-  
+
   const [attemptId, setAttemptId] = useState<number | null>(null);
   const { data: attempt, refetch: refetchAttempt } = useGetAttempt(attemptId || 0, {
     query: { enabled: !!attemptId, queryKey: ['attempt', attemptId] }
   });
-  
+
+  const { data: reviewResult } = useGetAttemptResult(reviewAttemptId || 0, {
+    query: { enabled: isReview, queryKey: ['attempt-result', reviewAttemptId] }
+  });
+
   const saveAnswer = useSaveAnswer();
 
   const [currentProblemIdx, setCurrentProblemIdx] = useState(0);
   const [answers, setAnswers] = useState<Record<number, string>>({});
   const [result, setResult] = useState<AttemptResult | null>(null);
 
+  const shownResult: AttemptResult | null = result ?? (isReview ? reviewResult ?? null : null);
+
   useEffect(() => {
-    if (assignmentId && !attemptId && !startAttempt.isPending && !result) {
+    if (!isReview && assignmentId && !attemptId && !startAttempt.isPending && !result) {
       startAttempt.mutate({ assignmentId }, {
         onSuccess: (data) => {
           setAttemptId(data.id);
@@ -87,7 +96,7 @@ export default function AssignmentRunner() {
         }
       });
     }
-  }, [assignmentId, attemptId, startAttempt, result]);
+  }, [assignmentId, attemptId, startAttempt, result, isReview]);
 
   const handleAnswerChange = (problemId: number, val: string, trace: KeystrokeTrace) => {
     setAnswers(prev => ({ ...prev, [problemId]: val }));
@@ -133,22 +142,29 @@ export default function AssignmentRunner() {
     );
   }
 
-  if (result) {
+  if (shownResult) {
     return (
       <Layout>
         <div className="p-8 max-w-4xl mx-auto w-full flex flex-col gap-8">
           <div className="flex justify-between items-start">
             <div>
               <h1 className="text-3xl font-serif font-bold text-primary mb-2">{assignment.title} - Results</h1>
-              <p className="text-muted-foreground">Score: {result.percent}% ({result.score}/{result.total})</p>
+              <p className="text-muted-foreground">Score: {shownResult.percent}% ({shownResult.score}/{shownResult.total})</p>
             </div>
-            <Link href={`/assignments`}>
-              <Button variant="outline">Back to Assignments</Button>
-            </Link>
+            <div className="flex gap-2">
+              {isReview && (
+                <Link href={`/assignments/${assignmentId}`}>
+                  <Button>Retake graded attempt</Button>
+                </Link>
+              )}
+              <Link href={`/assignments`}>
+                <Button variant="outline">Back to Assignments</Button>
+              </Link>
+            </div>
           </div>
           
           <div className="flex flex-col gap-6">
-            {result.perProblem.map((pr, idx) => (
+            {shownResult.perProblem.map((pr, idx) => (
               <div key={pr.problemId} className={`p-6 rounded-lg border ${pr.correct ? 'border-chart-2/50 bg-chart-2/5' : 'border-destructive/50 bg-destructive/5'}`}>
                 <h3 className="font-medium mb-2">Problem {idx + 1}</h3>
                 <div className="mb-4">
@@ -167,10 +183,10 @@ export default function AssignmentRunner() {
                 </div>
                 
                 {/* AI Flags */}
-                {result.detection.find(d => d.problemId === pr.problemId)?.aiFlagged && (
+                {shownResult.detection.find(d => d.problemId === pr.problemId)?.aiFlagged && (
                   <div className="mt-4 p-3 bg-secondary rounded-md text-sm border border-secondary-border">
                     <strong className="text-chart-4">Flagged content accepted — no penalty during initial phase.</strong>
-                    <p className="text-muted-foreground mt-1">{result.detection.find(d => d.problemId === pr.problemId)?.rationale}</p>
+                    <p className="text-muted-foreground mt-1">{shownResult.detection.find(d => d.problemId === pr.problemId)?.rationale}</p>
                   </div>
                 )}
               </div>

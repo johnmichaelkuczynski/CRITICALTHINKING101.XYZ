@@ -167,6 +167,7 @@ function Router() {
     <Switch>
       <Route path="/" component={Dashboard} />
       <Route path="/assignments" component={Assignments} />
+      <Route path="/assignments/:id/review/:attemptId" component={AssignmentRunner} />
       <Route path="/assignments/:id" component={AssignmentRunner} />
       <Route path="/analytics" component={Analytics} />
       <Route path="/diagnostics" component={Diagnostics} />

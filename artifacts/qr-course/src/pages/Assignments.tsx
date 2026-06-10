@@ -111,11 +111,18 @@ export default function Assignments() {
                             </Button>
                           </Link>
                           <Link href={`/assignments/${item.id}`}>
-                            <Button className="w-full" variant={item.status === 'submitted' ? "outline" : "default"}>
-                              {item.status === 'submitted' ? 'Review Results' : 
+                            <Button className="w-full" variant="default" data-testid={`button-take-${item.id}`}>
+                              {item.status === 'submitted' ? 'Retake graded attempt' :
                                item.status === 'in_progress' ? 'Resume' : 'Start graded attempt'}
                             </Button>
                           </Link>
+                          {item.status === 'submitted' && item.lastAttemptId != null && (
+                            <Link href={`/assignments/${item.id}/review/${item.lastAttemptId}`}>
+                              <Button className="w-full" variant="outline" data-testid={`button-review-${item.id}`}>
+                                Review Results
+                              </Button>
+                            </Link>
+                          )}
                         </div>
                       </CardContent>
                     </Card>

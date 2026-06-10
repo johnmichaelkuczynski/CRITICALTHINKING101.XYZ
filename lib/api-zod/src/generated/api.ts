@@ -267,6 +267,36 @@ export const SubmitAttemptResponse = zod.object({
 
 
 /**
+ * @summary Get the graded result of a previously submitted attempt (for review)
+ */
+export const GetAttemptResultParams = zod.object({
+  "attemptId": zod.coerce.number()
+})
+
+export const GetAttemptResultResponse = zod.object({
+  "attemptId": zod.number(),
+  "score": zod.number(),
+  "total": zod.number(),
+  "percent": zod.number(),
+  "perProblem": zod.array(zod.object({
+  "problemId": zod.number(),
+  "correct": zod.boolean(),
+  "userAnswer": zod.string().optional(),
+  "correctAnswer": zod.string().optional(),
+  "explanation": zod.string()
+})),
+  "detection": zod.array(zod.object({
+  "problemId": zod.number().nullable(),
+  "aiScore": zod.number().describe('0..1 probability the text is AI-generated'),
+  "aiFlagged": zod.boolean(),
+  "diachronicScore": zod.number().describe('0..1 probability the user is rewording AI output (based on keystroke pattern)'),
+  "diachronicFlagged": zod.boolean(),
+  "rationale": zod.string()
+}))
+})
+
+
+/**
  * @summary Start a new practice session (infinite, adaptive)
  */
 export const startPracticeSessionBodyFocusOnWeaknessesDefault = true;

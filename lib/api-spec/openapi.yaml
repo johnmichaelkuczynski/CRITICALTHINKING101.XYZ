@@ -211,6 +211,24 @@ paths:
               schema:
                 $ref: "#/components/schemas/AttemptResult"
 
+  /assignments/attempts/{attemptId}/result:
+    get:
+      operationId: getAttemptResult
+      tags: [assignments]
+      summary: Get the graded result of a previously submitted attempt (for review)
+      parameters:
+        - name: attemptId
+          in: path
+          required: true
+          schema: { type: integer }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AttemptResult"
+
   /practice/sessions:
     post:
       operationId: startPracticeSession
