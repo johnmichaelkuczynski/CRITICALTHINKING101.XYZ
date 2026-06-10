@@ -1,4 +1,5 @@
 import { chatJson } from "./ai";
+import { logger } from "./logger";
 
 function normalize(s: string): string {
   return s
@@ -47,33 +48,50 @@ export async function gradeAnswer(opts: {
     }
   }
 
-  try {
-    const out = await chatJson<{ correct: boolean; explanation: string }>(
+  const gradeOnce = () =>
+    chatJson<{ correct: boolean; explanation: string }>(
       [
-        "You grade short answers in a critical-thinking course. You assess REASONING and SUBSTANCE only — never vocabulary, never format. You are given the exact question stem, one reference answer, and the student's answer.",
+        "You grade short answers in a critical-thinking course. Your ONLY job is to judge the student's reasoning on its own merits: is what the student wrote TRUE, valid, and a genuine answer to the QUESTION that was asked? You are given the exact question, an example answer, and the student's answer.",
         "",
-        "GRADE THE PHENOMENON, NOT THE LABEL. Award full credit whenever the student correctly picks out the concept being tested or reaches the correct judgment, in ANY wording. Non-canonical phrasing is always fully correct: \"error\", \"a mistaken belief\", \"he believes something untrue\" are all correct for \"false belief\"; \"attacking the person\" for \"ad hominem\"; \"checking the source\", \"verifying it first\", \"due diligence\" are interchangeable. NEVER require the technical or canonical term. NEVER mark an answer wrong merely because it did not use the reference answer's words.",
+        "THE QUESTION IS THE SOURCE OF TRUTH — NOT THE EXAMPLE ANSWER. The example answer is ONE illustrative response written by a fallible author. It is NOT an answer key, NOT exhaustive, and may be narrower or even partly wrong. NEVER score how closely the student matches it. NEVER mark an answer wrong because it differs from, omits, reframes, uses different examples than, or even directly contradicts the example answer. Read the question yourself, work out what a correct answer must establish, and judge the student against THAT — not against the template.",
         "",
-        "GRADE SUBSTANCE, NOT FORMAT. It is irrelevant whether the answer is a complete sentence, a sentence fragment, bullet points, shorthand, or a single clause. NEVER deduct for terseness, lack of prose, missing transitions, informality, or any stylistic property whatsoever. A correct fragment beats a polished paragraph that misses the point.",
+        "GRADE BY THINKING, NOT BY TEMPLATE. Award full credit to ANY answer that correctly and validly answers the question, by any route. If the question asks for 'support that would NOT make the conclusion reasonable,' then evidence that plainly fails to support it (including evidence pointing the opposite way) is a correct answer — do not demand the particular kind of failure the example happened to pick. If the question asks the student to identify a flaw, any real flaw they correctly identify counts.",
         "",
-        "DEDUCT ONLY when the student identifies the WRONG phenomenon or reasons INVALIDLY. If the correct substance is present, it earns full credit — full stop. The reference answer is just ONE acceptable response, not the only acceptable wording.",
+        "GRADE THE PHENOMENON, NOT THE LABEL. Full credit for the right concept or judgment in ANY wording: \"error\"/\"a mistaken belief\" for \"false belief\"; \"attacking the person\" for \"ad hominem\"; \"checking the source\"/\"due diligence\" for verifying. NEVER require the technical or canonical term.",
         "",
-        "Output strict JSON {\"correct\": boolean, \"explanation\": string}. The explanation is 1-3 short sentences that say why and state the key idea; when marking correct, do not nitpick wording or style.",
+        "GRADE SUBSTANCE, NOT FORMAT. Sentence, fragment, bullets, shorthand — all fine. NEVER deduct for terseness, informality, missing prose, or style.",
+        "",
+        "MARK WRONG ONLY when the student makes a FALSE claim, reasons INVALIDLY, identifies the WRONG phenomenon, or fails to address what the question actually asked. If you are tempted to mark it wrong, first ask: 'Is the student's statement actually false or illogical, or is it just different from the example?' If it is merely different but still true and on-point, it is CORRECT. When genuinely ambiguous, resolve in the student's favor.",
+        "",
+        "Output strict JSON {\"correct\": boolean, \"explanation\": string}. The explanation is 1-3 short sentences justifying the grade by reference to the STUDENT'S OWN reasoning and whether it answers the question — never 'you didn't match the expected answer.' When marking correct, do not nitpick.",
       ].join("\n"),
       JSON.stringify({
-        question_stem: opts.prompt,
-        reference_answer: correct,
+        question: opts.prompt,
+        example_answer_one_of_many: correct,
         student_answer: user,
       }),
     );
-    return {
-      correct: !!out.correct,
-      explanation: out.explanation || `The correct answer is ${correct}.`,
-    };
-  } catch {
-    return {
-      correct: false,
-      explanation: `The correct answer is ${correct}.`,
-    };
+
+  let lastErr: unknown;
+  for (let attempt = 0; attempt < 2; attempt++) {
+    try {
+      const out = await gradeOnce();
+      return {
+        correct: !!out.correct,
+        explanation:
+          out.explanation ||
+          (out.correct
+            ? "Correct."
+            : "This answer doesn't fully answer the question as asked."),
+      };
+    } catch (err) {
+      lastErr = err;
+    }
   }
+  logger.error({ err: lastErr }, "gradeAnswer: grading model unavailable, defaulting to credit");
+  return {
+    correct: true,
+    explanation:
+      "This answer could not be automatically graded because the grading service was temporarily unavailable, so it has been given credit. Retake the attempt for a full assessment.",
+  };
 }

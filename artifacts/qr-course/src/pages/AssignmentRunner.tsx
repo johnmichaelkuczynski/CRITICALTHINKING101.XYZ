@@ -164,21 +164,44 @@ export default function AssignmentRunner() {
           </div>
           
           <div className="flex flex-col gap-6">
-            {shownResult.perProblem.map((pr, idx) => (
+            {shownResult.perProblem.map((pr, idx) => {
+              const problem = assignment.problems.find((p) => p.id === pr.problemId);
+              return (
               <div key={pr.problemId} className={`p-6 rounded-lg border ${pr.correct ? 'border-chart-2/50 bg-chart-2/5' : 'border-destructive/50 bg-destructive/5'}`}>
-                <h3 className="font-medium mb-2">Problem {idx + 1}</h3>
+                <div className="flex items-center justify-between mb-3 gap-3">
+                  <h3 className="font-medium">Problem {idx + 1}</h3>
+                  <span
+                    className={`shrink-0 text-xs font-semibold uppercase tracking-wide px-2.5 py-1 rounded-full ${
+                      pr.correct
+                        ? 'bg-chart-2/15 text-chart-2 border border-chart-2/40'
+                        : 'bg-destructive/15 text-destructive border border-destructive/40'
+                    }`}
+                    data-testid={`badge-grade-${idx}`}
+                  >
+                    {pr.correct ? 'Correct' : 'Incorrect'}
+                  </span>
+                </div>
+                {problem && (
+                  <div className="mb-4">
+                    <span className="text-sm font-semibold">Question:</span>
+                    <div className="mt-1 text-sm prose prose-slate dark:prose-invert max-w-none">
+                      <MarkdownRenderer content={problem.prompt} />
+                    </div>
+                  </div>
+                )}
                 <div className="mb-4">
                   <span className="text-sm font-semibold">Your Answer:</span>
                   <div className="font-mono mt-1">{pr.userAnswer || "No answer"}</div>
                 </div>
                 {!pr.correct && pr.correctAnswer && (
                   <div className="mb-4 text-primary">
-                    <span className="text-sm font-semibold">Correct Answer:</span>
+                    <span className="text-sm font-semibold">Example of a full-credit answer:</span>
                     <div className="font-mono mt-1">{pr.correctAnswer}</div>
+                    <p className="mt-1 text-xs text-muted-foreground italic">This is one strong answer, not the only correct one — your reasoning is graded on its own merits.</p>
                   </div>
                 )}
                 <div>
-                  <span className="text-sm font-semibold">Explanation:</span>
+                  <span className="text-sm font-semibold">Reason for this grade:</span>
                   <div className="mt-1 text-sm"><MarkdownRenderer content={pr.explanation} /></div>
                 </div>
                 
@@ -190,7 +213,8 @@ export default function AssignmentRunner() {
                   </div>
                 )}
               </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       </Layout>
