@@ -230,7 +230,11 @@ router.post("/assessments/submit", async (req, res): Promise<void> => {
   const passed = graded ? true : null;
   const submittedAt = new Date();
 
-  await db
+  // Atomically claim the session: only transition a row that is still
+  // in_progress. This makes the write state-safe against (a) a course reset that
+  // deletes the row mid-attempt and (b) a concurrent second submit on the same
+  // session — both leave `updated` empty instead of returning a phantom 200.
+  const updated = await db
     .update(diagnosticSessionsTable)
     .set({
       status: "submitted",
@@ -241,7 +245,28 @@ router.post("/assessments/submit", async (req, res): Promise<void> => {
       passed,
       submittedAt,
     })
-    .where(eq(diagnosticSessionsTable.id, sessionId));
+    .where(
+      and(
+        eq(diagnosticSessionsTable.id, sessionId),
+        eq(diagnosticSessionsTable.status, "in_progress"),
+      ),
+    )
+    .returning({ id: diagnosticSessionsTable.id });
+
+  if (updated.length === 0) {
+    // Re-read to report the accurate reason: the row is gone (reset mid-attempt)
+    // vs. it was already submitted by a racing request.
+    const [current] = await db
+      .select({ status: diagnosticSessionsTable.status })
+      .from(diagnosticSessionsTable)
+      .where(eq(diagnosticSessionsTable.id, sessionId));
+    if (!current) {
+      res.status(404).json({ error: "assessment not found" });
+      return;
+    }
+    res.status(409).json({ error: "assessment already submitted" });
+    return;
+  }
 
   await logEvent({
     kind: "diagnostic",
