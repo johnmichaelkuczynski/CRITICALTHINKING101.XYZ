@@ -5,7 +5,7 @@ import {
   assignmentsTable,
   problemsTable,
 } from "@workspace/db";
-import { sql } from "drizzle-orm";
+import { sql, eq, and } from "drizzle-orm";
 import { logger } from "./logger";
 
 type SeedTopic = {
@@ -845,9 +845,9 @@ const ASSIGNMENTS: SeedAssignment[] = [
     timeLimitMinutes: null,
     instructions: "Untimed practice. Explain your reasoning in the answer box.",
     problems: [
-      { topicSlug: "what-is-critical-thinking", prompt: "True or false: critical thinking means criticizing or rejecting other people's views.", correctAnswer: "false", explanation: "Critical thinking is fair evaluation of reasoning, not mere fault-finding." },
-      { topicSlug: "claims-beliefs-truth", prompt: "A sentence that is either true or false (it has a truth value) is called a ____. One word.", correctAnswer: "claim", explanation: "A claim (statement/proposition) is the bearer of truth or falsity." },
-      { topicSlug: "arguments-vs-nonarguments", prompt: "'You should exercise because it lowers your risk of heart disease.' Is this an argument or a non-argument?", correctAnswer: "argument", explanation: "A reason ('because...') is offered to support a conclusion, so it is an argument." },
+      { topicSlug: "what-is-critical-thinking", prompt: "A friend says, 'Critical thinking just means shooting down whatever other people say.' Is that a fair description of what critical thinking is, and what does it actually involve?", correctAnswer: "No. Critical thinking is fairly weighing reasoning and evidence to judge what's true — not just attacking or rejecting other people's views.", explanation: "Critical thinking is fair evaluation of reasoning, not mere fault-finding." },
+      { topicSlug: "claims-beliefs-truth", prompt: "Two sentences: (a) 'Please shut the window.' (b) 'The window is shut.' Which one could turn out to be true or false, and why?", correctAnswer: "Sentence (b) — it describes how the world is, so it can be checked as true or false; (a) is a request, so it has no truth value.", explanation: "Only statements that assert something about the world can be true or false; requests and commands cannot." },
+      { topicSlug: "arguments-vs-nonarguments", prompt: "'You should exercise because it lowers your risk of heart disease.' Is the speaker just stating an opinion, or giving a reason to support a conclusion? Explain.", correctAnswer: "Giving a reason to support a conclusion — 'because it lowers your risk' is offered as support for the claim that you should exercise.", explanation: "When a reason is offered for a conclusion, the passage is an argument rather than a bare assertion." },
     ],
   },
   {
@@ -858,10 +858,10 @@ const ASSIGNMENTS: SeedAssignment[] = [
     timeLimitMinutes: null,
     instructions: "Untimed practice.",
     problems: [
-      { topicSlug: "premises-and-conclusions", prompt: "In 'All dogs are mammals, so Rex is a mammal,' the word 'so' signals the ____.", correctAnswer: "conclusion", explanation: "'So' is a conclusion indicator." },
-      { topicSlug: "identifying-reconstructing-arguments", prompt: "An unstated assumption an argument needs in order to work is called a missing or ____ premise. One word.", correctAnswer: "implicit", explanation: "Also called an unstated or suppressed premise; such an argument is an enthymeme." },
-      { topicSlug: "diagramming-arguments", prompt: "When two premises support a conclusion only by working together (neither suffices alone), the support is called ____.", correctAnswer: "linked", explanation: "Linked premises depend on each other; remove one and the support collapses." },
-      { topicSlug: "standardizing-charity", prompt: "Interpreting an argument in its strongest, most reasonable form is called the principle of ____.", correctAnswer: "charity", explanation: "The principle of charity guards against the straw man." },
+      { topicSlug: "premises-and-conclusions", prompt: "In 'All dogs are mammals, so Rex is a mammal,' which part is the point the speaker is trying to establish, and which part is the support offered for it?", correctAnswer: "The point being established is that Rex is a mammal; the support is that all dogs are mammals.", explanation: "The conclusion is what's argued for; the premise is the reason given for it." },
+      { topicSlug: "identifying-reconstructing-arguments", prompt: "Someone argues, 'Rex is a dog, so Rex is a mammal.' The argument leaves out one assumption it depends on. What unstated assumption is needed for it to work?", correctAnswer: "That all dogs are mammals — without that assumption, being a dog wouldn't get you to being a mammal.", explanation: "Arguments often rely on an unstated assumption that must be true for the reasoning to hold." },
+      { topicSlug: "diagramming-arguments", prompt: "An argument runs: 'This medicine is safe because it passed trials AND those trials were large and independent.' If you drop the part about the trials being large and independent, does 'it passed trials' still support the conclusion just as well? Explain.", correctAnswer: "No — the two reasons work together; on its own, 'it passed trials' is much weaker support, so removing one badly undercuts the case.", explanation: "When reasons depend on each other to support a conclusion, weakening one weakens the whole support." },
+      { topicSlug: "standardizing-charity", prompt: "Before criticizing an argument you disagree with, why is it wiser to first restate it in its strongest, most reasonable form?", correctAnswer: "So you respond to what the person actually means at its best, instead of knocking down a weak misrepresentation that proves nothing.", explanation: "Engaging the strongest version of a view avoids attacking a distortion of it." },
     ],
   },
   {
@@ -872,12 +872,12 @@ const ASSIGNMENTS: SeedAssignment[] = [
     timeLimitMinutes: 30,
     instructions: "Timed. 30 minutes. Pasting is disabled.",
     problems: [
-      { topicSlug: "claims-beliefs-truth", prompt: "'Close the door.' Does this sentence express a claim (a true/false bearer)? Answer yes or no.", correctAnswer: "no", explanation: "It is a command, which is neither true nor false." },
-      { topicSlug: "arguments-vs-nonarguments", prompt: "A passage that merely tells you WHY an accepted fact happened, without trying to prove it, is an argument or an explanation?", correctAnswer: "explanation", explanation: "An explanation assumes the fact and gives its cause; it does not argue that it is true." },
-      { topicSlug: "premises-and-conclusions", prompt: "In 'The streets are wet, so it rained,' which clause is the conclusion? Two words.", correctAnswer: "it rained", explanation: "'So' marks 'it rained' as the conclusion." },
-      { topicSlug: "premises-and-conclusions", prompt: "Name one common conclusion-indicator word.", correctAnswer: "therefore", explanation: "Therefore, so, thus, hence, and consequently all indicate conclusions." },
-      { topicSlug: "diagramming-arguments", prompt: "When several independent premises each separately support the same conclusion, the structure is called ____.", correctAnswer: "convergent", explanation: "Each convergent premise supports the conclusion on its own." },
-      { topicSlug: "what-is-critical-thinking", prompt: "Thinking about and monitoring your own thinking is called ____ (one word beginning 'meta').", correctAnswer: "metacognition", explanation: "Metacognition is awareness and regulation of one's own reasoning." },
+      { topicSlug: "claims-beliefs-truth", prompt: "'Close the door.' Could this sentence be true or false? Answer yes or no and explain why.", correctAnswer: "No — it is a command, so it doesn't assert anything that could be true or false.", explanation: "Only assertions about how things are can have a truth value; commands cannot." },
+      { topicSlug: "arguments-vs-nonarguments", prompt: "Everyone already agrees the bridge collapsed. A report says, 'The bridge collapsed because its steel had corroded.' Is the report trying to PROVE that the bridge collapsed, or to say WHY it collapsed? Explain.", correctAnswer: "It's saying why it collapsed (an explanation), not proving that it collapsed — since both sides already accept that it did.", explanation: "An explanation gives the cause of an accepted fact; an argument tries to establish a disputed claim." },
+      { topicSlug: "premises-and-conclusions", prompt: "In 'The streets are wet, so it rained,' what is the speaker concluding, and what evidence are they using to get there?", correctAnswer: "They conclude that it rained, using the wet streets as the evidence for it.", explanation: "The conclusion is the claim reached; the premise is the observation used to support it." },
+      { topicSlug: "premises-and-conclusions", prompt: "You read: 'She studied all month; therefore she passed.' Which statement is the support and which is the conclusion drawn from it?", correctAnswer: "Support: she studied all month. Conclusion: she passed.", explanation: "The word 'therefore' marks what follows as the conclusion." },
+      { topicSlug: "diagramming-arguments", prompt: "An argument says: 'We should hire her — she has ten years' experience, she interviewed well, and her references are excellent.' If just one of those three reasons turned out to be false, would the whole argument collapse? Explain.", correctAnswer: "No — each reason supports the hiring conclusion on its own, so losing one weakens the case but doesn't destroy it.", explanation: "When several reasons each support a conclusion independently, removing one doesn't break the others." },
+      { topicSlug: "what-is-critical-thinking", prompt: "After finishing a hard problem, a student pauses and asks, 'Where might my own reasoning have gone wrong here?' Why is deliberately checking your own thinking like this valuable?", correctAnswer: "It catches your own mistakes and biases before they mislead you, making your conclusions more reliable.", explanation: "Monitoring and questioning your own reasoning improves its accuracy." },
     ],
   },
 
@@ -890,9 +890,9 @@ const ASSIGNMENTS: SeedAssignment[] = [
     timeLimitMinutes: null,
     instructions: "Untimed practice.",
     problems: [
-      { topicSlug: "deductive-vs-inductive", prompt: "Reasoning that aims to guarantee its conclusion (if the premises are true, the conclusion must be true) is called ____.", correctAnswer: "deductive", explanation: "Deductive arguments aim for necessity." },
-      { topicSlug: "deductive-vs-inductive", prompt: "'Every swan I have seen is white, so all swans are white.' Is this deductive or inductive?", correctAnswer: "inductive", explanation: "It generalizes from observations to a probable conclusion." },
-      { topicSlug: "validity-and-soundness", prompt: "An argument that is valid AND has all true premises is called ____.", correctAnswer: "sound", explanation: "Soundness = validity + all true premises." },
+      { topicSlug: "deductive-vs-inductive", prompt: "An argument is built so that if its premises are true, the conclusion CANNOT be false. Does this argument aim to make its conclusion merely likely, or fully guaranteed? Explain.", correctAnswer: "Fully guaranteed — it's built so the conclusion must be true whenever the premises are.", explanation: "Reasoning that aims for a guaranteed conclusion is deductive." },
+      { topicSlug: "deductive-vs-inductive", prompt: "'Every swan I have seen is white, so all swans are white.' Does that conclusion follow with certainty, or is it only made probable by the evidence? Explain.", correctAnswer: "Only probable — it generalizes from limited observations, so a single non-white swan could overturn it.", explanation: "Generalizing from observed cases to all cases is inductive and not certain." },
+      { topicSlug: "validity-and-soundness", prompt: "An argument's logic is airtight AND all of its premises are actually true. What can you conclude about its conclusion, and why?", correctAnswer: "The conclusion must be true — valid logic plus all-true premises guarantees a true conclusion.", explanation: "Validity preserves truth, so true premises forced through valid logic yield a true conclusion." },
     ],
   },
   {
@@ -903,10 +903,10 @@ const ASSIGNMENTS: SeedAssignment[] = [
     timeLimitMinutes: null,
     instructions: "Untimed practice.",
     problems: [
-      { topicSlug: "validity-and-soundness", prompt: "Can a valid argument have a false conclusion? Answer yes or no.", correctAnswer: "yes", explanation: "Yes — if one of its premises is false. Only sound arguments guarantee a true conclusion." },
-      { topicSlug: "categorical-logic-syllogism", prompt: "'All A are B. All B are C. Therefore all A are C.' Is this valid or invalid?", correctAnswer: "valid", explanation: "This is a valid categorical syllogism (Barbara)." },
-      { topicSlug: "propositional-logic-truth-tables", prompt: "'If P then Q' is false only when P is ____ and Q is false. One word.", correctAnswer: "true", explanation: "A conditional fails only when the antecedent is true and the consequent false." },
-      { topicSlug: "propositional-logic-truth-tables", prompt: "From 'If P then Q' and 'not Q', what can you validly conclude? (This valid form is modus tollens.)", correctAnswer: "not P", explanation: "Modus tollens: P→Q, ¬Q, therefore ¬P." },
+      { topicSlug: "validity-and-soundness", prompt: "Can an argument have flawless logic and still end up with a false conclusion? Answer yes or no and explain how that's possible.", correctAnswer: "Yes — if one of its premises is false. Flawless logic only guarantees a true conclusion when the premises are also all true.", explanation: "Valid form preserves truth, but feed it a false premise and the conclusion can be false." },
+      { topicSlug: "categorical-logic-syllogism", prompt: "'All A are B. All B are C. Therefore all A are C.' Whenever the two premises are true, does the conclusion HAVE to be true? Explain.", correctAnswer: "Yes — the conclusion necessarily follows; there's no way for the premises to be true and the conclusion false.", explanation: "The chain through the shared middle term forces the conclusion." },
+      { topicSlug: "propositional-logic-truth-tables", prompt: "Consider the promise 'If it rains, the game is cancelled.' In exactly what situation would this promise turn out to have been broken?", correctAnswer: "Only when it rains but the game is NOT cancelled — the condition happens yet the promised result fails.", explanation: "A conditional is broken only when its 'if' part holds but its 'then' part doesn't." },
+      { topicSlug: "propositional-logic-truth-tables", prompt: "You accept 'If the alarm works, it will sound.' The alarm did NOT sound. What can you validly conclude, and why?", correctAnswer: "That the alarm does not work — if it did, it would have sounded, but it didn't.", explanation: "Denying the result of a true conditional lets you deny its condition." },
     ],
   },
   {
@@ -917,14 +917,14 @@ const ASSIGNMENTS: SeedAssignment[] = [
     timeLimitMinutes: 60,
     instructions: "Cumulative midterm. 60 minutes. Pasting disabled.",
     problems: [
-      { topicSlug: "arguments-vs-nonarguments", prompt: "'The room was cold and dark.' Is this an argument or a non-argument?", correctAnswer: "non-argument", explanation: "It is a description; nothing is being supported." },
-      { topicSlug: "premises-and-conclusions", prompt: "Name one common premise-indicator word.", correctAnswer: "because", explanation: "Because, since, for, and given that all indicate premises." },
-      { topicSlug: "deductive-vs-inductive", prompt: "An argument whose premises are meant to make the conclusion probable but not certain is ____.", correctAnswer: "inductive", explanation: "Inductive support is a matter of degree." },
-      { topicSlug: "validity-and-soundness", prompt: "Affirming the consequent (P→Q, Q, therefore P) is valid or invalid?", correctAnswer: "invalid", explanation: "It is a formal fallacy; Q can hold for other reasons." },
-      { topicSlug: "categorical-logic-syllogism", prompt: "'All cats are animals. All dogs are animals. Therefore all dogs are cats.' Valid or invalid?", correctAnswer: "invalid", explanation: "True premises, false conclusion — the form is broken." },
-      { topicSlug: "propositional-logic-truth-tables", prompt: "From 'If P then Q' and 'P', what follows? (modus ponens)", correctAnswer: "Q", explanation: "Modus ponens: P→Q, P, therefore Q." },
-      { topicSlug: "inductive-strength-generalization", prompt: "Drawing a sweeping conclusion from too small a sample is the ____ generalization.", correctAnswer: "hasty", explanation: "Hasty generalization relies on an inadequate sample." },
-      { topicSlug: "analogical-reasoning", prompt: "An argument from analogy is stronger when the two things share more ____ similarities.", correctAnswer: "relevant", explanation: "Relevant similarities (not surface ones) strengthen an analogy." },
+      { topicSlug: "arguments-vs-nonarguments", prompt: "'The room was cold and dark.' Is anything being argued for here, or is this just a description? Explain.", correctAnswer: "Just a description — no reason is offered to support any conclusion, so it isn't an argument.", explanation: "Without a reason supporting a claim, a passage is not an argument." },
+      { topicSlug: "premises-and-conclusions", prompt: "In 'We should leave now, because the storm is coming,' which word signals that a reason is being given, and what is that reason?", correctAnswer: "'Because' signals the reason — namely that the storm is coming.", explanation: "Words like 'because' flag the premise that supports the conclusion." },
+      { topicSlug: "deductive-vs-inductive", prompt: "An argument's premises are meant to make its conclusion likely but not guaranteed. Does its conclusion follow with certainty? Explain.", correctAnswer: "No — the support is a matter of degree, so the conclusion is only probable, not certain.", explanation: "When support is probabilistic rather than necessary, the reasoning is inductive." },
+      { topicSlug: "validity-and-soundness", prompt: "'If she trained, she'd be fit. She is fit. So she trained.' Does that conclusion really follow from the premises? Explain.", correctAnswer: "No — she could be fit for other reasons, so concluding she trained isn't justified.", explanation: "Affirming the result doesn't establish the cause; the conclusion can be false even if the premises are true." },
+      { topicSlug: "categorical-logic-syllogism", prompt: "'All cats are animals. All dogs are animals. Therefore all dogs are cats.' The premises are true but the conclusion is false. What does that tell you about this reasoning?", correctAnswer: "The reasoning is broken — true premises leading to a false conclusion show the form is invalid.", explanation: "If true premises can yield a false conclusion, the argument form is invalid." },
+      { topicSlug: "propositional-logic-truth-tables", prompt: "You accept 'If the bill passes, taxes rise.' The bill passes. What follows, and why?", correctAnswer: "Taxes rise — the condition was met, so the stated result must follow.", explanation: "When a true conditional's 'if' part holds, its 'then' part must hold too." },
+      { topicSlug: "inductive-strength-generalization", prompt: "A blogger tries two dishes at a large restaurant, dislikes both, and declares 'This place is terrible at everything.' What is weak about this reasoning?", correctAnswer: "The sample is far too small — two dishes can't support a sweeping conclusion about the entire menu.", explanation: "Generalizing from an inadequate sample makes the conclusion unreliable." },
+      { topicSlug: "analogical-reasoning", prompt: "Someone argues a new drug will work in humans because it worked in mice. What kind of similarity between mice and humans would make this analogy strong rather than weak?", correctAnswer: "Similarities relevant to how the drug actually acts — like comparable biology and metabolism — not superficial resemblances.", explanation: "Analogies are strong when the shared features are relevant to the conclusion." },
     ],
   },
 
@@ -937,9 +937,9 @@ const ASSIGNMENTS: SeedAssignment[] = [
     timeLimitMinutes: null,
     instructions: "Untimed practice.",
     problems: [
-      { topicSlug: "fallacies-of-relevance", prompt: "Attacking the person instead of their argument is the ____ fallacy. (Latin term.)", correctAnswer: "ad hominem", explanation: "Ad hominem targets the arguer rather than the argument." },
-      { topicSlug: "fallacies-weak-induction", prompt: "Concluding A caused B just because A came before B is the ____ fallacy. (Latin, two words.)", correctAnswer: "post hoc", explanation: "Post hoc ergo propter hoc confuses sequence with causation." },
-      { topicSlug: "fallacies-presumption-ambiguity", prompt: "A question that presupposes something unproven, like 'Have you stopped lying?', is a ____ question.", correctAnswer: "loaded", explanation: "Also called a complex question; it smuggles in an assumption." },
+      { topicSlug: "fallacies-of-relevance", prompt: "In a debate, Sam replies to Maria's argument by saying, 'You can't trust her — she failed math in high school.' What's wrong with Sam's reply as a response to her argument?", correctAnswer: "It attacks Maria personally instead of engaging her argument, so it gives no real reason her conclusion is wrong.", explanation: "Attacking the person rather than the argument leaves the argument itself untouched." },
+      { topicSlug: "fallacies-weak-induction", prompt: "'I wore my lucky socks and we won, so the socks caused the win.' Why is this reasoning weak?", correctAnswer: "It assumes that because the win came after wearing the socks, the socks caused it — but sequence alone isn't evidence of cause.", explanation: "One thing following another doesn't show the first caused the second." },
+      { topicSlug: "fallacies-presumption-ambiguity", prompt: "A reporter asks a politician, 'Have you stopped wasting taxpayer money?' Why is this question unfair no matter how he answers yes or no?", correctAnswer: "It smuggles in the unproven assumption that he was wasting money — both 'yes' and 'no' concede that he was.", explanation: "A question that presupposes an unproven claim traps any direct answer into accepting it." },
     ],
   },
   {
@@ -950,10 +950,10 @@ const ASSIGNMENTS: SeedAssignment[] = [
     timeLimitMinutes: null,
     instructions: "Untimed practice.",
     problems: [
-      { topicSlug: "rhetoric-persuasion-spin", prompt: "Word choices that carry judgment, like 'freedom fighter' vs. 'terrorist', are called ____ language.", correctAnswer: "loaded", explanation: "Loaded (emotive) language steers feeling rather than supplying evidence." },
-      { topicSlug: "cognitive-biases-motivated-reasoning", prompt: "Seeking out only evidence that supports what you already believe is ____ bias.", correctAnswer: "confirmation", explanation: "Confirmation bias favors belief-consistent evidence." },
-      { topicSlug: "language-definition-vagueness", prompt: "A term with multiple distinct meanings (like 'bank') is ____.", correctAnswer: "ambiguous", explanation: "Ambiguity = multiple meanings; vagueness = fuzzy borders." },
-      { topicSlug: "credibility-sources-testimony", prompt: "Trusting a claim because a celebrity (not an expert) endorsed it is an appeal to inappropriate ____.", correctAnswer: "authority", explanation: "Appeal to inappropriate authority cites an unqualified source." },
+      { topicSlug: "rhetoric-persuasion-spin", prompt: "One outlet calls a group 'freedom fighters' while another calls the very same group 'terrorists.' How do these word choices affect a reader before any evidence is presented?", correctAnswer: "They steer the reader's emotions and judgment through the wording itself, rather than supplying any evidence either way.", explanation: "Emotionally loaded wording pushes a verdict in place of giving reasons." },
+      { topicSlug: "cognitive-biases-motivated-reasoning", prompt: "A man convinced a diet works reads only the glowing success stories and skips every study showing it has no effect. What's the flaw in how he's gathering evidence?", correctAnswer: "He only seeks evidence that confirms what he already believes and ignores evidence that could prove him wrong.", explanation: "Collecting only belief-consistent evidence produces a distorted, one-sided picture." },
+      { topicSlug: "language-definition-vagueness", prompt: "Two people argue about whether to meet 'at the bank' — one means a riverbank, the other a financial bank. What about the word is causing their disagreement?", correctAnswer: "The word has two distinct meanings, so they're talking about different things — the dispute is verbal, not a real disagreement.", explanation: "When a word carries multiple meanings, a clash can be merely about words rather than substance." },
+      { topicSlug: "credibility-sources-testimony", prompt: "An ad sells heart medication using a famous actor's endorsement. Why is that endorsement weak evidence that the medication actually works?", correctAnswer: "The actor isn't a relevant medical expert — celebrity status doesn't make a health claim true.", explanation: "An endorsement only carries weight when the source has genuine, relevant expertise." },
     ],
   },
   {
@@ -964,11 +964,11 @@ const ASSIGNMENTS: SeedAssignment[] = [
     timeLimitMinutes: 40,
     instructions: "Timed. 40 minutes. Pasting disabled.",
     problems: [
-      { topicSlug: "fallacies-of-relevance", prompt: "Distorting someone's view into a weaker version to attack it is the ____ ____ fallacy. Two words.", correctAnswer: "straw man", explanation: "The straw man refutes a misrepresentation, not the real view." },
-      { topicSlug: "fallacies-weak-induction", prompt: "Arguing that one small step will inevitably lead to disaster, with no support for the links, is the ____ ____ fallacy. Two words.", correctAnswer: "slippery slope", explanation: "The slippery slope assumes an unsupported chain of consequences." },
-      { topicSlug: "fallacies-presumption-ambiguity", prompt: "Assuming the very thing you are trying to prove is ____ reasoning (also called begging the question).", correctAnswer: "circular", explanation: "Circular reasoning hides the conclusion among the premises." },
-      { topicSlug: "cognitive-biases-motivated-reasoning", prompt: "Relying too heavily on the first piece of information you receive is ____ bias.", correctAnswer: "anchoring", explanation: "Anchoring lets an initial value skew later judgments." },
-      { topicSlug: "credibility-sources-testimony", prompt: "Checking a claim by leaving the page to consult other independent sources is called ____ reading.", correctAnswer: "lateral", explanation: "Lateral reading is how professional fact-checkers verify sources." },
+      { topicSlug: "fallacies-of-relevance", prompt: "Ari argues we should ease the campus curfew by an hour. Dana responds, 'Ari wants total lawlessness with no rules at all.' What did Dana do wrong?", correctAnswer: "Dana distorted Ari's modest proposal into an extreme version and attacked that instead of his actual position.", explanation: "Refuting an exaggerated misrepresentation leaves the real argument standing." },
+      { topicSlug: "fallacies-weak-induction", prompt: "'If we let students retake one test, soon they'll demand to retake everything and grades will mean nothing.' Why is this reasoning weak?", correctAnswer: "It assumes an unsupported chain from one small step to disaster without showing each link is actually likely.", explanation: "Predicting catastrophe through unjustified intermediate steps is unsupported." },
+      { topicSlug: "fallacies-presumption-ambiguity", prompt: "'The book is true because it says so, and what it says must be true because the book is reliable.' What's wrong with this reasoning?", correctAnswer: "It assumes the very thing it's trying to prove — the conclusion is already buried in the premises, so it proves nothing.", explanation: "Reasoning that takes its conclusion for granted as a premise establishes nothing." },
+      { topicSlug: "cognitive-biases-motivated-reasoning", prompt: "A shopper sees a jacket marked 'was $400, now $150' and feels it's a steal — without ever checking what the jacket is actually worth. How is that first number distorting her judgment?", correctAnswer: "The $400 anchors her, so $150 feels cheap by comparison regardless of the jacket's real value.", explanation: "An initial figure skews later judgments even when it's arbitrary." },
+      { topicSlug: "credibility-sources-testimony", prompt: "Unsure whether a slick-looking website is trustworthy, a fact-checker leaves the site and checks what independent sources say about it. Why is that smarter than judging the site by how polished it looks?", correctAnswer: "A professional-looking site can still be unreliable; consulting independent sources reveals its actual credibility.", explanation: "Appearance is easy to fake; outside corroboration is what establishes trust." },
     ],
   },
 
@@ -981,9 +981,9 @@ const ASSIGNMENTS: SeedAssignment[] = [
     timeLimitMinutes: null,
     instructions: "Untimed practice.",
     problems: [
-      { topicSlug: "probability-statistical-reasoning", prompt: "Ignoring how common a condition is when judging a positive test result is the base rate ____.", correctAnswer: "fallacy", explanation: "The base rate fallacy (neglect) ignores prior prevalence." },
-      { topicSlug: "evaluating-evidence-science", prompt: "A claim that cannot in principle be shown false is said to be ____.", correctAnswer: "unfalsifiable", explanation: "Unfalsifiable claims make no testable prediction." },
-      { topicSlug: "decision-making-uncertainty", prompt: "An outcome's value weighted by its probability is called its ____ value.", correctAnswer: "expected", explanation: "Expected value weights each outcome by its probability." },
+      { topicSlug: "probability-statistical-reasoning", prompt: "A disease affects only 1 in 10,000 people, and a test for it is '99% accurate.' Someone tests positive and is sure they have it. Why might that certainty be unwarranted?", correctAnswer: "Because the disease is so rare, most positives are false positives — ignoring how uncommon it is wildly overstates the real chance of having it.", explanation: "When a condition is rare, even an accurate test produces mostly false positives." },
+      { topicSlug: "evaluating-evidence-science", prompt: "A psychic claims 'invisible energies' guide events, but insists no possible test could ever detect or disprove them. Why is a claim like that worthless as science?", correctAnswer: "If nothing could ever show it false, it makes no testable prediction, so no evidence could ever support or refute it.", explanation: "A claim that rules out any possible test can't be evaluated by evidence." },
+      { topicSlug: "decision-making-uncertainty", prompt: "Lottery A: a 1% chance to win $1,000. Lottery B: a 50% chance to win $30. Tickets cost the same. Which is the better bet, and how would you justify it?", correctAnswer: "B — its probability-weighted payoff is $15 versus A's $10, so on average B returns more per ticket.", explanation: "Compare options by probability-weighted value: 0.5×$30 = $15 beats 0.01×$1,000 = $10." },
     ],
   },
   {
@@ -994,10 +994,10 @@ const ASSIGNMENTS: SeedAssignment[] = [
     timeLimitMinutes: null,
     instructions: "Untimed practice.",
     problems: [
-      { topicSlug: "moral-value-reasoning", prompt: "A claim about what OUGHT to be the case (rather than what is) is a ____ claim.", correctAnswer: "normative", explanation: "Normative (value) claims concern what ought to be; they cannot be derived from facts alone." },
-      { topicSlug: "reasoning-in-writing", prompt: "The single main claim an argumentative essay defends is called its ____.", correctAnswer: "thesis", explanation: "The thesis is the conclusion the whole essay supports." },
-      { topicSlug: "detecting-misinformation", prompt: "Misinformation spread deliberately to deceive is specifically called ____.", correctAnswer: "disinformation", explanation: "Disinformation is intentional; misinformation may be unintentional." },
-      { topicSlug: "critical-thinking-across-domains", prompt: "Using a reasoning skill learned in one area in a brand-new area is called ____.", correctAnswer: "transfer", explanation: "Transfer is using a skill in a new context; it must be built deliberately." },
+      { topicSlug: "moral-value-reasoning", prompt: "Two statements: (a) 'Violent crime fell 20% last year.' (b) 'The government should spend less on prisons.' Which one could be settled by facts alone, and which involves a value judgment? Explain.", correctAnswer: "(a) is factual and could be checked against data; (b) is a value judgment about what ought to be done and can't be settled by facts alone.", explanation: "Claims about what ought to be can't be derived from facts about what is." },
+      { topicSlug: "reasoning-in-writing", prompt: "A student's essay wanders through many points, and readers finish it unable to tell what she was actually arguing for. What is the single most important thing her essay is missing?", correctAnswer: "A clear central claim that the whole essay is organized to support.", explanation: "A piece of persuasive writing needs one main point that everything else backs up." },
+      { topicSlug: "detecting-misinformation", prompt: "Two people each share a false story: one was fooled and genuinely believed it; the other knew it was false and spread it anyway to mislead people. Why does the second case deserve harsher judgment?", correctAnswer: "The second person spread it deliberately to deceive, while the first made an honest mistake — the intent to mislead is what makes it worse.", explanation: "Deliberate deception is more culpable than an honest error in sharing something false." },
+      { topicSlug: "critical-thinking-across-domains", prompt: "A student is sharp at spotting weak arguments in history class but never applies that skill to the ads and posts she sees online. What is she failing to do?", correctAnswer: "Carry her reasoning skill over into new, everyday situations instead of leaving it confined to one class.", explanation: "Reasoning skills only pay off when deliberately applied across new contexts." },
     ],
   },
   {
@@ -1008,16 +1008,16 @@ const ASSIGNMENTS: SeedAssignment[] = [
     timeLimitMinutes: 90,
     instructions: "Cumulative final. 90 minutes. Pasting disabled.",
     problems: [
-      { topicSlug: "arguments-vs-nonarguments", prompt: "'We should leave now, because the storm is coming.' Argument or non-argument?", correctAnswer: "argument", explanation: "A reason supports a conclusion, so it is an argument." },
-      { topicSlug: "premises-and-conclusions", prompt: "In 'Since taxes rose, prices increased,' which word is the premise indicator?", correctAnswer: "since", explanation: "'Since' flags the premise 'taxes rose'." },
-      { topicSlug: "validity-and-soundness", prompt: "An argument that is valid and has all true premises is ____.", correctAnswer: "sound", explanation: "Validity plus true premises equals soundness." },
-      { topicSlug: "deductive-vs-inductive", prompt: "Reasoning from a representative sample to a claim about the whole population is deductive or inductive?", correctAnswer: "inductive", explanation: "Generalization from a sample is inductive." },
-      { topicSlug: "propositional-logic-truth-tables", prompt: "Denying the antecedent (P→Q, not P, therefore not Q) is valid or invalid?", correctAnswer: "invalid", explanation: "It is a formal fallacy; Q may still hold for other reasons." },
-      { topicSlug: "fallacies-of-relevance", prompt: "Dismissing a study because of who funded it, rather than its evidence, is which fallacy? (Latin.)", correctAnswer: "ad hominem", explanation: "Attacking the source instead of the argument is ad hominem (circumstantial)." },
-      { topicSlug: "fallacies-weak-induction", prompt: "'I took the supplement and my cold went away, so it cured me.' Which fallacy? (Latin, two words.)", correctAnswer: "post hoc", explanation: "Post hoc mistakes sequence for causation." },
-      { topicSlug: "cognitive-biases-motivated-reasoning", prompt: "Favoring evidence that confirms what you already believe is ____ bias.", correctAnswer: "confirmation", explanation: "Confirmation bias is the tendency to seek belief-consistent evidence." },
-      { topicSlug: "probability-statistical-reasoning", prompt: "An outcome's value times its probability gives its ____ value.", correctAnswer: "expected", explanation: "Expected value combines magnitude and probability." },
-      { topicSlug: "capstone-synthesis", prompt: "A claim is worth believing when its premises are true AND its reasoning is valid or ____.", correctAnswer: "strong", explanation: "Deductive reasoning must be valid; inductive reasoning must be strong." },
+      { topicSlug: "arguments-vs-nonarguments", prompt: "'We should leave now, because the storm is coming.' Is a reason being offered to support a conclusion, or is this just a statement? Explain.", correctAnswer: "A reason is offered — 'the storm is coming' supports the conclusion that we should leave — so it's an argument.", explanation: "A reason given for a claim makes the passage an argument." },
+      { topicSlug: "premises-and-conclusions", prompt: "In 'Since taxes rose, prices increased,' what is the reason given, and what conclusion is drawn from it?", correctAnswer: "Reason: taxes rose. Conclusion: prices increased.", explanation: "'Since' flags 'taxes rose' as the support for the conclusion." },
+      { topicSlug: "validity-and-soundness", prompt: "An argument has flawless logic and every one of its premises is actually true. What can you say about its conclusion, and why?", correctAnswer: "Its conclusion must be true — valid logic combined with all-true premises guarantees a true conclusion.", explanation: "Validity preserves truth from premises to conclusion." },
+      { topicSlug: "deductive-vs-inductive", prompt: "A pollster surveys a representative sample and concludes how the whole country will vote. Does that conclusion follow with certainty, or only with probability? Explain.", correctAnswer: "Only with probability — generalizing from a sample makes the conclusion likely, not guaranteed.", explanation: "Inference from a sample to a population is inductive and uncertain." },
+      { topicSlug: "propositional-logic-truth-tables", prompt: "'If it's a dog, then it's an animal. It's not a dog. So it's not an animal.' Does that conclusion really follow? Explain.", correctAnswer: "No — it could still be another animal, like a cat, so the conclusion doesn't follow.", explanation: "Ruling out the condition doesn't rule out the result; the result can hold for other reasons." },
+      { topicSlug: "fallacies-of-relevance", prompt: "A senator dismisses a climate study by saying, 'It was funded by people I don't like,' never once addressing its data. What's wrong with that response?", correctAnswer: "It attacks who funded the study instead of its evidence — who paid for it doesn't by itself make the data wrong.", explanation: "Rejecting an argument over its source rather than its content engages nothing about the argument." },
+      { topicSlug: "fallacies-weak-induction", prompt: "'I took the supplement and my cold went away, so it cured me.' Why doesn't this show the supplement actually worked?", correctAnswer: "Colds clear up on their own, so recovery happening after the supplement doesn't show the supplement caused it.", explanation: "An event following another isn't evidence the first caused the second." },
+      { topicSlug: "cognitive-biases-motivated-reasoning", prompt: "An investor reads only the news predicting his stock will rise and ignores every warning sign. How is this likely to distort his decision?", correctAnswer: "By seeking only confirming news he gets a one-sided picture and underestimates the real risk.", explanation: "Filtering for belief-consistent evidence inflates confidence and hides danger." },
+      { topicSlug: "probability-statistical-reasoning", prompt: "Bet A: a 10% chance to win $100. Bet B: a 90% chance to win $15. They cost the same. Which is mathematically the better bet, and why?", correctAnswer: "B — its probability-weighted return is $13.50 versus $10 for A, so on average B pays more.", explanation: "Weigh each payoff by its probability: 0.9×$15 = $13.50 beats 0.1×$100 = $10." },
+      { topicSlug: "capstone-synthesis", prompt: "When is a conclusion genuinely worth believing — what has to be true about both its premises and the way they support it?", correctAnswer: "Its premises must be true AND they must properly support the conclusion (the logic valid if deductive, the support strong if inductive).", explanation: "Believable conclusions need both true premises and adequate support." },
     ],
   },
 ];
@@ -1088,4 +1088,38 @@ export async function seedIfEmpty(): Promise<void> {
   }
 
   logger.info({ topics: TOPICS.length, assignments: ASSIGNMENTS.length }, "Seed complete");
+}
+
+// Idempotently bring the already-seeded database in line with the current
+// ASSIGNMENTS definitions. Existing rows are UPDATED in place (matched by
+// assignment title + problem position) so we never wipe a student's attempts,
+// answers, or sessions. Safe to run on every boot.
+export async function syncCourseContent(): Promise<void> {
+  let updated = 0;
+  for (const a of ASSIGNMENTS) {
+    const [assignment] = await db
+      .select()
+      .from(assignmentsTable)
+      .where(eq(assignmentsTable.title, a.title));
+    if (!assignment) continue;
+    for (let p = 0; p < a.problems.length; p++) {
+      const prob = a.problems[p]!;
+      const res = await db
+        .update(problemsTable)
+        .set({
+          prompt: prob.prompt,
+          correctAnswer: prob.correctAnswer,
+          explanation: prob.explanation,
+        })
+        .where(
+          and(
+            eq(problemsTable.assignmentId, assignment.id),
+            eq(problemsTable.position, p),
+          ),
+        )
+        .returning({ id: problemsTable.id });
+      updated += res.length;
+    }
+  }
+  logger.info({ updated }, "Course content sync complete");
 }

@@ -5,3 +5,4 @@
 - [Starter questions](starter-questions.md) — cached in lectures.starter_questions, warmed on boot; must be APPLIED (quoted example) not recall; use TEXT_MODEL; regenerate by NULLing column + curl warm.
 - [Learner events vs mastery](learner-events.md) — mastery = practice_attempts + learner_events(kind='practice_exam') ONLY; log other activity with distinct kinds or you double-count; practice-exam submit is idempotent.
 - [Diagnostic assessments](diagnostic-assessments.md) — /assessments (≠ operator /diagnostics); 5 graded one-time + 1 ungraded self; 20% via computeGrade Set; no answer leakage on start; fallback bank needs ≥3 unique stems/skill.
+- [No-argot question rule](no-argot-question-rule.md) — questions test reasoning in plain language, never term recall/classify; enforce in violatesStandard + static seed + route fallback banks; graded assignments bypass the guard.

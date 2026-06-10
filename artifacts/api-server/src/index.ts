@@ -1,6 +1,6 @@
 import app from "./app";
 import { logger } from "./lib/logger";
-import { seedIfEmpty } from "./lib/seed";
+import { seedIfEmpty, syncCourseContent } from "./lib/seed";
 import { warmStarterQuestions } from "./routes/tutor";
 
 const rawPort = process.env["PORT"];
@@ -18,6 +18,7 @@ if (Number.isNaN(port) || port <= 0) {
 }
 
 seedIfEmpty()
+  .then(() => syncCourseContent())
   .then(() => warmStarterQuestions())
   .catch((err) => {
     logger.error({ err }, "Seed/warm failed");

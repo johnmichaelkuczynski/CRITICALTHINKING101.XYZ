@@ -133,10 +133,11 @@ router.post("/assignments/:assignmentId/practice", async (req, res): Promise<voi
       sessionId: session.id,
       topicId: b.topicId,
       position: i + 1,
-      prompt: `Practice (${b.topicTitle}): Read the following short argument and identify the single most important reasoning issue. "Everyone I asked agreed with me, so my conclusion must be correct."`,
-      correctAnswer: "Appeal to popularity (bandwagon)",
+      prompt: `Practice (${b.topicTitle}): Someone argues, "Everyone I asked agreed with me, so my conclusion must be correct." Why doesn't the fact that many people agree actually show the conclusion is true?`,
+      correctAnswer:
+        "Lots of people can be wrong about the same thing — agreement isn't evidence. What makes a conclusion true is good reasons and evidence, not how many people hold it.",
       explanation:
-        "Agreement by many people is not evidence that a claim is true; treating popularity as proof is the bandwagon fallacy.",
+        "Agreement by many people is not evidence that a claim is true; popularity and truth are independent.",
       difficulty,
     };
   });

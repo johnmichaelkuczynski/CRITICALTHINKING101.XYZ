@@ -166,19 +166,21 @@ router.post("/practice/sessions/:sessionId/next", async (req, res): Promise<void
     );
   } catch {
     generated = {
-      prompt: `Practice (${topic.title}): In the argument "We should trust the report because the experts wrote it, and the experts wrote it because we should trust the report," what reasoning error is being committed?`,
-      correctAnswer: "Circular reasoning",
+      prompt: `Practice (${topic.title}): Someone argues, "We should trust the report because the experts wrote it, and we know the experts are trustworthy because they wrote this report." Why does this argument fail to actually prove anything?`,
+      correctAnswer:
+        "It assumes the very thing it's trying to prove — it uses the conclusion as its own support, so it goes in a circle and establishes nothing.",
       explanation:
-        "The conclusion is used to support the premise that is supposed to support the conclusion, so the argument begs the question.",
+        "The conclusion is used to support the premise that is supposed to support the conclusion, so the argument proves nothing.",
     };
   }
   // Never serve a definitional / text-referencing problem.
   if (violatesStandard(generated.prompt)) {
     generated = {
-      prompt: `Practice (${topic.title}): A student argues "My horoscope said today would go badly, and it did, so astrology clearly works." What reasoning error is at work here?`,
-      correctAnswer: "Confirmation bias",
+      prompt: `Practice (${topic.title}): A student says, "My horoscope said today would go badly, and it did, so astrology clearly works." What is wrong with using this as evidence that astrology works?`,
+      correctAnswer:
+        "It counts only the times the vague prediction seemed to fit and ignores all the times it didn't — a prediction that loose can't be real evidence either way.",
       explanation:
-        "Counting only the hits and ignoring the misses is confirmation bias — the prediction is too vague to be evidence either way.",
+        "Counting only the hits and ignoring the misses isn't evidence — the prediction is too vague to confirm or disconfirm.",
     };
   }
 
