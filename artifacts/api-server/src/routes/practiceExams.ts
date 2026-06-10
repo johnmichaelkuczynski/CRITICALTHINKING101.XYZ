@@ -23,7 +23,7 @@ import { chatJson, chatText } from "../lib/ai";
 import { gradeAnswer } from "../lib/grading";
 import { logEvent } from "../lib/events";
 import { topicMastery, buildFocusPointers, type FocusPointer } from "../lib/profile";
-import { APPLIED_RULES, violatesStandard } from "../lib/questions";
+import { APPLIED_RULES, violatesStandard, answerIsBareLabel } from "../lib/questions";
 
 const router: IRouter = Router();
 
@@ -118,7 +118,13 @@ router.post("/assignments/:assignmentId/practice", async (req, res): Promise<voi
     const g = generated[i];
     const jitter = (Math.random() - 0.5) * 0.4;
     const difficulty = Math.max(1, Math.min(5, base + jitter));
-    if (g && g.prompt && g.correctAnswer && !violatesStandard(g.prompt)) {
+    if (
+      g &&
+      g.prompt &&
+      g.correctAnswer &&
+      !violatesStandard(g.prompt) &&
+      !answerIsBareLabel(g.correctAnswer)
+    ) {
       return {
         sessionId: session.id,
         topicId: b.topicId,

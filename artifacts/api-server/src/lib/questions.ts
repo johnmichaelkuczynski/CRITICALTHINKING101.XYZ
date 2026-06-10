@@ -101,6 +101,62 @@ export function violatesStandard(q: string): boolean {
   );
 }
 
+// Canonical terminology/jargon/category names the course TEACHES but must never
+// be the ANSWER to a question. A reasoning answer states a judgment in plain
+// words; a memorization answer is just one of these labels. We reject an answer
+// only when, stripped of articles/filler, it IS essentially one of these terms —
+// so full reasoning sentences (e.g. "it is invalid because the premises can be
+// true while the conclusion is false") are never caught.
+const LABEL_TERMS: Set<string> = new Set([
+  // fallacies
+  "ad hominem", "straw man", "strawman", "slippery slope", "false dilemma",
+  "false dichotomy", "circular reasoning", "circular argument", "begging the question",
+  "hasty generalization", "appeal to authority", "appeal to emotion",
+  "appeal to popularity", "appeal to ignorance", "bandwagon", "red herring",
+  "tu quoque", "post hoc", "affirming the consequent", "denying the antecedent",
+  "equivocation", "no true scotsman", "genetic fallacy", "gambler's fallacy",
+  "gamblers fallacy", "sunk cost", "false cause", "loaded question",
+  // biases
+  "confirmation bias", "anchoring", "anchoring bias", "availability heuristic",
+  "hindsight bias", "framing effect", "dunning-kruger", "dunning kruger",
+  "in-group bias", "ingroup bias", "survivorship bias", "base rate neglect",
+  "base rate fallacy", "self-serving bias", "sunk cost fallacy",
+  // concepts / categories that students must reason about, not name
+  "false belief", "true belief", "valid argument", "invalid argument",
+  "valid", "invalid", "sound argument", "unsound argument", "sound", "unsound",
+  "cogent", "uncogent", "premise", "conclusion", "premises", "conclusions",
+  "deductive", "inductive", "deduction", "induction", "deductive argument",
+  "inductive argument", "due diligence", "evaluating evidence",
+  "necessary condition", "sufficient condition", "correlation", "causation",
+  "correlation not causation", "claim", "argument", "explanation", "opinion",
+  "fact", "assumption", "inference", "fallacy", "bias", "cognitive bias",
+]);
+
+// True when the answer is just a piece of terminology/a category name rather
+// than a substantive judgment. Used to reject GENERATED questions whose answer
+// is a retrievable label (the product rule: the answer must never be a label).
+export function answerIsBareLabel(answer: string): boolean {
+  let s = (answer ?? "").toLowerCase().trim();
+  s = s.replace(/^[\s"'“”‘’(){}\[\]]+|[\s"'“”‘’(){}\[\]]+$/g, "");
+  s = s.replace(/[.!?;:,]+$/g, "").trim();
+  if (!s) return false;
+  // Only short answers can be bare labels; real reasoning runs longer.
+  if (s.split(/\s+/).length > 6) return false;
+  // Strip leading filler ("it's a ...", "this is the ...", "the answer is ...").
+  s = s
+    .replace(/^(it'?s|this is|that is|it is|that'?s|the answer is|answer)\s*:?\s*/i, "")
+    .trim();
+  s = s.replace(/^(a|an|the)\s+/i, "").trim();
+  const candidates = new Set<string>([
+    s,
+    s.replace(/\s+(fallacy|bias|reasoning|argument|belief|error|effect|heuristic|condition)$/i, "").trim(),
+  ]);
+  for (const c of candidates) {
+    if (c && LABEL_TERMS.has(c)) return true;
+  }
+  return false;
+}
+
 // An applied question shows a concrete example. We treat a quoted span as the
 // signal that the model wrote the situation out, which lets us prefer those.
 export function hasConcreteExample(q: string): boolean {

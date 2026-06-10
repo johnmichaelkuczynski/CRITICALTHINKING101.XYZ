@@ -5,7 +5,7 @@
 // ungraded self-assessment.
 import type { DiagnosticQuestion } from "@workspace/db";
 import { chatJson, chatText, FAST_MODEL } from "./ai";
-import { APPLIED_RULES, violatesStandard, isCleanText } from "./questions";
+import { APPLIED_RULES, violatesStandard, isCleanText, answerIsBareLabel } from "./questions";
 
 // The CCTST-style skill scales we measure. Two questions per skill = a 10-item
 // assessment with a clean per-skill breakdown.
@@ -108,6 +108,10 @@ function sanitizeQuestion(raw: unknown, skill: string): DiagnosticQuestion | nul
   if (correctIndex < 0 || correctIndex > 3) return null;
   if (!explanation) return null;
   if (violatesStandard(prompt) || !isCleanText(prompt)) return null;
+  // Reject when the correct choice is just a retrievable label (e.g. "Ad
+  // hominem", "Confirmation bias") — that turns the item into pure terminology
+  // recall rather than applying the concept to the situation.
+  if (answerIsBareLabel(options[correctIndex] ?? "")) return null;
   return { skill, prompt, options, correctIndex, explanation };
 }
 

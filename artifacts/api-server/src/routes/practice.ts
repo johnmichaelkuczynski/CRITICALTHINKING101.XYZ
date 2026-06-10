@@ -18,7 +18,7 @@ import {
 import { chatJson } from "../lib/ai";
 import { gradeAnswer } from "../lib/grading";
 import { logEvent } from "../lib/events";
-import { violatesStandard, APPLIED_RULES } from "../lib/questions";
+import { violatesStandard, answerIsBareLabel, APPLIED_RULES } from "../lib/questions";
 
 const router: IRouter = Router();
 
@@ -173,8 +173,9 @@ router.post("/practice/sessions/:sessionId/next", async (req, res): Promise<void
         "The conclusion is used to support the premise that is supposed to support the conclusion, so the argument proves nothing.",
     };
   }
-  // Never serve a definitional / text-referencing problem.
-  if (violatesStandard(generated.prompt)) {
+  // Never serve a definitional / text-referencing problem, or one whose answer
+  // is just a retrievable label rather than a reasoning judgment.
+  if (violatesStandard(generated.prompt) || answerIsBareLabel(generated.correctAnswer)) {
     generated = {
       prompt: `Practice (${topic.title}): A student says, "My horoscope said today would go badly, and it did, so astrology clearly works." What is wrong with using this as evidence that astrology works?`,
       correctAnswer:
