@@ -75,6 +75,9 @@ const CLASSIFICATION: RegExp[] = [
   /\b(classified|categori[sz]ed|labell?ed|described)\s+as\s+(what|which)\b/i,
   /\bwhat\s+(category|label)\b/i,
   /\blabell?ed\s+as\b/i,
+  // "which is which" — asks the student to sort items into named categories,
+  // which is pure labeling no matter how the rest of the prompt is dressed up.
+  /\bwhich\s+is\s+which\b/i,
 ];
 
 // References to specific source material the student would have to go read.
