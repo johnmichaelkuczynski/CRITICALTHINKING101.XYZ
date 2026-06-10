@@ -42,4 +42,15 @@ fabrication — but enforcement is prompt-only (no post-generation fact gate).
 **Why:** explicit, emphatic user requirement; fabricated "real" examples are
 worse than abstract ones. Formal/structural lectures (e.g. categorical logic,
 truth tables, essay structure) may legitimately have no news example — don't
-force one.
+force one. Everyday illustrative scenarios (a friend's claim, an ad, a dorm
+anecdote) are allowed and encouraged for relatability — they are clearly
+hypothetical teaching examples, not fabricated "real" news, so they don't
+violate the rule; just don't dress them up as verifiable named events.
+
+## Markdown `$` triggers LaTeX math rendering — avoid bare dollar signs
+The lecture renderer in qr-course parses `$...$` as inline math (there's a Math
+keyboard feature). A body like "a $12 charger ... a $25 one" renders the span
+between the dollar signs as italic math garbage ("12charger...25"). Write money
+as "12-dollar" / "twelve dollars" instead of "$12" in lecture bodies.
+**How to apply:** after any lecture body edit with currency, screenshot
+`/lectures/N` and confirm dollar amounts render as plain text.

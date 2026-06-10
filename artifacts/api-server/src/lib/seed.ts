@@ -29,40 +29,40 @@ const TOPICS: SeedTopic[] = [
 
 Critical thinking is the disciplined practice of *evaluating reasoning* — your own and others' — to decide what is reasonable to believe or do.
 
-**What that actually looks like.** In 1998 a paper in *The Lancet* claimed the MMR vaccine causes autism, and millions of parents came to believe it. A critical thinker faced with that headline does not ask "Is this scary?" or "Does the author sound confident?" They ask, "What is the actual evidence, and does it really support the conclusion?" Here the answer was no: the study was later exposed as fraudulent, *The Lancet* fully retracted it in 2010, and its author lost his medical license. Notice the move — you decided what was *reasonable to believe* by evaluating the reasoning, not by counting how many people shared the claim or how frightening it sounded. That is the whole skill in one example.
+**An everyday example.** You're shopping online and see a 12-dollar phone charger with a 4.8-star rating next to a 25-dollar one rated 4.3. The cheap one "has better reviews," so it must be the smarter buy, right? Critical thinking is the pause where you ask: *who wrote these reviews, and do they actually show the charger is good?* You look closer and notice the cheap one has 200 five-star reviews all posted in the same week in nearly identical broken English — a classic sign of paid or fake reviews — while the pricier one has 3,000 reviews spread over two years. You decided what was *reasonable to believe* by evaluating the reasoning behind the number, not by trusting the bigger number. The exact same move works on a friend's "trust me, it works," a TikTok health tip, or a politician's promise.
 
 It is not about being negative or clever; it is about being **fair, careful, and honest** with evidence and argument.
 
-**Why "clever" is not enough.** In the 1999 trial of Sally Clark, whose two infant sons had died, an expert witness told the jury the chance of two natural cot deaths in one family was "1 in 73 million." It was a striking, clever-sounding number, and it helped convict her of murder. But the number was built on a faulty assumption (it wrongly treated the two deaths as independent), and the prosecution had also failed to disclose medical evidence. Careful, honest examination of the evidence overturned her conviction in 2003. The clever number won the argument in the moment; the *careful* evaluation found the truth.
+**Clever is not the same as correct.** Think of the last group-chat argument you watched. The person who fired off the funniest comeback or the most confident "actually..." usually *wins the room* — but winning the room is not the same as being right. The careful person is the one who says "hold on, let me actually check that," looks it up, and follows where the facts go *even when it's their own claim that falls apart*. Being fair means applying the same scrutiny to an argument you *like* as to one you don't.
 
 ## What it is not
 
-- It is **not** simply disagreeing or finding fault. A flat-earther disagrees loudly with NASA, but that is not critical thinking — they reject evidence they dislike instead of weighing it. Reflexively saying "I don't buy it" is just contrarianism wearing a lab coat.
-- It is **not** raw intelligence or knowing many facts. Sir Arthur Conan Doyle — physician, and creator of the hyper-rational Sherlock Holmes — was completely fooled by the 1917 "Cottingley Fairies" photographs, which were just paper cut-outs two young girls had posed with. His intelligence did not save him, because he *wanted* the fairies to be real. Brainpower without honest scrutiny is not critical thinking.
-- It is **not** winning arguments by any means available. The tobacco industry won arguments for decades — one internal 1969 memo even read, "Doubt is our product" — deliberately manufacturing uncertainty about smoking and cancer. They were persuasive and they "won," but they were doing the opposite of critical thinking: hiding evidence rather than following it.
+- It is **not** simply disagreeing or finding fault. The friend who reacts to every headline with "that's fake" without reading it isn't thinking critically — they're just reflexively rejecting things. Doubt with no examination is as lazy as belief with no examination.
+- It is **not** raw intelligence or knowing many facts. Straight-A students fall for phishing emails and "double your money" crypto DMs all the time — not because they're dim, but because they *wanted* the reward and skipped the scrutiny. Brainpower without honest checking is just confident wrongness.
+- It is **not** winning arguments by any means available. Talking over your roommate, twisting what they said, or citing a "fact" you're secretly unsure about might win the fight, but it gets you no closer to the truth — which was the whole point.
 
 ## The core moves
 
-A critical thinker habitually asks four questions. Watch them work on one concrete claim — *"The Great Wall of China is the only human-made object visible from space with the naked eye."*
+A critical thinker habitually asks four questions. Watch them work on a claim you've probably heard: *"This study supplement really works — three people in my dorm took it during finals and they all got A's."*
 
-1. **What exactly is being claimed?** That an astronaut in orbit can see the Wall unaided — and that nothing else human-made qualifies.
-2. **What reasons are offered?** Usually just one: the Wall is extremely long.
-3. **Are those reasons true, and do they actually support the claim?** Length is the wrong measure — visibility depends on *width*, and the Wall is only a few meters wide, no wider than highways nobody claims to see from orbit. China's first astronaut, Yang Liwei, reported in 2003 that he could not see it.
-4. **What's being assumed, and what's been left out?** The claim quietly assumes "long" means "wide enough to see," and leaves out every other large structure (cities, airports) that is far more visible.
+1. **What exactly is being claimed?** That the supplement *caused* the good grades — not just that it happened to be taken.
+2. **What reasons are offered?** Three people took it and did well.
+3. **Are those reasons true, and do they actually support the claim?** Even if all three really got A's, three friends are a tiny, cherry-picked sample with no comparison group — and they also studied, slept, and maybe took easier classes.
+4. **What's being assumed, and what's been left out?** It assumes the pill (not the studying) made the difference, and leaves out everyone who took it and *didn't* do well — you never hear from them.
 
-Run those four questions and a famous "fact" collapses.
+Run those four questions and "it worked for them" stops being a reason to buy anything.
 
 ## Why it matters
 
-We are flooded with claims — ads, headlines, posts, statistics, expert testimony. Critical thinking is the skill that separates what is worth believing from what merely sounds convincing. It protects you from manipulation by others and from your own biases.
+We are flooded with claims — ads, group chats, influencer "what I eat in a day" videos, headlines, statistics. Critical thinking is the skill that separates what is worth believing from what merely sounds convincing. It protects you from being manipulated — by advertisers, scammers, and charismatic talkers — and from your own wishful thinking.
 
-Consider **Theranos**. For years, sophisticated investors, journalists, and board members accepted Elizabeth Holmes's claim that a single drop of blood could run hundreds of medical tests — because the story was thrilling and the founder charismatic. The company unraveled only after *Wall Street Journal* reporter John Carreyrou did what critical thinking demands: he stopped asking whether the pitch was *persuasive* and started asking whether the actual evidence showed the machines worked. They never had.
+The stakes can get high. **Theranos** convinced sophisticated investors and journalists that a single drop of blood could run hundreds of medical tests — because the story was thrilling and the founder charismatic. It began to unravel after *Wall Street Journal* reporter John Carreyrou stopped asking whether the pitch was *persuasive* and started asking whether the evidence showed the machines actually worked. They never had. That is the very same question — "never mind how good it sounds, what does the evidence show?" — that saves you twelve dollars on a fake-reviewed charger.
 
 ## Metacognition
 
-Critical thinking is partly **metacognition** — thinking about your own thinking. The strongest reasoners notice when they are confused, when they *want* something to be true, and when they have reasoned past the evidence.
+Critical thinking is partly **metacognition** — thinking about your own thinking. The strongest reasoners catch themselves when they *want* something to be true.
 
-Even brilliant people fail here. Linus Pauling won two Nobel Prizes, then spent his later years convinced that megadoses of vitamin C could cure the common cold and even cancer. When carefully controlled trials (including studies at the Mayo Clinic) failed to confirm it, he kept believing anyway. The lesson is not "Pauling was stupid" — he plainly was not. It is that *wanting* something to be true quietly bends your judgment, and the critical thinker's job is to catch themselves doing it.`,
+You feel this every day. You want the expensive sneakers to be "an investment," so you wave away the price. You want your team to win, so you skim past the injury report. You want the text from your crush to mean something, so you read into it. Noticing *"wait — am I believing this because it's actually supported, or because I want it to be true?"* is the single most useful habit in this entire course.`,
   },
   {
     slug: "claims-beliefs-truth",
