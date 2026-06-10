@@ -27,22 +27,30 @@ const TOPICS: SeedTopic[] = [
     lectureTitle: "1.1 What critical thinking is and why it matters",
     body: `# What critical thinking is and why it matters
 
-Critical thinking is the disciplined practice of *evaluating reasoning* — your own and others' — to decide what is reasonable to believe or do. It is not about being negative or clever; it is about being **fair, careful, and honest** with evidence and argument.
+Critical thinking is the disciplined practice of *evaluating reasoning* — your own and others' — to decide what is reasonable to believe or do.
+
+**What that actually looks like.** In 1998 a paper in *The Lancet* claimed the MMR vaccine causes autism, and millions of parents came to believe it. A critical thinker faced with that headline does not ask "Is this scary?" or "Does the author sound confident?" They ask, "What is the actual evidence, and does it really support the conclusion?" Here the answer was no: the study was later exposed as fraudulent, *The Lancet* fully retracted it in 2010, and its author lost his medical license. Notice the move — you decided what was *reasonable to believe* by evaluating the reasoning, not by counting how many people shared the claim or how frightening it sounded. That is the whole skill in one example.
+
+It is not about being negative or clever; it is about being **fair, careful, and honest** with evidence and argument.
+
+**Why "clever" is not enough.** In the 1999 trial of Sally Clark, whose two infant sons had died, an expert witness told the jury the chance of two natural cot deaths in one family was "1 in 73 million." It was a striking, clever-sounding number, and it helped convict her of murder. But the number was built on a faulty assumption (it wrongly treated the two deaths as independent), and the prosecution had also failed to disclose medical evidence. Careful, honest examination of the evidence overturned her conviction in 2003. The clever number won the argument in the moment; the *careful* evaluation found the truth.
 
 ## What it is not
 
-- It is **not** simply disagreeing or finding fault.
-- It is **not** raw intelligence or knowing many facts.
-- It is **not** winning arguments by any means available.
+- It is **not** simply disagreeing or finding fault. A flat-earther disagrees loudly with NASA, but that is not critical thinking — they reject evidence they dislike instead of weighing it. Reflexively saying "I don't buy it" is just contrarianism wearing a lab coat.
+- It is **not** raw intelligence or knowing many facts. Sir Arthur Conan Doyle — physician, and creator of the hyper-rational Sherlock Holmes — was completely fooled by the 1917 "Cottingley Fairies" photographs, which were just paper cut-outs two young girls had posed with. His intelligence did not save him, because he *wanted* the fairies to be real. Brainpower without honest scrutiny is not critical thinking.
+- It is **not** winning arguments by any means available. The tobacco industry won arguments for decades — one internal 1969 memo even read, "Doubt is our product" — deliberately manufacturing uncertainty about smoking and cancer. They were persuasive and they "won," but they were doing the opposite of critical thinking: hiding evidence rather than following it.
 
 ## The core moves
 
-A critical thinker habitually asks four questions:
+A critical thinker habitually asks four questions. Watch them work on one concrete claim — *"The Great Wall of China is the only human-made object visible from space with the naked eye."*
 
-1. **What exactly is being claimed?**
-2. **What reasons are offered?**
-3. **Are those reasons true, and do they actually support the claim?**
-4. **What's being assumed, and what's been left out?**
+1. **What exactly is being claimed?** That an astronaut in orbit can see the Wall unaided — and that nothing else human-made qualifies.
+2. **What reasons are offered?** Usually just one: the Wall is extremely long.
+3. **Are those reasons true, and do they actually support the claim?** Length is the wrong measure — visibility depends on *width*, and the Wall is only a few meters wide, no wider than highways nobody claims to see from orbit. China's first astronaut, Yang Liwei, reported in 2003 that he could not see it.
+4. **What's being assumed, and what's been left out?** The claim quietly assumes "long" means "wide enough to see," and leaves out every other large structure (cities, airports) that is far more visible.
+
+Run those four questions and a famous "fact" collapses.
 
 ## Why it matters
 
@@ -52,7 +60,9 @@ Consider **Theranos**. For years, sophisticated investors, journalists, and boar
 
 ## Metacognition
 
-Critical thinking is partly **metacognition** — thinking about your own thinking. The strongest reasoners notice when they are confused, when they *want* something to be true, and when they have reasoned past the evidence.`,
+Critical thinking is partly **metacognition** — thinking about your own thinking. The strongest reasoners notice when they are confused, when they *want* something to be true, and when they have reasoned past the evidence.
+
+Even brilliant people fail here. Linus Pauling won two Nobel Prizes, then spent his later years convinced that megadoses of vitamin C could cure the common cold and even cancer. When carefully controlled trials (including studies at the Mayo Clinic) failed to confirm it, he kept believing anyway. The lesson is not "Pauling was stupid" — he plainly was not. It is that *wanting* something to be true quietly bends your judgment, and the critical thinker's job is to catch themselves doing it.`,
   },
   {
     slug: "claims-beliefs-truth",
