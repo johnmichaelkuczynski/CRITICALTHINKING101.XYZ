@@ -7,3 +7,4 @@
 - [Diagnostic assessments](diagnostic-assessments.md) — /assessments (≠ operator /diagnostics); 5 graded one-time + 1 ungraded self; 20% via computeGrade Set; no answer leakage on start; fallback bank needs ≥3 unique stems/skill.
 - [No-argot question rule](no-argot-question-rule.md) — questions test reasoning in plain language, never term recall/classify; enforce in violatesStandard + static seed + route fallback banks; graded assignments bypass the guard.
 - [Attempt result/review gating](attempt-result-review-gating.md) — take/retake is always allowed by design, but any endpoint returning graded answers MUST require attempt.status==='submitted' or it leaks the answer key.
+- [Lecture content sync & real-example convention](lecture-content-sync.md) — editing TOPICS bodies needs syncCourseContent to push + NULL cached medium/long/starters; lectures use only real verifiable examples.

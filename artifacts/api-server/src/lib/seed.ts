@@ -48,6 +48,8 @@ A critical thinker habitually asks four questions:
 
 We are flooded with claims — ads, headlines, posts, statistics, expert testimony. Critical thinking is the skill that separates what is worth believing from what merely sounds convincing. It protects you from manipulation by others and from your own biases.
 
+Consider **Theranos**. For years, sophisticated investors, journalists, and board members accepted Elizabeth Holmes's claim that a single drop of blood could run hundreds of medical tests — because the story was thrilling and the founder charismatic. The company unraveled only after *Wall Street Journal* reporter John Carreyrou did what critical thinking demands: he stopped asking whether the pitch was *persuasive* and started asking whether the actual evidence showed the machines worked. They never had.
+
 ## Metacognition
 
 Critical thinking is partly **metacognition** — thinking about your own thinking. The strongest reasoners notice when they are confused, when they *want* something to be true, and when they have reasoned past the evidence.`,
@@ -75,6 +77,8 @@ Only claims can serve as premises or conclusions, because only claims can be tru
 
 A **belief** is a claim you accept. **Truth** is whether the claim matches reality. These two come apart: you can believe something false, and something can be true that you do not believe. Critical thinking is the work of bringing your beliefs closer to the truth.
 
+History is full of widely-held false beliefs. In 1998 a paper in *The Lancet* by Andrew Wakefield claimed the MMR vaccine caused autism, and millions came to believe it. But the belief did not match reality: the study was found to be fraudulent, *The Lancet* fully retracted it in 2010, and Wakefield lost his medical license. Sincere, widespread belief never makes a claim true.
+
 ## Facts vs. opinions
 
 The fact/opinion split is rougher than people think. "Chocolate is tasty" reports a preference. But "Vaccines cause autism" is sometimes *called* an opinion when it is really a **false factual claim**. Ask: is this about a *preference*, or about *how the world is*?`,
@@ -96,13 +100,15 @@ Ask: **is something being supported by something else?** If yes, it is an argume
 ## Common non-arguments
 
 - **Description:** "The room was cold and dark."
-- **Explanation:** "The bridge collapsed because the steel had rusted." (tells *why*, not *that*)
+- **Explanation:** "The I-35W bridge in Minneapolis collapsed in 2007 because its steel gusset plates were undersized." (tells *why* it collapsed, not *that* it collapsed)
 - **Report:** "Officials announced the new policy yesterday."
 - **Illustration:** "Many metals conduct electricity; copper, for example."
 
 ## Argument vs. explanation
 
-This is the hardest distinction. An **argument** tries to convince you *that* something is true. An **explanation** assumes you already accept it and tells you *why* it happened. Same grammar, different job — look at whether the conclusion is genuinely in doubt.`,
+This is the hardest distinction. An **argument** tries to convince you *that* something is true. An **explanation** assumes you already accept it and tells you *why* it happened. Same grammar, different job — look at whether the conclusion is genuinely in doubt.
+
+No one disputed *that* the I-35W bridge had fallen — the wreckage was on every newscast. So when federal investigators pointed to the undersized gusset plates, they were not arguing that it collapsed; they were *explaining* a fact everyone already accepted. The conclusion was never in doubt, which is the tell-tale sign of an explanation rather than an argument.`,
   },
   {
     slug: "premises-and-conclusions",
@@ -129,7 +135,9 @@ Conclusions can come first, last, or in the middle: "We should leave now, becaus
 
 ## No indicators?
 
-Many arguments use no indicator words at all. Then you ask the key question: **which claim is the author trying to get me to accept, and which claims are doing the supporting?**`,
+Many arguments use no indicator words at all. Then you ask the key question: **which claim is the author trying to get me to accept, and which claims are doing the supporting?**
+
+Real arguments often hide their structure. When the U.S. Surgeon General's 1964 report concluded that smoking causes lung cancer, that conclusion rested on premises scattered across hundreds of pages — rising lung-cancer rates, animal experiments, and dose-response data. No single "therefore" announced it; the reader had to see which one claim all the evidence was marshalled to support.`,
   },
   {
     slug: "identifying-reconstructing-arguments",
@@ -151,6 +159,8 @@ Real arguments are messy — buried in prose, padded with repetition, missing pi
 ## Implicit premises
 
 Most everyday arguments leave assumptions unstated. "Socrates is a man, so Socrates is mortal" relies on the missing premise **"All men are mortal."** An argument with a suppressed premise is called an *enthymeme*. Surfacing the hidden premise is often where the real evaluation begins — because the hidden premise is frequently the weak one.
+
+Advertising runs on enthymemes. A long-running gum campaign claimed "four out of five dentists surveyed recommend sugarless gum for their patients who chew gum." The unstated — and weak — premise is that *you* should therefore chew it, which only follows if you assume what dentists advise for gum-chewers applies to you and that the survey was representative. Naming that buried assumption is exactly where evaluation starts.
 
 ## Be accurate first
 
@@ -210,7 +220,9 @@ When an argument is unclear or could be read several ways, interpret it in its *
 
 ## The straw man warning
 
-Violating charity produces the **straw man**: attacking a distorted, weaker version of someone's position. Charity is both an intellectual virtue and a practical safeguard — if you refute the strongest version, your conclusion is secure; if you only beat a straw man, you have proven nothing.`,
+Violating charity produces the **straw man**: attacking a distorted, weaker version of someone's position. Charity is both an intellectual virtue and a practical safeguard — if you refute the strongest version, your conclusion is secure; if you only beat a straw man, you have proven nothing.
+
+A long-running real example: critics of evolution have often attacked the claim that "humans descended from monkeys." But that is a straw man — the actual scientific claim is that humans and modern monkeys share a *common ancestor*. Refuting the cartoon version leaves the real theory completely untouched.`,
   },
 
   // Week 2 — Logic and reasoning
@@ -236,7 +248,7 @@ An **inductive** argument aims for *probability*: if the premises are true, the 
 
 > Every swan observed so far has been white. So the next swan will be white.
 
-Strong inductive arguments can still have true premises and a false conclusion — as the discovery of black swans showed.
+Strong inductive arguments can still have true premises and a false conclusion. For centuries Europeans had only ever seen white swans, so "all swans are white" looked airtight — until 1697, when the Dutch explorer Willem de Vlamingh encountered **black swans** in Western Australia. A single observation overturned a conclusion built on thousands.
 
 ## Telling them apart
 
@@ -270,7 +282,9 @@ An argument is **sound** when it is **valid AND all its premises are true**. Onl
 - Valid + a false premise = unsound; conclusion may be true or false.
 - Invalid = unsound regardless of the premises.
 
-A valid argument can have a false conclusion (when a premise is false). A *sound* one cannot.`,
+A valid argument can have a false conclusion (when a premise is false). A *sound* one cannot.
+
+A historical case makes this concrete: for almost 2,000 years people reasoned, "Heavier objects fall faster; a cannonball is heavier than a musket ball; therefore the cannonball lands first." The argument is perfectly **valid** — but its first premise is false, as Galileo argued around 1590, so the whole thing is **unsound**. Valid form is no protection when a premise is wrong.`,
   },
   {
     slug: "categorical-logic-syllogism",
@@ -334,7 +348,9 @@ $P \\to Q$ is **false only when $P$ is true and $Q$ is false.** "If you mow the 
 - **Affirming the consequent:** $P \\to Q$, $Q$, therefore $P$. ✗
 - **Denying the antecedent:** $P \\to Q$, $\\neg P$, therefore $\\neg Q$. ✗
 
-A **truth table** lists every combination of truth values and settles validity mechanically: an argument is valid if no row makes the premises true while the conclusion is false.`,
+A **truth table** lists every combination of truth values and settles validity mechanically: an argument is valid if no row makes the premises true while the conclusion is false.
+
+Affirming the consequent shows up in real life. "If a patient has this disease ($P$), the test comes back positive ($Q$). The test came back positive ($Q$). Therefore the patient has the disease ($P$)." That last step is the fallacy: other things cause positive results too (false positives), which is exactly why one positive on a screening test triggers a follow-up rather than immediate treatment.`,
   },
   {
     slug: "inductive-strength-generalization",
@@ -364,7 +380,7 @@ Drawing a sweeping conclusion from a sample that is **too small or unrepresentat
 
 ## Biased samples
 
-A poll hosted on a finance website over-represents the wealthy. Even a huge sample is worthless if it is systematically skewed.`,
+The classic disaster is the **1936 *Literary Digest* poll**. It tallied about 2.4 million mailed-in responses — an enormous sample — and confidently predicted Alf Landon would beat Franklin Roosevelt. Roosevelt then won 46 of the 48 states. The ballots had been drawn from telephone and automobile-registration lists, which in the Depression skewed wealthy. Meanwhile George Gallup's far smaller *representative* poll called it correctly. Size cannot rescue a systematically skewed sample.`,
   },
   {
     slug: "analogical-reasoning",
@@ -393,7 +409,9 @@ Surface similarities do not help. Mice and humans sharing a *hairless* trait is 
 
 ## False analogy
 
-A **false analogy** rests on similarities that are superficial or irrelevant, or it ignores a crucial difference. "Running a country is just like running a business" breaks down because citizens are not customers and governments do not seek profit.`,
+A **false analogy** rests on similarities that are superficial or irrelevant, or it ignores a crucial difference. "Running a country is just like running a business" breaks down because citizens are not customers and governments do not seek profit.
+
+The stakes can be deadly. In the late 1950s **thalidomide** was sold to pregnant women for morning sickness, reassured in part by animal testing. But the animal-to-human analogy concealed a crucial difference in how the drug affected a developing fetus, and more than 10,000 children were born with severe limb defects before it was withdrawn around 1961. An analogy is only as trustworthy as the relevant *differences* it overlooks.`,
   },
   {
     slug: "causal-reasoning-mills-methods",
@@ -418,7 +436,11 @@ Two things moving together may share a **common cause** (ice-cream sales and dro
 
 ## Confounding
 
-A **confounder** is a hidden third variable that influences both. The remedy is a **controlled experiment**: change one factor, hold everything else fixed, and watch the effect.`,
+A **confounder** is a hidden third variable that influences both. The remedy is a **controlled experiment**: change one factor, hold everything else fixed, and watch the effect.
+
+## A real detective story
+
+In **1854**, cholera was killing people in London's Soho. Physician **John Snow** mapped the deaths and found they clustered around a single public water pump on Broad Street, while workers at a nearby brewery who drank their own supply were spared (Mill's Method of Difference at work). He had the pump handle removed and the outbreak subsided — strong evidence that cholera spread through contaminated water, not "bad air," decades before germ theory was accepted.`,
   },
 
   // Week 3 — Fallacies, bias, and rhetoric
@@ -443,7 +465,9 @@ A **fallacy of relevance** offers premises that are psychologically persuasive b
 
 ## Why they work
 
-Each swaps a real reason for an emotional or social pressure. The test is always the same: **does this premise actually bear on whether the conclusion is true?** If it only bears on how we *feel*, it is a fallacy of relevance.`,
+Each swaps a real reason for an emotional or social pressure. The test is always the same: **does this premise actually bear on whether the conclusion is true?** If it only bears on how we *feel*, it is a fallacy of relevance.
+
+These tactics are sometimes deployed on purpose. As evidence linking smoking to cancer mounted, the tobacco industry's strategy — captured in a 1969 internal Brown & Williamson memo stating "Doubt is our product" — was to attack the researchers and muddy the debate rather than rebut the data. Distracting from an argument is usually easier than answering it, which is exactly why fallacies of relevance are so common.`,
   },
   {
     slug: "fallacies-weak-induction",
@@ -466,7 +490,9 @@ Here the premises *are* relevant, but they are **too weak** to support the concl
 
 ## The common thread
 
-The reasoning *points* in the right direction but does not travel far enough. Post hoc, for example, mistakes mere sequence for causation — the rooster crows before sunrise, but does not cause it.`,
+The reasoning *points* in the right direction but does not travel far enough. Post hoc, for example, mistakes mere sequence for causation — the rooster crows before sunrise but does not cause it.
+
+The post hoc fallacy fueled a real public-health crisis. Early signs of autism often become noticeable around the same age children receive the MMR vaccine. Because the diagnosis *followed* the shot, many parents concluded the shot had *caused* it. But studies tracking millions of children have found no such link — the timing was coincidence, not cause.`,
   },
   {
     slug: "fallacies-presumption-ambiguity",
@@ -482,7 +508,7 @@ These fallacies smuggle in an unwarranted assumption or exploit slippery languag
 
 - **Begging the question (circular reasoning):** the conclusion is hidden among the premises. "The Bible is true because it is the word of God, which we know because the Bible says so."
 - **Complex (loaded) question:** a question presupposing something unproven. "Have you stopped cheating on tests?"
-- **False dilemma:** presenting only two options when more exist. "Either we ban it entirely or we have chaos."
+- **False dilemma:** presenting only two options when many exist. A famous case came after the September 11 attacks, when President George W. Bush told the world, "Either you are with us, or you are with the terrorists" — collapsing a whole spectrum of positions into just two.
 - **Suppressed evidence:** ignoring relevant facts that undercut the conclusion.
 
 ## Fallacies of ambiguity
@@ -504,7 +530,7 @@ The cure for ambiguity is **defining your terms** and holding their meaning fixe
 
 ## Rhetorical devices
 
-- **Euphemism / dysphemism:** softening ("collateral damage") or harshening ("baby-killing") language to steer feeling.
+- **Euphemism / dysphemism:** softening or harshening language to steer feeling. "Collateral damage" for civilian deaths and "enhanced interrogation" for techniques widely described as torture are real euphemisms that made grim realities sound clinical.
 - **Loaded (emotive) language:** word choices that carry judgment — "freedom fighter" vs. "terrorist."
 - **Weasel words:** vague qualifiers — "studies suggest," "up to," "may help."
 - **Innuendo:** implying a claim without actually stating it.
@@ -531,8 +557,8 @@ Even careful reasoners are pushed off course by **cognitive biases** — systema
 
 - **Confirmation bias:** seeking and favoring evidence that supports what you already believe.
 - **Anchoring:** over-relying on the first number or fact you encounter.
-- **Availability heuristic:** judging probability by how easily examples come to mind (plane crashes feel common because they are vivid).
-- **Sunk cost fallacy:** continuing something because of past investment.
+- **Availability heuristic:** judging probability by how easily examples come to mind. After the September 11 attacks many Americans were so afraid of flying that they drove instead; researchers later estimated this shift to far more dangerous roads caused roughly 1,500 additional traffic deaths over the following year.
+- **Sunk cost fallacy:** continuing something because of past investment. It is sometimes called the **"Concorde fallacy,"** after Britain and France kept funding the supersonic jet long after it was clear it would never turn a profit — precisely because they had already spent so much.
 - **Dunning–Kruger effect:** the least skilled overestimating their competence.
 
 ## Motivated reasoning
@@ -567,7 +593,9 @@ Clear reasoning needs clear language. Two failures recur: **ambiguity** and **va
 
 ## Why it matters
 
-Many disputes are **merely verbal** — people using the same word for different things, or arguing over where to draw a vague line. Before debating whether a hot dog is a sandwich, agree on what "sandwich" means.`,
+Many disputes are **merely verbal** — people using the same word for different things, or arguing over where to draw a vague line. Before debating whether a hot dog is a sandwich, agree on what "sandwich" means.
+
+This is exactly what happened to **Pluto**. In 2006 the International Astronomical Union adopted a *précising* definition of "planet" requiring a body to have "cleared its orbital neighborhood." Pluto had not, so it was reclassified as a dwarf planet. Nothing about Pluto itself changed — only the definition did. Much of the public outcry was a verbal dispute over a word, not a discovery about the solar system.`,
   },
   {
     slug: "credibility-sources-testimony",
@@ -593,7 +621,7 @@ Trusting a **qualified** expert within their field is reasonable. The fallacy is
 
 ## Lateral reading
 
-Do not evaluate a source by staring at the source itself. **Read laterally:** open new tabs and check what *other* independent, credible sources say about it. This is how professional fact-checkers work.`,
+Do not evaluate a source by staring at the source itself. **Read laterally:** open new tabs and check what *other* independent, credible sources say about it. When Stanford researchers compared how professional fact-checkers, historians, and college students judged unfamiliar websites, the fact-checkers were both faster and more accurate — precisely because they left the page to check it against other sources instead of scrutinizing its design and "About" page.`,
   },
 
   // Week 4 — Applied reasoning and capstone
@@ -623,7 +651,9 @@ The **base rate** is how common something is to begin with. Ignoring it is the *
 - **Cherry-picked baselines:** "up 40% since [a conveniently chosen low point]."
 - **Relative vs. absolute risk:** "doubles your risk" — from 1 in a million to 2 in a million.
 
-Always ask: *out of how many, and compared to what?*`,
+Always ask: *out of how many, and compared to what?*
+
+Getting this wrong can be catastrophic. In 1999 the British solicitor **Sally Clark** was convicted of murdering her two infant sons after an expert testified that the odds of two cot deaths (SIDS) in one family were "1 in 73 million." That figure wrongly assumed the two deaths were independent and ignored the base rate of double SIDS versus double murder. The statistics were so badly misused that her conviction was quashed in 2003 — and the case became a textbook warning about probability in the courtroom.`,
   },
   {
     slug: "evaluating-evidence-science",
@@ -648,7 +678,11 @@ Anecdotes < case studies < observational studies < randomized controlled trials 
 
 ## Red flags of pseudoscience
 
-Unfalsifiable claims, reliance on testimonials, conspiracy framing ("they don't want you to know"), no peer review, and immunity to any disconfirming evidence. Extraordinary claims require extraordinary evidence.`,
+Unfalsifiable claims, reliance on testimonials, conspiracy framing ("they don't want you to know"), no peer review, and immunity to any disconfirming evidence. Extraordinary claims require extraordinary evidence.
+
+## When replication fails
+
+In 1989 two respected chemists, **Fleischmann and Pons**, announced they had achieved **"cold fusion"** — nuclear fusion at room temperature — in a tabletop apparatus. It promised limitless clean energy and made headlines worldwide. But laboratories that tried to reproduce the result could not, and the claim collapsed. Science worked exactly as it should: an extraordinary claim was put to the test of replication and rejected when the evidence failed to hold.`,
   },
   {
     slug: "decision-making-uncertainty",
@@ -673,7 +707,7 @@ Compare options by expected value, but also weigh your **risk tolerance**: a gua
 ## Common traps
 
 - **Sunk cost:** basing choices on unrecoverable past costs.
-- **Loss aversion:** weighting losses more heavily than equal gains.
+- **Loss aversion:** weighting losses more heavily than equal gains — a pattern documented by psychologists **Daniel Kahneman and Amos Tversky**, whose research showed most people feel the pain of losing $100 more sharply than the pleasure of gaining $100. Kahneman won the 2002 Nobel Prize in economics for this body of work.
 - **Neglecting opportunity cost:** ignoring what you give up by choosing.
 
 A decision should be judged by the **quality of reasoning given what you knew**, not only by how it happened to turn out.`,
@@ -693,7 +727,7 @@ Not all reasoning is about facts. **Value reasoning** concerns what is good, rig
 - A **descriptive (factual)** claim says how the world *is*: "Capital punishment does not reduce crime."
 - A **normative (value)** claim says how it *ought* to be: "Capital punishment is wrong."
 
-You cannot derive an *ought* from an *is* alone — this is the **is–ought gap**. A moral argument needs at least one value premise.
+You cannot derive an *ought* from an *is* alone — this is the **is–ought gap**, first pointed out by the philosopher **David Hume** in 1739. A moral argument needs at least one value premise.
 
 ## Structure of moral arguments
 
@@ -750,7 +784,7 @@ Misinformation is false or misleading content; **disinformation** is misinformat
 
 - **Emotional bait:** content engineered to provoke outrage or fear.
 - **Missing or vague sourcing:** "experts say," with no link and no name.
-- **Manipulated context:** a real photo or quote ripped from its setting.
+- **Manipulated context:** a real photo or quote ripped from its setting. After almost every major hurricane, a doctored photo of a **shark swimming on a flooded highway** goes viral as "breaking news" — the same fake image, recycled storm after storm for over a decade.
 - **Too good (or bad) to be true:** it confirms your side perfectly.
 
 ## Techniques
@@ -1121,5 +1155,35 @@ export async function syncCourseContent(): Promise<void> {
       updated += res.length;
     }
   }
-  logger.info({ updated }, "Course content sync complete");
+  // Sync lecture bodies too. Only touch a lecture when its source body actually
+  // changed; when it does, invalidate the cached depth rewrites and starter
+  // questions so they regenerate from the new content (otherwise they are left
+  // untouched, so restarts don't churn or wipe student-triggered expansions).
+  let lecturesUpdated = 0;
+  for (const t of TOPICS) {
+    const [topic] = await db
+      .select()
+      .from(topicsTable)
+      .where(eq(topicsTable.slug, t.slug));
+    if (!topic) continue;
+    const [lecture] = await db
+      .select()
+      .from(lecturesTable)
+      .where(eq(lecturesTable.topicId, topic.id));
+    if (!lecture) continue;
+    if (lecture.body === t.body && lecture.title === t.lectureTitle) continue;
+    await db
+      .update(lecturesTable)
+      .set({
+        title: t.lectureTitle,
+        body: t.body,
+        bodyMedium: null,
+        bodyLong: null,
+        starterQuestions: null,
+      })
+      .where(eq(lecturesTable.id, lecture.id));
+    lecturesUpdated += 1;
+  }
+
+  logger.info({ updated, lecturesUpdated }, "Course content sync complete");
 }

@@ -215,7 +215,12 @@ router.post("/course/lectures/:lectureId/expand", async (req, res): Promise<void
   let generated = "";
   try {
     generated = await chatText(
-      "You rewrite a college critical-thinking lecture at a requested depth. Preserve the original concepts, examples, and learning objectives — only expand explanation and add examples. Output clean Markdown with headings and short paragraphs. Do not add a title line; start with the body.",
+      [
+        "You rewrite a college critical-thinking lecture at a requested depth. Preserve the original concepts and learning objectives, and keep every concrete example already in the short version.",
+        "WHENEVER POSSIBLE, ground your added explanation and any NEW examples in real, verifiable situations from the news or from well-documented history — named events, court cases, studies, companies, or public figures (e.g. the 1854 Broad Street cholera outbreak, the Challenger disaster, the Theranos fraud, the retracted Wakefield MMR study). A real case beats an invented hypothetical every time; an abstract made-up example is a last resort, not a default.",
+        "NEVER fabricate facts, statistics, quotes, dates, sources, or events. If you are not confident a real case is accurate, use a plainly hypothetical illustration ('Suppose a town…') instead of inventing a fake 'real' one. Accuracy matters more than having an example.",
+        "Output clean Markdown with headings and short paragraphs. Do not add a title line; start with the body.",
+      ].join(" "),
       `Rewrite the lecture below as ${target}.\n\nLECTURE TITLE: ${lecture.title}\n\nSHORT VERSION:\n"""\n${lecture.body}\n"""`,
     );
   } catch {
