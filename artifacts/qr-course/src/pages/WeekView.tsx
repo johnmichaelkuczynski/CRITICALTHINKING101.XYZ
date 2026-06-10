@@ -21,7 +21,7 @@ export default function WeekView() {
           </div>
         ) : (
           <div>
-            <h1 className="text-3xl font-serif font-bold text-primary mb-2">Week {week?.weekNumber}: {week?.title}</h1>
+            <h1 className="text-3xl font-serif font-bold text-primary mb-2">{week?.title}</h1>
             <p className="text-lg text-muted-foreground">{week?.summary}</p>
           </div>
         )}

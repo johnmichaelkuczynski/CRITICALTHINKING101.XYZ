@@ -105,7 +105,7 @@ export default function Dashboard() {
                 <Link key={week.weekNumber} href={`/weeks/${week.weekNumber}`}>
                   <Card className="hover:border-primary/50 transition-colors cursor-pointer cursor-pointer hover:shadow-sm">
                     <CardHeader>
-                      <CardTitle className="text-lg">Week {week.weekNumber}: {week.title}</CardTitle>
+                      <CardTitle className="text-lg">{week.title}</CardTitle>
                     </CardHeader>
                     <CardContent>
                       <p className="text-muted-foreground mb-4">{week.summary}</p>
