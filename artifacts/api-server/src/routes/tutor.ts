@@ -15,14 +15,14 @@ import {
 const router: IRouter = Router();
 
 const STARTER_SYSTEM =
-  'You are a sharp college critical-thinking tutor who writes applied practice questions phrased in the student\'s own voice. You NEVER ask students to recite, define, or explain concepts in the abstract — every question hands them a concrete situation and asks them to APPLY a principle to it. Reply as strict JSON of the form {"questions": string[]} with NO other keys.';
+  'You are a sharp college critical-thinking tutor who writes applied practice questions phrased in the student\'s own voice. You NEVER ask students to recite, define, or explain concepts in the abstract — every question hands them a concrete situation and asks them to APPLY a principle to it. PREFER business and entrepreneurship situations (pricing, customers, ads, hiring, fundraising, product decisions), though everyday situations are fine too; never invent fake statistics, named companies, or real-sounding events. Reply as strict JSON of the form {"questions": string[]} with NO other keys.';
 
 function starterPrompt(title: string, body: string): string {
   // Cap body length sent to the model — the opening sections carry the core
   // concepts and a shorter prompt generates noticeably faster. The lecture is
   // used ONLY to know which concepts to test; its examples must never be reused.
   const trimmed = body.length > 4000 ? body.slice(0, 4000) : body;
-  return `Write 10 practice questions that test whether a student can USE the concepts named in the source below. Phrase each as one or two natural sentences in the student's own voice (~15–35 words), and wrap the concrete situation in DOUBLE QUOTES so it is unmistakable.
+  return `Write 10 practice questions that test whether a student can USE the concepts named in the source below. Phrase each as one or two natural sentences in the student's own voice (~15–35 words), and wrap the concrete situation in DOUBLE QUOTES so it is unmistakable. Favor business and entrepreneurship scenarios — a founder, a small shop, an ad campaign, a pricing or hiring call — where they fit naturally, with everyday situations as fine alternatives.
 
 ${APPLIED_RULES}
 

@@ -43,18 +43,18 @@ It is not about being negative or clever; it is about being **fair, careful, and
 
 ## The core moves
 
-A critical thinker habitually asks four questions. Watch them work on a claim you've probably heard: *"This study supplement really works — three people in my dorm took it during finals and they all got A's."*
+A critical thinker habitually asks four questions. Watch them work on a claim you'll hear constantly once you're trying to make money: *"This ad strategy really works — three founders I know ran it last month and all of them tripled their sales."*
 
-1. **What exactly is being claimed?** That the supplement *caused* the good grades — not just that it happened to be taken.
-2. **What reasons are offered?** Three people took it and did well.
-3. **Are those reasons true, and do they actually support the claim?** Even if all three really got A's, three friends are a tiny, cherry-picked sample with no comparison group — and they also studied, slept, and maybe took easier classes.
-4. **What's being assumed, and what's been left out?** It assumes the pill (not the studying) made the difference, and leaves out everyone who took it and *didn't* do well — you never hear from them.
+1. **What exactly is being claimed?** That the ad strategy *caused* the jump in sales — not just that it happened around the same time.
+2. **What reasons are offered?** Three founders ran it and their sales tripled.
+3. **Are those reasons true, and do they actually support the claim?** Even if all three really tripled sales, three founders are a tiny, cherry-picked sample with no comparison group — and they also launched new products, hired help, and maybe caught a seasonal rush.
+4. **What's being assumed, and what's been left out?** It assumes the ad (not everything else) made the difference, and leaves out every founder who ran the same strategy and *didn't* see a bump — you never hear from them.
 
-Run those four questions and "it worked for them" stops being a reason to buy anything.
+Run those four questions and "it worked for them" stops being a reason to spend a dollar on anything.
 
 ## Why it matters
 
-We are flooded with claims — ads, group chats, influencer "what I eat in a day" videos, headlines, statistics. Critical thinking is the skill that separates what is worth believing from what merely sounds convincing. It protects you from being manipulated — by advertisers, scammers, and charismatic talkers — and from your own wishful thinking.
+We are flooded with claims — ads, group chats, influencer "what I eat in a day" videos, headlines, statistics. Critical thinking is the skill that separates what is worth believing from what merely sounds convincing. It protects you from being manipulated — by advertisers, scammers, and charismatic talkers — and from your own wishful thinking. The stakes climb the moment your own money is on the line: most people eventually have to earn a living by making their own decisions — what to sell, what to charge, who to hire, which "proven" tactic to bet on — and every one of those is a reasoning problem before it is a money problem.
 
 The stakes can get high. **Theranos** convinced sophisticated investors and journalists that a single drop of blood could run hundreds of medical tests — because the story was thrilling and the founder charismatic. It began to unravel after *Wall Street Journal* reporter John Carreyrou stopped asking whether the pitch was *persuasive* and started asking whether the evidence showed the machines actually worked. They never had. That is the very same question — "never mind how good it sounds, what does the evidence show?" — that saves you twelve dollars on a fake-reviewed charger.
 
@@ -62,7 +62,7 @@ The stakes can get high. **Theranos** convinced sophisticated investors and jour
 
 Critical thinking is partly **metacognition** — thinking about your own thinking. The strongest reasoners catch themselves when they *want* something to be true.
 
-You feel this every day. You want the expensive sneakers to be "an investment," so you wave away the price. You want your team to win, so you skim past the injury report. You want the text from your crush to mean something, so you read into it. Noticing *"wait — am I believing this because it's actually supported, or because I want it to be true?"* is the single most useful habit in this entire course.`,
+You feel this every day. You want the expensive sneakers to be "an investment," so you wave away the price. You want your business idea to be "the next big thing," so you wave away the competitor who already tried it and failed. You want your team to win, so you skim past the injury report. Noticing *"wait — am I believing this because it's actually supported, or because I want it to be true?"* is the single most useful habit in this entire course.`,
   },
   {
     slug: "claims-beliefs-truth",
@@ -77,21 +77,22 @@ The atom of reasoning is the **claim** (also called a *statement* or *propositio
 ## Claims vs. non-claims
 
 - "The Earth orbits the Sun." — a claim (and true).
-- "Close the door." — a command, **not** a claim.
-- "What time is it?" — a question, **not** a claim.
+- "Our subscription churn fell last quarter." — also a claim (either true or false).
+- "Close the deal by Friday." — a command, **not** a claim.
+- "What's our profit margin?" — a question, **not** a claim.
 - "Ouch!" — an exclamation, **not** a claim.
 
 Only claims can serve as premises or conclusions, because only claims can be true or false.
 
 ## Belief vs. truth
 
-A **belief** is a claim you accept. **Truth** is whether the claim matches reality. These two come apart: you can believe something false, and something can be true that you do not believe. Critical thinking is the work of bringing your beliefs closer to the truth.
+A **belief** is a claim you accept. **Truth** is whether the claim matches reality. These two come apart: you can believe something false, and something can be true that you do not believe. Critical thinking is the work of bringing your beliefs closer to the truth. A founder can sincerely *believe* customers are desperate for a feature; whether they will actually pay for it is a separate question that only evidence — real orders, not enthusiasm — can settle. Plenty of confident, well-funded startups have built exactly the product nobody wanted.
 
 History is full of widely-held false beliefs. In 1998 a paper in *The Lancet* by Andrew Wakefield claimed the MMR vaccine caused autism, and millions came to believe it. But the belief did not match reality: the study was found to be fraudulent, *The Lancet* fully retracted it in 2010, and Wakefield lost his medical license. Sincere, widespread belief never makes a claim true.
 
 ## Facts vs. opinions
 
-The fact/opinion split is rougher than people think. "Chocolate is tasty" reports a preference. But "Vaccines cause autism" is sometimes *called* an opinion when it is really a **false factual claim**. Ask: is this about a *preference*, or about *how the world is*?`,
+The fact/opinion split is rougher than people think. "Chocolate is tasty" reports a preference. But "Vaccines cause autism" is sometimes *called* an opinion when it is really a **false factual claim**. The same trap shows up in business: "our app is the best on the market" sounds like a boast you can wave off, but "our app retains more users than any competitor" is a checkable factual claim — and treating it as mere opinion is how teams dodge the data. Ask: is this about a *preference*, or about *how the world is*?`,
   },
   {
     slug: "arguments-vs-nonarguments",
@@ -105,13 +106,13 @@ In critical thinking, an **argument** is not a quarrel. It is a set of claims in
 
 ## The test for an argument
 
-Ask: **is something being supported by something else?** If yes, it is an argument. If the passage merely reports, describes, explains, or illustrates without trying to *prove* a point, it is a non-argument.
+Ask: **is something being supported by something else?** If yes, it is an argument. If the passage merely reports, describes, explains, or illustrates without trying to *prove* a point, it is a non-argument. "Our churn rose five percent last quarter" is just a report; "our churn rose five percent, so we should rebuild onboarding before spending another dollar on ads" is an argument — the rising churn is now offered as a *reason* to act.
 
 ## Common non-arguments
 
 - **Description:** "The room was cold and dark."
 - **Explanation:** "The I-35W bridge in Minneapolis collapsed in 2007 because its steel gusset plates were undersized." (tells *why* it collapsed, not *that* it collapsed)
-- **Report:** "Officials announced the new policy yesterday."
+- **Report:** "The company announced layoffs yesterday."
 - **Illustration:** "Many metals conduct electricity; copper, for example."
 
 ## Argument vs. explanation
@@ -137,7 +138,7 @@ Certain words flag each part:
 - **Conclusion indicators:** *therefore, so, thus, hence, consequently, it follows that.*
 - **Premise indicators:** *because, since, for, given that, as, on the grounds that.*
 
-"**Since** the streets are wet, it must have rained." — "since" flags the premise (streets are wet); the conclusion is "it rained."
+"**Since** the streets are wet, it must have rained." — "since" flags the premise (streets are wet); the conclusion is "it rained." The same words run your business reasoning: "**Since** our trial users keep coming back, there's real demand, **so** we should raise the price." Here *since* flags a premise (users return) and *so* flags the conclusion (raise the price).
 
 ## Watch the order
 
@@ -172,6 +173,8 @@ Most everyday arguments leave assumptions unstated. "Socrates is a man, so Socra
 
 Advertising runs on enthymemes. A long-running gum campaign claimed "four out of five dentists surveyed recommend sugarless gum for their patients who chew gum." The unstated — and weak — premise is that *you* should therefore chew it, which only follows if you assume what dentists advise for gum-chewers applies to you and that the survey was representative. Naming that buried assumption is exactly where evaluation starts.
 
+Startup pitches are full of them too. "We already have 10,000 signups, so we'll be profitable" hides the premise that those free signups will convert into *paying* customers at some healthy rate — which is exactly the assumption most likely to be false. Surface the hidden premise and you've found the part of the pitch worth stress-testing.
+
 ## Be accurate first
 
 Reconstruct what the author *actually* argued before you judge it. Adding a premise to make the argument work is fair; adding one to make it look foolish is not.`,
@@ -198,7 +201,7 @@ Neither (1) nor (2) alone supports (3); they are linked: (1)+(2) → (3).
 
 Premises are **convergent** when each independently supports the conclusion.
 
-> (1) The restaurant is cheap. (2) It is close by. Therefore (3) we should eat there.
+> (1) The new supplier is cheaper. (2) It ships faster. Therefore (3) we should switch to it.
 
 Either reason stands on its own: (1) → (3) and (2) → (3).
 
@@ -232,7 +235,9 @@ When an argument is unclear or could be read several ways, interpret it in its *
 
 Violating charity produces the **straw man**: attacking a distorted, weaker version of someone's position. Charity is both an intellectual virtue and a practical safeguard — if you refute the strongest version, your conclusion is secure; if you only beat a straw man, you have proven nothing.
 
-A long-running real example: critics of evolution have often attacked the claim that "humans descended from monkeys." But that is a straw man — the actual scientific claim is that humans and modern monkeys share a *common ancestor*. Refuting the cartoon version leaves the real theory completely untouched.`,
+A long-running real example: critics of evolution have often attacked the claim that "humans descended from monkeys." But that is a straw man — the actual scientific claim is that humans and modern monkeys share a *common ancestor*. Refuting the cartoon version leaves the real theory completely untouched.
+
+The same move sinks countless business arguments. Suppose one cofounder says, "Let's put a little more into paid ads this quarter," and the other shoots back, "So you want to blow our entire runway on Facebook and bankrupt us?" That caricature is a straw man — the real proposal was modest. Charitably restated ("spend a small, capped test budget on ads"), the suggestion might be perfectly sensible, and *that* is the version worth arguing about.`,
   },
 
   // Week 2 — Logic and reasoning
@@ -258,7 +263,9 @@ An **inductive** argument aims for *probability*: if the premises are true, the 
 
 > Every swan observed so far has been white. So the next swan will be white.
 
-Strong inductive arguments can still have true premises and a false conclusion. For centuries Europeans had only ever seen white swans, so "all swans are white" looked airtight — until 1697, when the Dutch explorer Willem de Vlamingh encountered **black swans** in Western Australia. A single observation overturned a conclusion built on thousands.
+You reason this way in business constantly: "Every quarter so far we've grown, so next quarter we'll grow too," or "Every customer who saw the demo signed up, so the next one will." The conclusion is *likely* given the track record — but never guaranteed.
+
+Strong inductive arguments can still have true premises and a false conclusion. For centuries Europeans had only ever seen white swans, so "all swans are white" looked airtight — until 1697, when the Dutch explorer Willem de Vlamingh encountered **black swans** in Western Australia. A single observation overturned a conclusion built on thousands. Markets deliver black swans the same way: years of steady growth tell you nothing certain about the quarter a new competitor or a downturn arrives.
 
 ## Telling them apart
 
@@ -294,7 +301,9 @@ An argument is **sound** when it is **valid AND all its premises are true**. Onl
 
 A valid argument can have a false conclusion (when a premise is false). A *sound* one cannot.
 
-A historical case makes this concrete: for almost 2,000 years people reasoned, "Heavier objects fall faster; a cannonball is heavier than a musket ball; therefore the cannonball lands first." The argument is perfectly **valid** — but its first premise is false, as Galileo argued around 1590, so the whole thing is **unsound**. Valid form is no protection when a premise is wrong.`,
+Business plans go wrong the same way. "Every product with glowing reviews sells well; our product has glowing reviews; therefore it will sell well." The logic is **valid** — *if* the premises held, the conclusion would follow — but the first premise is false (plenty of well-reviewed products never sell), so the argument is **unsound** and the conclusion is worthless. A clean-looking spreadsheet built on one bad assumption is exactly this trap.
+
+A historical case makes it concrete too: for almost 2,000 years people reasoned, "Heavier objects fall faster; a cannonball is heavier than a musket ball; therefore the cannonball lands first." The argument is perfectly **valid** — but its first premise is false, as Galileo argued around 1590, so the whole thing is **unsound**. Valid form is no protection when a premise is wrong.`,
   },
   {
     slug: "categorical-logic-syllogism",
@@ -315,13 +324,13 @@ A historical case makes this concrete: for almost 2,000 years people reasoned, "
 
 A **syllogism** draws a conclusion from two categorical premises that share a middle term.
 
-> All mammals are animals. All dogs are mammals. Therefore all dogs are animals. (**valid**)
+> All paying subscribers are customers. All premium users are paying subscribers. Therefore all premium users are customers. (**valid**)
 
 ## Validity by form
 
 Validity depends only on the arrangement of terms. This form is invalid:
 
-> All cats are animals. All dogs are animals. Therefore all dogs are cats.
+> All startups are companies. All banks are companies. Therefore all banks are startups.
 
 Both premises are true and the conclusion false — so the *form* itself is broken.
 
@@ -346,7 +355,7 @@ Three overlapping circles let you test any syllogism: diagram the premises, then
 
 ## The conditional
 
-$P \\to Q$ is **false only when $P$ is true and $Q$ is false.** "If you mow the lawn, I'll pay you" is broken only if you mow *and* I do not pay.
+$P \\to Q$ is **false only when $P$ is true and $Q$ is false.** "If you ship the feature by Friday, I'll pay the bonus" is broken only if you ship it on time *and* I withhold the bonus.
 
 ## Valid forms
 
@@ -360,7 +369,7 @@ $P \\to Q$ is **false only when $P$ is true and $Q$ is false.** "If you mow the 
 
 A **truth table** lists every combination of truth values and settles validity mechanically: an argument is valid if no row makes the premises true while the conclusion is false.
 
-Affirming the consequent shows up in real life. "If a patient has this disease ($P$), the test comes back positive ($Q$). The test came back positive ($Q$). Therefore the patient has the disease ($P$)." That last step is the fallacy: other things cause positive results too (false positives), which is exactly why one positive on a screening test triggers a follow-up rather than immediate treatment.`,
+Affirming the consequent quietly wrecks marketing budgets. "If our ad campaign works ($P$), sales go up ($Q$). Sales went up ($Q$). Therefore the campaign worked ($P$)." That last step is the fallacy: plenty of *other* things lift sales (a holiday, a competitor's stumble, a price cut you ran the same week), so a sales bump alone doesn't prove the ad caused it. This is exactly why careful teams run a holdout group instead of crediting whatever they happened to be doing when the numbers rose.`,
   },
   {
     slug: "inductive-strength-generalization",
@@ -386,11 +395,11 @@ The most common inductive move infers a claim about a whole population from a sa
 
 ## Hasty generalization
 
-Drawing a sweeping conclusion from a sample that is **too small or unrepresentative** is the *hasty generalization*. "My two friends who smoke are healthy, so smoking is harmless" generalizes from a tiny, biased sample.
+Drawing a sweeping conclusion from a sample that is **too small or unrepresentative** is the *hasty generalization*. "Two customers emailed asking for this feature, so everyone wants it" builds a whole roadmap on a sample of two — and the two who bothered to write are hardly typical of the thousands who didn't.
 
 ## Biased samples
 
-The classic disaster is the **1936 *Literary Digest* poll**. It tallied about 2.4 million mailed-in responses — an enormous sample — and confidently predicted Alf Landon would beat Franklin Roosevelt. Roosevelt then won 46 of the 48 states. The ballots had been drawn from telephone and automobile-registration lists, which in the Depression skewed wealthy. Meanwhile George Gallup's far smaller *representative* poll called it correctly. Size cannot rescue a systematically skewed sample.`,
+The classic disaster is the **1936 *Literary Digest* poll**. It tallied about 2.4 million mailed-in responses — an enormous sample — and confidently predicted Alf Landon would beat Franklin Roosevelt. Roosevelt then won 46 of the 48 states. The ballots had been drawn from telephone and automobile-registration lists, which in the Depression skewed wealthy. Meanwhile George Gallup's far smaller *representative* poll called it correctly. Size cannot rescue a systematically skewed sample — and a startup that surveys only its happiest power users will overestimate demand the very same way, no matter how many of them it asks.`,
   },
   {
     slug: "analogical-reasoning",
@@ -419,7 +428,7 @@ Surface similarities do not help. Mice and humans sharing a *hairless* trait is 
 
 ## False analogy
 
-A **false analogy** rests on similarities that are superficial or irrelevant, or it ignores a crucial difference. "Running a country is just like running a business" breaks down because citizens are not customers and governments do not seek profit.
+A **false analogy** rests on similarities that are superficial or irrelevant, or it ignores a crucial difference. "Running a country is just like running a business" breaks down because citizens are not customers and governments do not seek profit. Founders fall for the same trap: "Airbnb gave its product away free at first and it worked, so we should too." Airbnb had network effects that made each free user more valuable to the next — if your product has no such dynamic, the surface similarity ("a famous company did it") hides the difference that actually mattered.
 
 The stakes can be deadly. In the late 1950s **thalidomide** was sold to pregnant women for morning sickness, reassured in part by animal testing. But the animal-to-human analogy concealed a crucial difference in how the drug affected a developing fetus, and more than 10,000 children were born with severe limb defects before it was withdrawn around 1961. An analogy is only as trustworthy as the relevant *differences* it overlooks.`,
   },
@@ -446,7 +455,7 @@ Two things moving together may share a **common cause** (ice-cream sales and dro
 
 ## Confounding
 
-A **confounder** is a hidden third variable that influences both. The remedy is a **controlled experiment**: change one factor, hold everything else fixed, and watch the effect.
+A **confounder** is a hidden third variable that influences both. Say sales rose the week you launched a new logo — but you also ran a discount and it was the holiday season. Logo, discount, and season are tangled together, so you can't credit the logo. The remedy is a **controlled experiment**: change one factor, hold everything else fixed, and watch the effect. In business that's an **A/B test** — show half your visitors the new button and half the old one *at the same time*, so the only thing that differs is the button.
 
 ## A real detective story
 
@@ -471,7 +480,7 @@ A **fallacy of relevance** offers premises that are psychologically persuasive b
 - **Appeal to force (ad baculum):** backing a claim with a threat.
 - **Appeal to pity (ad misericordiam):** substituting sympathy for evidence.
 - **Red herring:** changing the subject to a distracting but irrelevant issue.
-- **Appeal to the people (ad populum):** "everyone believes it, so it must be true."
+- **Appeal to the people (ad populum):** "everyone believes it, so it must be true" — the marketing version is "join the 10,000 businesses who switched to us," which tells you a lot of people bought it and nothing about whether it works.
 
 ## Why they work
 
@@ -500,7 +509,7 @@ Here the premises *are* relevant, but they are **too weak** to support the concl
 
 ## The common thread
 
-The reasoning *points* in the right direction but does not travel far enough. Post hoc, for example, mistakes mere sequence for causation — the rooster crows before sunrise but does not cause it.
+The reasoning *points* in the right direction but does not travel far enough. Post hoc, for example, mistakes mere sequence for causation — the rooster crows before sunrise but does not cause it. Businesses do this whenever revenue ticks up right after some change: "We hired a new sales VP and revenue rose the next month, so she's the reason" ignores the new product, the seasonal bump, and the deals that were already in the pipeline before she arrived.
 
 The post hoc fallacy fueled a real public-health crisis. Early signs of autism often become noticeable around the same age children receive the MMR vaccine. Because the diagnosis *followed* the shot, many parents concluded the shot had *caused* it. But studies tracking millions of children have found no such link — the timing was coincidence, not cause.`,
   },
@@ -518,7 +527,7 @@ These fallacies smuggle in an unwarranted assumption or exploit slippery languag
 
 - **Begging the question (circular reasoning):** the conclusion is hidden among the premises. "The Bible is true because it is the word of God, which we know because the Bible says so."
 - **Complex (loaded) question:** a question presupposing something unproven. "Have you stopped cheating on tests?"
-- **False dilemma:** presenting only two options when many exist. A famous case came after the September 11 attacks, when President George W. Bush told the world, "Either you are with us, or you are with the terrorists" — collapsing a whole spectrum of positions into just two.
+- **False dilemma:** presenting only two options when many exist. A famous case came after the September 11 attacks, when President George W. Bush told the world, "Either you are with us, or you are with the terrorists" — collapsing a whole spectrum of positions into just two. Boardrooms run on smaller versions: "Either we slash prices now or we go out of business" ignores cutting costs, raising prices on a premium tier, finding new customers, or changing the product.
 - **Suppressed evidence:** ignoring relevant facts that undercut the conclusion.
 
 ## Fallacies of ambiguity
@@ -540,9 +549,9 @@ The cure for ambiguity is **defining your terms** and holding their meaning fixe
 
 ## Rhetorical devices
 
-- **Euphemism / dysphemism:** softening or harshening language to steer feeling. "Collateral damage" for civilian deaths and "enhanced interrogation" for techniques widely described as torture are real euphemisms that made grim realities sound clinical.
-- **Loaded (emotive) language:** word choices that carry judgment — "freedom fighter" vs. "terrorist."
-- **Weasel words:** vague qualifiers — "studies suggest," "up to," "may help."
+- **Euphemism / dysphemism:** softening or harshening language to steer feeling. "Collateral damage" for civilian deaths and "enhanced interrogation" for techniques widely described as torture are real euphemisms that made grim realities sound clinical. Corporate press releases run on the same fuel — "restructuring" and "rightsizing" for mass layoffs.
+- **Loaded (emotive) language:** word choices that carry judgment — "freedom fighter" vs. "terrorist," or "disruptor" vs. "rule-breaker" for the same company.
+- **Weasel words:** vague qualifiers that fill ad copy — "studies suggest," "up to 50 percent off," "results may vary," "may help."
 - **Innuendo:** implying a claim without actually stating it.
 
 ## Spin
@@ -566,7 +575,7 @@ Even careful reasoners are pushed off course by **cognitive biases** — systema
 ## Common biases
 
 - **Confirmation bias:** seeking and favoring evidence that supports what you already believe.
-- **Anchoring:** over-relying on the first number or fact you encounter.
+- **Anchoring:** over-relying on the first number or fact you encounter. It is why a jacket marked "was 200 dollars, now 99" feels like a steal — the crossed-out price anchors you — and why the first number named in a salary or supplier negotiation quietly drags the final deal toward it.
 - **Availability heuristic:** judging probability by how easily examples come to mind. After the September 11 attacks many Americans were so afraid of flying that they drove instead; researchers later estimated this shift to far more dangerous roads caused roughly 1,500 additional traffic deaths over the following year.
 - **Sunk cost fallacy:** continuing something because of past investment. It is sometimes called the **"Concorde fallacy,"** after Britain and France kept funding the supersonic jet long after it was clear it would never turn a profit — precisely because they had already spent so much.
 - **Dunning–Kruger effect:** the least skilled overestimating their competence.
@@ -603,7 +612,7 @@ Clear reasoning needs clear language. Two failures recur: **ambiguity** and **va
 
 ## Why it matters
 
-Many disputes are **merely verbal** — people using the same word for different things, or arguing over where to draw a vague line. Before debating whether a hot dog is a sandwich, agree on what "sandwich" means.
+Many disputes are **merely verbal** — people using the same word for different things, or arguing over where to draw a vague line. Before debating whether a hot dog is a sandwich, agree on what "sandwich" means. Cofounders waste whole meetings this way: one insists the company is "profitable" (meaning gross margin) while the other says it isn't (meaning after salaries and ad spend). They don't disagree about a single number — they're using one word, "profit," for two different things. A quick précising definition ("by profit we mean net, after all costs") ends the fight before it starts; the same goes for pinning down "active user" before anyone argues about growth.
 
 This is exactly what happened to **Pluto**. In 2006 the International Astronomical Union adopted a *précising* definition of "planet" requiring a body to have "cleared its orbital neighborhood." Pluto had not, so it was reclassified as a dwarf planet. Nothing about Pluto itself changed — only the definition did. Much of the public outcry was a verbal dispute over a word, not a discovery about the solar system.`,
   },
@@ -620,7 +629,7 @@ Most of what we know comes from **testimony** — other people's claims. Evaluat
 ## Judging a source
 
 - **Expertise:** is the source genuinely qualified *in this field*?
-- **Bias / conflict of interest:** does the source gain from your belief?
+- **Bias / conflict of interest:** does the source gain from your belief? A vendor's own case study, a paid influencer's "honest review," and a supplier's reference you didn't pick yourself all have a stake in your decision — weigh them accordingly.
 - **Track record:** has the source been reliable before?
 - **Corroboration:** do independent sources agree?
 - **Primary vs. secondary:** is this firsthand, or a report of a report?
@@ -659,7 +668,7 @@ The **base rate** is how common something is to begin with. Ignoring it is the *
 
 - **Misleading averages:** a mean dragged by outliers; ask for the median.
 - **Cherry-picked baselines:** "up 40% since [a conveniently chosen low point]."
-- **Relative vs. absolute risk:** "doubles your risk" — from 1 in a million to 2 in a million.
+- **Relative vs. absolute risk:** "doubles your risk" — from 1 in a million to 2 in a million. The same trick sells software: "our new checkout doubled conversion" sounds huge until you learn it went from half a percent to one percent of visitors.
 
 Always ask: *out of how many, and compared to what?*
 
@@ -684,7 +693,7 @@ Science is our most reliable method for testing claims about the world — once 
 
 ## The hierarchy of evidence
 
-Anecdotes < case studies < observational studies < randomized controlled trials < systematic reviews. A single dramatic story is the weakest evidence, however compelling.
+Anecdotes < case studies < observational studies < randomized controlled trials < systematic reviews. A single dramatic story is the weakest evidence, however compelling. The same ladder applies to a marketing claim: one glowing customer testimonial sits at the bottom, a vendor's hand-picked "case study" only slightly above it, and a randomized A/B test with a real control group near the top. When a tool promises to "boost sales," ask where on that ladder its proof actually sits.
 
 ## Red flags of pseudoscience
 
@@ -712,12 +721,12 @@ The **expected value** of an option is each outcome's value weighted by its prob
 
 ## Rational choice
 
-Compare options by expected value, but also weigh your **risk tolerance**: a guaranteed \\$50 may beat a coin-flip for \\$110 if you cannot afford to lose.
+Compare options by expected value, but also weigh your **risk tolerance**: a guaranteed \\$50 may beat a coin-flip for \\$110 if you cannot afford to lose. A founder faces this constantly — a safe 5,000-dollar consulting contract versus a 50,000-dollar deal with only a one-in-five chance of closing. The risky deal's expected value (about 10,000 dollars) is higher, but if missing payroll this month would sink the company, the smaller sure thing can still be the rational choice.
 
 ## Common traps
 
 - **Sunk cost:** basing choices on unrecoverable past costs.
-- **Loss aversion:** weighting losses more heavily than equal gains — a pattern documented by psychologists **Daniel Kahneman and Amos Tversky**, whose research showed most people feel the pain of losing $100 more sharply than the pleasure of gaining $100. Kahneman won the 2002 Nobel Prize in economics for this body of work.
+- **Loss aversion:** weighting losses more heavily than equal gains — a pattern documented by psychologists **Daniel Kahneman and Amos Tversky**, whose research showed most people feel the pain of losing 100 dollars more sharply than the pleasure of gaining the same 100 dollars. Kahneman won the 2002 Nobel Prize in economics for this body of work.
 - **Neglecting opportunity cost:** ignoring what you give up by choosing.
 
 A decision should be judged by the **quality of reasoning given what you knew**, not only by how it happened to turn out.`,
@@ -737,7 +746,7 @@ Not all reasoning is about facts. **Value reasoning** concerns what is good, rig
 - A **descriptive (factual)** claim says how the world *is*: "Capital punishment does not reduce crime."
 - A **normative (value)** claim says how it *ought* to be: "Capital punishment is wrong."
 
-You cannot derive an *ought* from an *is* alone — this is the **is–ought gap**, first pointed out by the philosopher **David Hume** in 1739. A moral argument needs at least one value premise.
+You cannot derive an *ought* from an *is* alone — this is the **is–ought gap**, first pointed out by the philosopher **David Hume** in 1739. A moral argument needs at least one value premise. This is the gap behind every "but it's profitable" defense in business: "this dark-pattern checkout boosts revenue" is an *is*, and it cannot by itself establish that the company *ought* to ship it. To reach the "ought" you need a value premise — and stating it out loud ("we ought to do whatever raises revenue") is usually where the argument falls apart.
 
 ## Structure of moral arguments
 
@@ -763,7 +772,7 @@ Writing is reasoning made visible. An **argumentative essay** defends a claim wi
 
 ## The thesis
 
-The **thesis** is the single main claim the whole essay defends. It should be specific, contestable, and clear. "Social media harms teen mental health and should be age-restricted" is a thesis; "Social media is interesting" is not.
+The **thesis** is the single main claim the whole essay defends. It should be specific, contestable, and clear. "Social media harms teen mental health and should be age-restricted" is a thesis; "Social media is interesting" is not. A business proposal works exactly the same way: "We should expand to Canada next year because our highest-margin customers are already there" is a thesis you can defend with evidence and counterarguments, while "We should think about growth" commits to nothing and can't be argued at all.
 
 ## Structure
 
@@ -806,7 +815,7 @@ Misinformation is false or misleading content; **disinformation** is misinformat
 
 ## Defenses
 
-Slow down before sharing — virality exploits speed. Distinguish a **headline** from the **evidence**. And apply the same scrutiny to content you *agree* with, because that is exactly where your guard is lowest.`,
+Slow down before sharing — virality exploits speed. Distinguish a **headline** from the **evidence**. And apply the same scrutiny to content you *agree* with, because that is exactly where your guard is lowest. The same instincts protect your wallet: a "students earn 10,000 dollars a month with this dropshipping course" screenshot, a crypto coin a stranger keeps DMing you to buy, and a five-star review posted minutes after launch all fail the incentive test — *who profits if you believe this?* When the person making the claim is the person collecting the money, raise the evidence bar, don't lower it.`,
   },
   {
     slug: "critical-thinking-across-domains",
@@ -823,6 +832,7 @@ Critical thinking is a **general** skill, but it takes a different shape in each
 - **Health:** weigh relative vs. absolute risk; separate correlation from causation in studies.
 - **Politics:** watch for loaded language, false dilemmas, and tribal motivated reasoning.
 - **Personal finance:** beware sunk costs, base-rate neglect, and "get rich quick" appeals.
+- **Business & entrepreneurship:** separate vanity metrics (signups, page views) from real ones (paying customers, retention); discount a pitch by the pitcher's incentive; demand a control group before crediting any tactic.
 - **Science news:** a single study is not settled science; check for replication.
 - **Everyday life:** notice when a salesperson frames a false dilemma or anchors a price.
 
@@ -846,15 +856,15 @@ The capstone ties the whole course together: take a real claim from the wild and
 
 ## A worked example
 
-> "A new study shows students who use our app score 20% higher. Don't let your child fall behind — the data doesn't lie."
+> "A new study shows businesses that switch to our software grow revenue 20% faster. Don't let competitors pull ahead — the numbers don't lie."
 
 Apply the toolkit:
 
-1. **Identify the argument** — conclusion: buy the app; premises: the study and the appeal.
+1. **Identify the argument** — conclusion: buy the software; premises: the study and the appeal.
 2. **Classify the reasoning** — inductive, from a study to a recommendation.
-3. **Check the evidence** — sample size? control group? who funded it? 20% relative to what?
-4. **Spot fallacies and rhetoric** — appeal to fear ("fall behind"), the "data doesn't lie" thought-stopper, post hoc risk.
-5. **Consider bias** — the seller's conflict of interest; your own hope that it works.
+3. **Check the evidence** — sample size? a control group of similar businesses that *didn't* switch? who funded the study? 20% faster relative to what?
+4. **Spot fallacies and rhetoric** — appeal to fear ("pull ahead"), the "numbers don't lie" thought-stopper, and post hoc risk (maybe the businesses that switch were already the fastest-growing ones).
+5. **Consider bias** — the seller's conflict of interest; your own hope that one purchase will fix growth.
 6. **Reach a verdict** — proportion your belief to the strength of the evidence.
 
 ## The standard

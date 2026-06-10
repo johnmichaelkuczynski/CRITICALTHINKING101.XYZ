@@ -159,7 +159,7 @@ router.post("/practice/sessions/:sessionId/next", async (req, res): Promise<void
     }>(
       `You generate a single critical-thinking practice problem for a college freshman on the topic "${topic.title}" at difficulty "${difficultyLabel}" (${difficulty.toFixed(
         1,
-      )}/5). The \`prompt\` presents a concrete situation and asks the student to apply the concept to it; the answer is a short string (a single word, short phrase, or letter choice) — never multi-paragraph.\n\n${APPLIED_RULES}\n\nRespond as strict JSON: {"prompt": string, "correctAnswer": string, "explanation": string}. Make it different from these recent prompts: ${JSON.stringify(
+      )}/5). The \`prompt\` presents a concrete situation — preferring business and entrepreneurship scenarios (pricing, customers, ads, hiring, fundraising, product decisions) where they fit naturally, without inventing fake statistics or real-sounding companies — and asks the student to apply the concept to it; the answer is a short string (a single word, short phrase, or letter choice) — never multi-paragraph.\n\n${APPLIED_RULES}\n\nRespond as strict JSON: {"prompt": string, "correctAnswer": string, "explanation": string}. Make it different from these recent prompts: ${JSON.stringify(
         lastProblems.map((p) => p.prompt),
       )}.`,
       userRequest || `Generate a new ${difficultyLabel} problem on ${topic.title}.`,

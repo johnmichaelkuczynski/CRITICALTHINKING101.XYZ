@@ -47,6 +47,18 @@ anecdote) are allowed and encouraged for relatability — they are clearly
 hypothetical teaching examples, not fabricated "real" news, so they don't
 violate the rule; just don't dress them up as verifiable named events.
 
+## Business-first framing convention
+Lecture bodies AND the three generation prompts (course.ts depth-rewrite,
+tutor.ts STARTER_SYSTEM/starterPrompt, practice.ts problem-gen) are steered to
+teach each concept primarily through business/entrepreneurship scenarios
+(pricing, customers, ads, hiring, fundraising, product/venture decisions)
+alongside everyday examples. **Why:** the audience will mostly have to run their
+own ventures, so reasoning is shown applied to money decisions.
+**How to apply:** when adding/editing examples, lead with a hypothetical
+business scenario ("Suppose a founder…") or a real verifiable business case
+(Theranos, Concorde) — but keep the no-fabrication rule: never invent
+real-sounding named companies/stats.
+
 ## Markdown `$` triggers LaTeX math rendering — avoid bare dollar signs
 The lecture renderer in qr-course parses `$...$` as inline math (there's a Math
 keyboard feature). A body like "a $12 charger ... a $25 one" renders the span
